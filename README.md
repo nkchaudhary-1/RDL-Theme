@@ -86,6 +86,8 @@ skills/rdl-theme/
 research/moodboard-notes.md      Per-frame notes from the 220-shot scan
 ```
 
+Single-file style guide: [`DESIGN-STYLE.md`](DESIGN-STYLE.md).
+
 Changing tokens:
 ```bash
 node skills/rdl-theme/scripts/build_tokens.mjs
