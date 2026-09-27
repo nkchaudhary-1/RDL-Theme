@@ -1,0 +1,11 @@
+{
+  "name": "rdl-theme",
+  "owner": { "name": "Neelesh" },
+  "plugins": [
+    {
+      "name": "rdl-theme",
+      "source": "./",
+      "description": "Design and build apps in the RonDesignLab (RDL) Dribbble style."
+    }
+  ]
+}

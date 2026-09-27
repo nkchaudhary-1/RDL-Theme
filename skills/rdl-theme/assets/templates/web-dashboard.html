@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-accent="lime">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDL Dashboard Reference</title>
+<!-- Reference implementation of the RDL web SaaS dashboard archetype (sidebar + bento grid).
+     Params: ?theme=dark&accent=violet|orange|ocean|gold -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="rdl-components.css">
+<style>
+  h1, h2, h3, p { margin: 0; }
+  .app { display: grid; grid-template-columns: var(--rdl-web-sidebar) 1fr; min-height: 100vh; gap: var(--rdl-web-grid-gap); padding: var(--rdl-web-grid-gap); }
+  .side { background: var(--rdl-bg-surface); border-radius: var(--rdl-radius-2xl); padding: 24px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .logo { display: flex; align-items: center; gap: 10px; padding: 0 12px 24px; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .logo i { width: 32px; height: 32px; border-radius: 10px; background: var(--rdl-accent); display: block; }
+  .nav-label { padding: 16px 12px 8px; font-size: 12px; font-weight: 500; color: var(--rdl-text-tertiary); }
+  .nav a { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-radius: var(--rdl-radius-pill); color: var(--rdl-text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .nav a:hover { background: var(--rdl-fill-control); color: var(--rdl-text-primary); }
+  .nav a[aria-current="page"] { background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); }
+  .nav a .count { margin-left: auto; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--rdl-accent); color: var(--rdl-on-accent); }
+  .upsell { margin-top: auto; }
+  .main { display: grid; gap: var(--rdl-web-grid-gap); align-content: start; padding: 8px 16px 16px; }
+  .top { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+  .top__title { flex: 1; }
+  .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--rdl-web-grid-gap); }
+  .span-2 { grid-column: span 2; } .span-3 { grid-column: span 3; }
+  .between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .kpi { display: grid; gap: 14px; align-content: space-between; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-weight: 500; font-size: 12px; color: var(--rdl-text-tertiary); padding: 0 0 12px; }
+  td { padding: 12px 0; border-top: 1px solid var(--rdl-border-subtle); font-weight: 500; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .status { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .status--ok { background: var(--rdl-success-soft); color: var(--rdl-success-text); }
+  .status--wait { background: var(--rdl-warning-soft); color: var(--rdl-warning-text); }
+  .status--fail { background: var(--rdl-danger-soft); color: var(--rdl-danger-text); }
+  .legend { display: flex; gap: 16px; font-size: 12px; font-weight: 500; color: var(--rdl-text-secondary); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-6"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M1 21a8 8 0 0 1 16 0M17 4a4 4 0 0 1 0 8M23 21a8 8 0 0 0-5-7.4"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="side rdl-side">
+    <div class="logo"><i></i>Ledgerly</div>
+    <nav class="nav">
+      <a href="#" aria-current="page"><svg class="rdl-icon"><use href="#i-home"/></svg>Overview</a>
+      <a href="#"><svg class="rdl-icon"><use href="#i-chart"/></svg>Analytics</a>
+      <a href="#"><svg class="rdl-icon"><use href="#i-card"/></svg>Payments <span class="count">12</span></a>
+      <a href="#"><svg class="rdl-icon"><use href="#i-users"/></svg>Customers</a>
+      <a href="#"><svg class="rdl-icon"><use href="#i-doc"/></svg>Invoices</a>
+      <p class="nav-label">Workspace</p>
+      <a href="#"><svg class="rdl-icon"><use href="#i-gear"/></svg>Settings</a>
+    </nav>
+    <div class="upsell rdl-card rdl-card--hero" style="display:grid;gap:12px;padding:20px">
+      <div class="rdl-hatch" style="height:64px;border-radius:14px;background-color:var(--rdl-bg-hero-raised);background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.12) 0 1px,transparent 1px 6px)"></div>
+      <p class="rdl-title">Upgrade to Pro</p>
+      <p class="rdl-caption rdl-muted">Forecasts, multi-entity and 24/7 support.</p>
+      <button class="rdl-btn rdl-btn--accent rdl-btn--md">Upgrade</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div class="top__title"><p class="rdl-label rdl-muted">Monday, 27 September</p><h1 class="rdl-h1">Good morning, Alex</h1></div>
+      <label class="rdl-input" style="width:280px"><svg class="rdl-icon rdl-icon--sm"><use href="#i-search"/></svg><input placeholder="Search anything"></label>
+      <button class="rdl-iconbtn" aria-label="Notifications"><svg class="rdl-icon"><use href="#i-bell"/></svg><span class="rdl-iconbtn__dot"></span></button>
+      <button class="rdl-btn rdl-btn--md"><svg class="rdl-icon rdl-icon--sm"><use href="#i-plus"/></svg>New invoice</button>
+    </header>
+
+    <section class="bento">
+      <!-- Hero KPI -->
+      <article class="rdl-card rdl-card--hero rdl-card--web span-2" style="display:grid;grid-template-columns:1fr 200px;gap:24px">
+        <div class="kpi">
+          <div class="between"><p class="rdl-label rdl-muted">Total revenue</p></div>
+          <p class="rdl-amount" style="font-size:48px;line-height:52px">$284,902<small>.40</small></p>
+          <div class="row"><span class="rdl-delta">↑ 14.2%</span><span class="rdl-caption rdl-muted">vs. last quarter</span></div>
+        </div>
+        <div class="rdl-bars" style="--h:132px">
+          <div class="rdl-bars__col"><div class="rdl-bars__track" style="background:var(--rdl-bg-hero-raised)"><div class="rdl-bars__fill" style="--v:40%;--i:0;background:var(--rdl-ink-600)"></div></div></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track" style="background:var(--rdl-bg-hero-raised)"><div class="rdl-bars__fill" style="--v:58%;--i:1;background:var(--rdl-ink-600)"></div></div></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track" style="background:var(--rdl-bg-hero-raised)"><div class="rdl-bars__fill" style="--v:50%;--i:2;background:var(--rdl-ink-600)"></div></div></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track" style="background:var(--rdl-bg-hero-raised)"><div class="rdl-bars__fill is-active" style="--v:88%;--i:3"></div></div></div>
+        </div>
+      </article>
+      <!-- Accent KPI -->
+      <article class="rdl-card rdl-card--accent rdl-card--web kpi">
+        <div class="between"><p class="rdl-label">Net profit</p><span class="rdl-iconbtn" style="width:36px;height:36px;background:rgba(11,11,13,.1);color:inherit"><svg class="rdl-icon rdl-icon--sm"><use href="#i-arrow"/></svg></span></div>
+        <p class="rdl-amount" style="font-size:36px;line-height:40px">$92,410</p>
+        <span class="rdl-delta rdl-delta--on-accent" style="justify-self:start">↑ 9.8%</span>
+      </article>
+      <!-- Plain KPI -->
+      <article class="rdl-card rdl-card--web kpi">
+        <div class="between"><p class="rdl-label rdl-muted">Outstanding</p><span class="rdl-iconbtn" style="width:36px;height:36px"><svg class="rdl-icon rdl-icon--sm"><use href="#i-arrow"/></svg></span></div>
+        <p class="rdl-amount" style="font-size:36px;line-height:40px">$18,260</p>
+        <span class="rdl-delta rdl-delta--down" style="justify-self:start">↓ 3.1%</span>
+      </article>
+
+      <!-- Main chart -->
+      <article class="rdl-card rdl-card--web span-3">
+        <div class="between" style="margin-bottom:24px">
+          <div><h3 class="rdl-h3">Cash flow</h3><p class="rdl-caption rdl-muted" style="margin-top:4px">Actuals vs. projected, 2026</p></div>
+          <div class="row" style="gap:16px">
+            <div class="legend"><span><i style="background:var(--rdl-accent)"></i>Actual</span><span><i class="rdl-hatch"></i>Projected</span></div>
+            <div class="rdl-seg" role="tablist" style="width:220px"><button role="tab">Week</button><button role="tab" aria-selected="true">Month</button><button role="tab">Year</button></div>
+          </div>
+        </div>
+        <div class="rdl-bars" style="--h:210px;gap:14px" id="cash"></div>
+      </article>
+
+      <!-- Gauge -->
+      <article class="rdl-card rdl-card--web" style="display:grid;gap:12px;align-content:start">
+        <div class="between"><h3 class="rdl-h3">Goal</h3><span class="rdl-caption rdl-muted">Q3</span></div>
+        <div style="position:relative;width:220px;margin:12px auto 0">
+          <svg viewBox="0 0 220 120" width="220" height="120" aria-hidden="true">
+            <path d="M16 112 A94 94 0 0 1 204 112" fill="none" stroke="var(--rdl-chart-track)" stroke-width="16" stroke-linecap="round"/>
+            <path d="M16 112 A94 94 0 0 1 178.5 47.7" fill="none" stroke="var(--rdl-accent)" stroke-width="16" stroke-linecap="round"/>
+          </svg>
+          <div style="position:absolute;inset:auto 0 0;text-align:center"><p class="rdl-amount" style="font-size:40px;line-height:44px">76%</p></div>
+        </div>
+        <p class="rdl-caption rdl-muted" style="text-align:center">$284.9k of $375k target</p>
+        <div class="rdl-card rdl-card--muted" style="padding:14px 16px;border-radius:var(--rdl-radius-md);margin-top:8px">
+          <div class="between"><span class="rdl-label">Days left</span><span class="rdl-title rdl-num">24</span></div>
+        </div>
+      </article>
+
+      <!-- Table -->
+      <article class="rdl-card rdl-card--web span-3">
+        <div class="rdl-section-head"><h3>Recent invoices</h3><a href="#">View all</a></div>
+        <table>
+          <thead><tr><th>Customer</th><th>Invoice</th><th>Date</th><th>Status</th><th class="num">Amount</th></tr></thead>
+          <tbody>
+            <tr><td><span class="row"><span class="rdl-avatar" style="width:32px;height:32px;font-size:12px">NS</span>Northstar Labs</span></td><td class="rdl-muted">INV-2041</td><td class="rdl-muted">Sep 24</td><td><span class="status status--ok">● Paid</span></td><td class="num">$12,400.00</td></tr>
+            <tr><td><span class="row"><span class="rdl-avatar" style="width:32px;height:32px;font-size:12px">HV</span>Helvio Freight</span></td><td class="rdl-muted">INV-2040</td><td class="rdl-muted">Sep 22</td><td><span class="status status--wait">● Pending</span></td><td class="num">$8,125.50</td></tr>
+            <tr><td><span class="row"><span class="rdl-avatar" style="width:32px;height:32px;font-size:12px">BL</span>Bloom Capital</span></td><td class="rdl-muted">INV-2039</td><td class="rdl-muted">Sep 19</td><td><span class="status status--fail">● Overdue</span></td><td class="num">$3,980.00</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- Activity -->
+      <article class="rdl-card rdl-card--web">
+        <div class="rdl-section-head"><h3>Team</h3><div class="rdl-avatars"><span class="rdl-avatar">JR</span><span class="rdl-avatar">SD</span><span class="rdl-avatar">+4</span></div></div>
+        <div class="rdl-row"><div class="rdl-row__main"><p class="rdl-row__title">Payroll run</p><p class="rdl-row__sub">Scheduled · Oct 01</p></div><div class="rdl-row__end rdl-label">$42.1k</div></div>
+        <div class="rdl-row"><div class="rdl-row__main"><p class="rdl-row__title">Tax reserve</p><p class="rdl-row__sub">Auto-sweep 18%</p></div><div class="rdl-row__end rdl-label rdl-pos">+$6.2k</div></div>
+      </article>
+    </section>
+  </main>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.get("theme")) document.documentElement.dataset.theme = q.get("theme");
+  if (q.get("accent")) document.documentElement.dataset.accent = q.get("accent");
+
+  // Cash-flow bars: past months solid (muted), current month accent + tooltip, future hatched.
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const values = [42, 55, 48, 63, 58, 71, 66, 79, 88, 74, 82, 90];
+  const now = 8;
+  document.getElementById("cash").innerHTML = months.map((m, i) => {
+    const cls = i === now ? "is-active" : i > now ? "rdl-hatch" : "";
+    const style = i < now ? "background:var(--rdl-chart-muted)" : "";
+    const tip = i === now ? `<span class="rdl-tooltip" style="--v:${values[i]}%">$88.4k</span>` : "";
+    return `<div class="rdl-bars__col ${i === now ? "is-active" : ""}"><div class="rdl-bars__track"><div class="rdl-bars__fill ${cls}" style="--v:${values[i]}%;--i:${i};${style}"></div>${tip}</div><span class="rdl-bars__label">${m}</span></div>`;
+  }).join("");
+</script>
+</body>
+</html>

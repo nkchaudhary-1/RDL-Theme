@@ -1,0 +1,7 @@
+{
+  "name": "rdl-theme",
+  "version": "1.0.0",
+  "description": "RDL Theme — build apps in the RonDesignLab Dribbble style: tokens (CSS, Tailwind, SwiftUI), components, screen archetypes, domain playbooks and a QA checklist.",
+  "author": { "name": "Neelesh" },
+  "keywords": ["design-system", "ui", "ios", "swiftui", "tailwind", "dashboard", "fintech", "dribbble"]
+}
