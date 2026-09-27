@@ -1,77 +1,89 @@
 # Domain playbooks
 
-Each playbook fixes the choices that vary by domain. Everything not listed follows the core rules.
+Each playbook fixes the choices that vary by domain: accent pack, backdrop, hero, instruments and
+domain components. Everything else follows the core rules. The frames cited are from the 2026
+board (`research/moodboard-notes.md`).
 
-## Fintech — wallet, budgeting, savings, creator finance
-*Reference projects: Coin, Mint, SavingPro, Creative Juice, Monte.*
-- Accent: **lime**. Hero: total balance. Primary chart: weekly spending bars (hatched history).
-- Domain components: account/card carousel (cards as 3D-ish tiles with radius 2xl, ink or accent
-  fills, masked number "•••• 4821"), category chips with emoji-free line icons, budget progress
-  rows, savings goal gauge, income vs expense split bars.
-- Copy: short verbs ("Top up", "Send", "Request"). Currency always with symbol; cents muted.
+## Wealth, gold and investing (SIP, lease, trading)
+*Board: Credit Score 832, TD Bank Paid Amount, Bank Account $22K, Crypto Converter, Finora, QuickBooks.*
+- **Accent:** `gold` for precious metals (the mustard frames), `volt` for a modern trading brand.
+- **Backdrop:** `aura--gold` on Home, a dark warm glow on buy/sell, and white cards for lists.
+- **Hero:** portfolio value (display, ₹ small and raised, paise muted) with a live status dot.
+- **Instruments:** window curve with beads for price; tick ruler for amount and tenure; month grid
+  for SIP/EMI/lease instalments; meters for goals (grams target, average buy price).
+- **Components:**
+  - *Price card* (glass): "Gold · per gram", figure, delta tag, window curve, day labels.
+  - *Holdings widget* (ink): dot-matrix grams in the accent.
+  - *Buy/Sell (G4)*: ₹/g segmented, display-xl amount, "≈ 1.372 g at ₹7,284.20/g", lock chip
+    with countdown, leader rows (value / GST 3% / vault), slide to buy.
+  - *SIP (G6)*: dusk aura card (paid amount, term, accumulated g, left to pay), month grid,
+    goal meter, next debit, and Pause/Edit as ghost pills.
+  - *Lease*: reuse the G6 shell. Swap in "Leased 10 g · Yield 2.5% p.a.", the tenure month grid
+    (earned/pending), and payout key/values. Reuse the SIP creation flow (amount → frequency
+    segmented → start date → review → slide) with tenure in place of frequency.
+  - *Vault certificate* (blueprint): line-art vault, "Sealed" status, serial / purity / custodian.
+- **Trust cues:** a purity chip ("24K · 99.9%"), custodian and insurer as key/values, and a
+  price lock countdown.
 
-## Wealth & investing — trading, gold, SIP, lease
-*Reference projects: Bloom Trading, Mint. Directly applicable to a gold-investment app.*
-- Accent: **gold** for a precious-metals brand, **lime** for a modern trading brand. Don't mix.
-- Hero: live price (per gram / per unit) with rolling digits, delta pill and last-updated
-  caption; or portfolio value on Home.
-- Charts: line chart with scrub (M2) for price; hatched bars for monthly SIP contributions,
-  current month accent.
-- Domain components:
-  - **Price ticker card** — hero; "24K Gold · per gram"; buy/sell spread as two caption values.
-  - **Buy flow** — M4 with ₹ ↔ grams toggle chip, conversion caption, price-lock countdown chip
-    (e.g., "Price locked · 04:59") in the review sheet.
-  - **SIP card** — frequency chip (Daily/Weekly/Monthly), amount "/month", installments progress,
-    next debit date, "Pause" / "Edit" ghost actions. Creation flow: amount → frequency segmented
-    → start date → review sheet. Reuse the same flow shell for **Lease** (asset amount → tenure
-    segmented → yield caption → review), swapping copy and the summary rows.
-  - **Holdings row** — asset lead, grams + value, P&L in success-text / primary.
-  - **Vault / certificate card** — muted card with lock icon circle and serial caption.
-- Trust cues: regulator/custodian line as caption under the hero; purity chip ("24K · 99.9%").
+## Banking, credit and payments
+*Board: TD Bank desktop/mobile, Credit 832, Loan Pipeline, Finora loan rates, Celoxis invoices.*
+- Accent `volt` or `gold`. Heroes: the credit score (thin arc gauge + needle, "Excellent /
+  Checked Daily"), the balance, or "$22 K upcoming this week".
+- Instruments: month grid of payments, a "You've paid / Left to pay" pill pair, hairline bar
+  columns for quarters, and neon tags for deltas.
+- Web: Swiss light layout (QuickBooks) or bento with aura tiles (Salesforce).
 
-## Credit
-*Reference projects: Credit Pros, Aella, CreditPros mobile.*
-- Accent: **violet** or lime. Hero element: **semi-circle gauge** with score + band label.
-- Components: factor rows with progress; bureau chips; dispute timeline (dots + line); "Boost"
-  accent nudge card.
+## Health, wellness and telehealth
+*Board: Eli cortisol, Soma glucose, Heart & Circulation, Pulsetto, Biological age, Hims/Hers, Oura.*
+- Accent `signal` (in range), `orchid`/`volt` for consumer. Backdrops: foggy portrait photos,
+  `sunset`/`meadow`/`dusk` auras, white cards (radius 32–40).
+- Heroes: a single metric in a light numeral ("88 SCR", "4-6 mg/mL", "25 years"), the Readiness
+  ring, the heart age.
+- Instruments: range bars with an optimal band, beaded arcs (High Load / Balanced / Resilient),
+  radial dot plots, tick timelines with a "Now" lime tag, pill schedules.
+- Components: test timer ("30 seconds", slide "Reset ›››"), questionnaire (G8), product cards
+  with 3D pills + "Best Seller" tag + price, and the "results pending 7–10 days" card.
+- Tone: calm. Red only for clinically meaningful states.
 
-## Health — records, insurance, CGM, clinics
-*Reference projects: PHR, EHR, Oscar Health, Vessel, Veri CGM, Dentale, Vizo.*
-- Accent: **ocean** (blue); success mint for "in range". Softer: hero may be a surface card with
-  a large metric instead of ink for anxious contexts (diagnoses, bills).
-- Charts: line with target band (success-soft band behind the line), dot plots for readings.
-- Components: vitals tiles (2×2 wells with unit captions), appointment card with doctor avatar +
-  time chip + map preview, record/document rows, coverage progress (deductible used of total).
-- Tone: calmer — fewer hatched patterns, more whitespace, no red unless clinically necessary.
+## Energy, solar and smart home
+*Board: Solar Time-of-Use, Peak Load 84 kW, Backup Reserve, Home Energy (mustard), Energy
+Generation maps, Smart Home 3D, Tesla/lawn mower.*
+- Accent `gold` (mustard) or `signal`. Backdrops: flat mustard presentation, light screens, 3D
+  isometric houses with accent wire routing and callout leaders.
+- Heroes: "5.4 kW", "20.1 kWh", "84.2 kW" (light, small unit). Peak/Off-peak segmented with a
+  glass-yellow active state; a sine curve with glass bubble nodes; energy-flow bottom sheets.
 
-## Logistics & operations — delivery, fleets, property, city tasks
-*Reference projects: Helvio Logistics, Moverta, Lendora, Urbis.*
-- Accent: **orange** (logistics) or lime/ocean (property/civic).
-- Layout: W2 map operations on web; on mobile a map top half + draggable sheet (radius 3xl).
-- Components: route timeline (pickup → drop, ink dots, current accent), ETA chip, driver card
-  (avatar + rating + call icon button), status pills (In transit / Delayed / Delivered),
-  property pins with price bubbles (ink capsules; selected accent).
+## Logistics, ports, fleet and rail
+*Board: Helvio, Loadex, Yard cockpit, Fleet dispatch, SBB flatcars, Maritime, Truck cargo.*
+- Accent `ember`, `electric` or neon yellow for "selected". Backdrops: grayscale 3D yards/cities
+  with **selective color** (selected truck yellow, critical container red, loaded cyan).
+- Components: entity cards (ID as light numeral, "● In transit" status, key/value grid), route
+  line with stops, pallet/container cell grids (reserved = hatched), load sections with gradient
+  level bars, command menus of glass pills, "High Priority" coral tags.
+- Web: W6 3D scene console. Mobile: G5 map operations.
 
-## SaaS dashboards — CRM, accounting, invoicing, analytics
-*Reference projects: Salesforce CRM, QuickBooks, Customer Journey CRM, AI Travel dashboard.*
-- Accent: per brand; lime default. W1 overview, W3 tables, W4 records.
-- Components: KPI tiles, funnel as stepped horizontal bars (hatched drop-off), pipeline
-  kanban (columns on canvas, cards white, stage count chip), invoice status pills.
+## Industrial, robotics and IoT
+*Board: Robot arm CTX1250, Bearing defect, Air filter, Water filtration, Auto assembly, Drones.*
+- Accent `ember` (orange robots), `electric` (blueprint), `signal` for OK.
+- Visuals: line-art machines with a half-rendered accent part, XYZ gimbals, 2D dot-matrix
+  control pads, cutaway renders glowing where the fault is.
+- Components: "Error: Motor #4" captions, "CoG X:24 Y:-24 Z:15" key/values, meter lines per
+  sensor (Pressure / Flow / Core Temp), "Emergency Stop" sheets, square tile toolbars.
 
-## Crypto & web3
-*Reference projects: Daneel crypto bot, MBOX NFT.*
-- Accent: violet or lime; dark mode by default. Hero: portfolio value; asset rows with
-  sparkline; bot/strategy cards with on/off switch (accent track).
-- Avoid neon gradients and glow — RDL keeps crypto as disciplined as fintech.
+## Property and GIS
+*Board: CityBldr, Real Estate Investment Map, Urbis GIS, Oil field blocks.*
+- Accent `volt`/yellow price bubbles, red for parcels. Components: "#619012 / RC-4 / 80-D" split
+  headline (bold id + light code), outlined chips "Score: 138.2", step charts, IRR tick markers,
+  dotted-fill polygons with dashed bounding boxes, black map toolbars.
 
-## Wellness & fitness
-*Reference projects: Luma meditation, Fitness workout tracker.*
-- Accent: orange (fitness) or violet/ocean (meditation). Hero: today's ring/gauge or streak.
-- Components: session cards with photography, timer display (display-xl), weekly streak dots,
-  activity bars. Meditation variant: softer, more imagery, fewer numbers.
+## Creative, AI and documents
+*Board: Cinemaro VFX, Accela documents, AI workflow nodes, Notes, Voice assistant.*
+- Dark by default, `volt` or `signal` accent. W7 node canvas, glass folders with documents
+  peeking out, AI inputs with gradient underline and a white send orb, text selection
+  highlighted in glass.
 
-## Travel & booking
-*Reference project: Booki, AI Travel dashboard.*
-- Accent: ocean or orange. Hero: next trip card with photography + date chips.
-- Components: search pill with segmented trip type, date range chips, itinerary timeline,
-  price-per-night amount with muted decimals.
+## Sport and fitness
+*Board: Padel QORX, Basketball, Sportcode, Running 21K, Velex gym.*
+- `signal`/`ember` accents on black. Annotated 3D equipment, shot charts in line-art, dot-matrix
+  stat numerals, most/least consistent comparison cards (green vs dark), tick sliders with
+  degree readouts.

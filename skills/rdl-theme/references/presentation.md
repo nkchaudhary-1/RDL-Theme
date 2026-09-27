@@ -1,41 +1,49 @@
-# Dribbble-shot presentation
+# Shot presentation
 
-How RDL presents work. Use when the goal is a portfolio shot, a case-study image or a pitch
-visual — not for the product itself. Reference: `assets/templates/mobile-app.html`.
+How RDL presents work in 2025–26. Use this for portfolio shots, case-study covers and pitch
+visuals, not for the product UI itself. The reference is `assets/templates/mobile-app.html`.
 
 ## Canvas
-- **1600×1200** (4:3), exported @2x. Animated shots: same size, 8–12s loop, MP4.
-- Background: flat `gray-150` (#EBEBEF) for light work, #050506 for dark, or `accent-soft` for a
-  branded variant. No gradients, no textures, no device shadows beyond `shadow-lg`.
+- **1600×1200** (4:3), exported @2x. Close-ups use the same frame, cropped tight.
+- Backgrounds seen on the board:
+  - light neutral gray (`#D9D9DC` → `#EDEDEF` radial): the most common
+  - a flat brand color block (mustard `#EBB93E`, orange `#E8845A`, electric blue)
+  - a dark vignette with glow
+  - a blurred environmental photo (greenhouse, port, sky)
+- Add film grain (≈3–6%) to color blocks and dark scenes.
 
-## Mobile composition
-- **Three phones** (390×844 screens, 52 radius, 10px ink bezel), 56 apart, centred.
-  Middle phone raised 48, outer phones lowered 48 — the stagger is the signature.
-- Alternatives: two phones overlapping 20% with the front one raised; one phone + three floating
-  component cards (bento) around it at 1.2× scale.
-- Choose screens that tell a flow: Home → Detail → Outcome (score, success, goal).
-- Status bar at 9:41, dynamic island drawn, no real carrier names.
+## Compositions (by frequency on the board)
+1. **One phone held in a hand.** The hand is silhouetted black or naturally lit, the phone is
+   slightly angled, and the screen fills 55–65% of the frame height. This is the most common.
+2. **Close-up with depth of field.** One component (a widget, a number, a glass card) at
+   20–30° perspective, the rest falling into blur. It shows craft: numerals, glass rims, ticks.
+3. **Angled desktop/iPad.** A monitor on a stand or an iPad held in two hands, at 10–20°
+   rotation, on gray.
+4. **Three phones with perspective.** The centre phone faces forward and sits raised; the outer
+   phones are rotated ±14° on Y and set back. This is the HTML template's layout, easy to
+   produce without photography.
+5. **Floating UI.** A glass card detached from the device, over a photo (the "Penetration Risk!"
+   and "Breath Awareness" style).
 
-## Web composition
-- Dashboard at 1440×960 shown flat, edge-to-edge, or at 80% with 64 margins on the canvas color.
-- Optional: one phone overlapping the dashboard's lower-right corner to show responsive parity.
-
-## Typography on the canvas
-- Product wordmark top-left (accent logo tile 36 + name 20/600), category label top-right
-  (15, secondary). Optional headline for case-study covers: h1–display, max two lines, left-aligned.
-- Never repeat UI text as marketing copy on the canvas.
+## Building shots without photography
+- Use the HTML template (`perspective: 2400px; rotateY(±14deg)`) for three-phone shots.
+- Hands: use a licensed hand-holding-phone PSD/PNG mockup, place the rendered screen, and add
+  a subtle screen-glare gradient (white 0→8%).
+- Depth of field: render the screen at 2×, rotate it in 3D (CSS or Figma), and apply a progressive
+  blur (0 at the focal component → 8–12px at the edges).
+- Keep text on the canvas minimal: a product wordmark (aura dot + name) top-left and a
+  category label top-right, or nothing at all. Many board frames carry no canvas text.
 
 ## Content realism
-- Believable data: non-round amounts ($48,209.36), realistic names, dates close to "today".
-- Consistent person and numbers across all phones in a shot (same balance, same user).
-- No lorem ipsum, no placeholder avatars with photos of real public figures.
+Use non-round numbers (`₹4,82,190.36`, `84.2 kW`, `0.00321 BNB`) and a consistent person, date
+and dataset across screens in one shot. Dates should sit near "now" (9:41 or 11:30 status
+bars). Don't use real people's likenesses unless licensed.
 
-## Animation checklist (for animated shots)
-1. Screens slide in from 40px below with 60ms stagger (emphasized easing).
-2. Bars grow from baseline (600ms, 40ms stagger), numbers roll up.
-3. One interaction per loop: tap a segmented option, the chart morphs; or scrub the line chart.
-4. Tab indicator glides; hold final frame 1.5s before looping.
+## Animated shots
+8–12s loops. Screens rise 24px and fade in (emphasized easing, 60ms stagger). The needle glides
+along the ruler, numbers roll, glass cards de-blur as they arrive, and the slide knob travels
+and turns into a check. Hold the final frame 1.5s.
 
 ## Export
-- Render the HTML template with `scripts/render-previews.mjs` (Playwright) or screenshot at
-  deviceScaleFactor 2 for crisp @2x output.
+`node scripts/render-previews.mjs` renders every template to `docs/` with Playwright. For @2x,
+set `deviceScaleFactor: 2`.

@@ -96,29 +96,78 @@ public enum RDLPalette {
     public static let amber500 = Color(rdlR: 0.9608, g: 0.6549, b: 0.0431, a: 1)
     public static let amber600 = Color(rdlR: 0.8, g: 0.5294, b: 0, a: 1)
     public static let amber700 = Color(rdlR: 0.5412, g: 0.3569, b: 0, a: 1)
+    public static let volt50 = Color(rdlR: 0.9843, g: 0.9922, b: 0.902, a: 1)
+    public static let volt100 = Color(rdlR: 0.9569, g: 0.9804, b: 0.7608, a: 1)
+    public static let volt200 = Color(rdlR: 0.9255, g: 0.9686, b: 0.5608, a: 1)
+    public static let volt300 = Color(rdlR: 0.898, g: 0.9608, b: 0.3686, a: 1)
+    public static let volt400 = Color(rdlR: 0.8667, g: 0.949, b: 0.2275, a: 1)
+    public static let volt500 = Color(rdlR: 0.7725, g: 0.8588, b: 0.1176, a: 1)
+    public static let volt600 = Color(rdlR: 0.5922, g: 0.6588, b: 0.0588, a: 1)
+    public static let volt700 = Color(rdlR: 0.3725, g: 0.4157, b: 0.0235, a: 1)
+    public static let signal50 = Color(rdlR: 0.9176, g: 0.9882, b: 0.9373, a: 1)
+    public static let signal100 = Color(rdlR: 0.7882, g: 0.9686, b: 0.8353, a: 1)
+    public static let signal300 = Color(rdlR: 0.4824, g: 0.9216, b: 0.5922, a: 1)
+    public static let signal400 = Color(rdlR: 0.2941, g: 0.8784, b: 0.4314, a: 1)
+    public static let signal500 = Color(rdlR: 0.1333, g: 0.7725, b: 0.3216, a: 1)
+    public static let signal600 = Color(rdlR: 0.0824, g: 0.6314, b: 0.251, a: 1)
+    public static let signal700 = Color(rdlR: 0.0549, g: 0.4314, b: 0.1725, a: 1)
+    public static let electric50 = Color(rdlR: 0.9294, g: 0.9373, b: 1, a: 1)
+    public static let electric100 = Color(rdlR: 0.8392, g: 0.8549, b: 1, a: 1)
+    public static let electric300 = Color(rdlR: 0.549, g: 0.5843, b: 1, a: 1)
+    public static let electric400 = Color(rdlR: 0.3098, g: 0.3569, b: 1, a: 1)
+    public static let electric500 = Color(rdlR: 0.1333, g: 0.2, b: 0.9412, a: 1)
+    public static let electric600 = Color(rdlR: 0.0902, g: 0.149, b: 0.7882, a: 1)
+    public static let electric700 = Color(rdlR: 0.0627, g: 0.1059, b: 0.5608, a: 1)
+    public static let ember50 = Color(rdlR: 1, g: 0.9451, b: 0.9216, a: 1)
+    public static let ember100 = Color(rdlR: 1, g: 0.8627, b: 0.8, a: 1)
+    public static let ember300 = Color(rdlR: 1, g: 0.6039, b: 0.4392, a: 1)
+    public static let ember400 = Color(rdlR: 1, g: 0.4549, b: 0.251, a: 1)
+    public static let ember500 = Color(rdlR: 1, g: 0.3529, b: 0.1216, a: 1)
+    public static let ember600 = Color(rdlR: 0.8588, g: 0.2667, b: 0.0627, a: 1)
+    public static let ember700 = Color(rdlR: 0.6196, g: 0.1882, b: 0.0392, a: 1)
+    public static let orchid50 = Color(rdlR: 0.9804, g: 0.9412, b: 1, a: 1)
+    public static let orchid100 = Color(rdlR: 0.9451, g: 0.8549, b: 1, a: 1)
+    public static let orchid300 = Color(rdlR: 0.8431, g: 0.6078, b: 1, a: 1)
+    public static let orchid400 = Color(rdlR: 0.7569, g: 0.4235, b: 0.9686, a: 1)
+    public static let orchid500 = Color(rdlR: 0.6471, g: 0.2824, b: 0.9333, a: 1)
+    public static let orchid600 = Color(rdlR: 0.5176, g: 0.1882, b: 0.7882, a: 1)
+    public static let orchid700 = Color(rdlR: 0.3686, g: 0.1216, b: 0.5686, a: 1)
+    public static let stone0 = Color(rdlR: 1, g: 1, b: 1, a: 1)
+    public static let stone50 = Color(rdlR: 0.9686, g: 0.9686, b: 0.9725, a: 1)
+    public static let stone100 = Color(rdlR: 0.9373, g: 0.9373, b: 0.9451, a: 1)
+    public static let stone150 = Color(rdlR: 0.9059, g: 0.9059, b: 0.9176, a: 1)
+    public static let stone200 = Color(rdlR: 0.8627, g: 0.8627, b: 0.8784, a: 1)
+    public static let stone300 = Color(rdlR: 0.7647, g: 0.7647, b: 0.7882, a: 1)
+    public static let stone400 = Color(rdlR: 0.6078, g: 0.6078, b: 0.6392, a: 1)
+    public static let stone500 = Color(rdlR: 0.4196, g: 0.4196, b: 0.4549, a: 1)
+    public static let stone600 = Color(rdlR: 0.3059, g: 0.3059, b: 0.3373, a: 1)
+    public static let stone700 = Color(rdlR: 0.1804, g: 0.1843, b: 0.2, a: 1)
+    public static let stone800 = Color(rdlR: 0.1137, g: 0.1176, b: 0.1294, a: 1)
+    public static let stone900 = Color(rdlR: 0.0745, g: 0.0784, b: 0.0863, a: 1)
+    public static let stone950 = Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1)
 }
 
 /// Semantic roles — adapt to light/dark automatically.
 public enum RDLColor {
-    public static let bgCanvas = Color.rdlDynamic(light: (0.9529, 0.9529, 0.9608, 1), dark: (0.0431, 0.0431, 0.051, 1))
-    public static let bgSurface = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (0.0902, 0.0902, 0.102, 1))
-    public static let bgSurfaceMuted = Color.rdlDynamic(light: (0.9529, 0.9529, 0.9608, 1), dark: (0.1255, 0.1255, 0.1412, 1))
-    public static let bgHero = Color.rdlDynamic(light: (0.0431, 0.0431, 0.051, 1), dark: (0.1373, 0.1373, 0.1529, 1))
-    public static let bgHeroRaised = Color.rdlDynamic(light: (0.149, 0.149, 0.1686, 1), dark: (0.2039, 0.2039, 0.2275, 1))
-    public static let fillControl = Color.rdlDynamic(light: (0.9529, 0.9529, 0.9608, 1), dark: (0.1373, 0.1373, 0.1529, 1))
-    public static let fillControlHover = Color.rdlDynamic(light: (0.9216, 0.9216, 0.9373, 1), dark: (0.1725, 0.1725, 0.1922, 1))
-    public static let fillControlStrong = Color.rdlDynamic(light: (0.0431, 0.0431, 0.051, 1), dark: (1, 1, 1, 1))
-    public static let textPrimary = Color.rdlDynamic(light: (0.0431, 0.0431, 0.051, 1), dark: (0.9608, 0.9608, 0.9686, 1))
-    public static let textSecondary = Color.rdlDynamic(light: (0.4314, 0.4314, 0.4706, 1), dark: (0.6392, 0.6392, 0.6784, 1))
-    public static let textTertiary = Color.rdlDynamic(light: (0.6039, 0.6039, 0.6392, 1), dark: (0.4314, 0.4314, 0.4706, 1))
+    public static let bgCanvas = Color.rdlDynamic(light: (0.9373, 0.9373, 0.9451, 1), dark: (0.0392, 0.0431, 0.0471, 1))
+    public static let bgSurface = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (0.0745, 0.0784, 0.0863, 1))
+    public static let bgSurfaceMuted = Color.rdlDynamic(light: (0.9686, 0.9686, 0.9725, 1), dark: (0.1137, 0.1176, 0.1294, 1))
+    public static let bgHero = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.1137, 0.1176, 0.1294, 1))
+    public static let bgHeroRaised = Color.rdlDynamic(light: (0.1804, 0.1843, 0.2, 1), dark: (0.3059, 0.3059, 0.3373, 1))
+    public static let fillControl = Color.rdlDynamic(light: (0.9373, 0.9373, 0.9451, 1), dark: (0.1137, 0.1176, 0.1294, 1))
+    public static let fillControlHover = Color.rdlDynamic(light: (0.9059, 0.9059, 0.9176, 1), dark: (0.1804, 0.1843, 0.2, 1))
+    public static let fillControlStrong = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (1, 1, 1, 1))
+    public static let textPrimary = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.9569, 0.9569, 0.9608, 1))
+    public static let textSecondary = Color.rdlDynamic(light: (0.4196, 0.4196, 0.4549, 1), dark: (0.6314, 0.6314, 0.6667, 1))
+    public static let textTertiary = Color.rdlDynamic(light: (0.6078, 0.6078, 0.6392, 1), dark: (0.4196, 0.4196, 0.4549, 1))
     public static let textOnHero = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (1, 1, 1, 1))
     public static let textOnHeroMuted = Color.rdlDynamic(light: (0.6392, 0.6392, 0.6784, 1), dark: (0.6392, 0.6392, 0.6784, 1))
     public static let textOnStrong = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (0.0431, 0.0431, 0.051, 1))
-    public static let borderSubtle = Color.rdlDynamic(light: (0.8863, 0.8863, 0.9059, 1), dark: (0.149, 0.149, 0.1686, 1))
-    public static let borderStrong = Color.rdlDynamic(light: (0.7843, 0.7843, 0.8118, 1), dark: (0.2039, 0.2039, 0.2275, 1))
-    public static let chartTrack = Color.rdlDynamic(light: (0.9216, 0.9216, 0.9373, 1), dark: (0.1373, 0.1373, 0.1529, 1))
-    public static let chartMuted = Color.rdlDynamic(light: (0.8863, 0.8863, 0.9059, 1), dark: (0.1725, 0.1725, 0.1922, 1))
-    public static let chartHatch = Color.rdlDynamic(light: (0.7843, 0.7843, 0.8118, 1), dark: (0.2667, 0.2667, 0.2941, 1))
+    public static let borderSubtle = Color.rdlDynamic(light: (0.8627, 0.8627, 0.8784, 1), dark: (0.1137, 0.1176, 0.1294, 1))
+    public static let borderStrong = Color.rdlDynamic(light: (0.7647, 0.7647, 0.7882, 1), dark: (0.1804, 0.1843, 0.2, 1))
+    public static let chartTrack = Color.rdlDynamic(light: (0.9059, 0.9059, 0.9176, 1), dark: (0.1137, 0.1176, 0.1294, 1))
+    public static let chartMuted = Color.rdlDynamic(light: (0.8627, 0.8627, 0.8784, 1), dark: (0.1804, 0.1843, 0.2, 1))
+    public static let chartHatch = Color.rdlDynamic(light: (0.7647, 0.7647, 0.7882, 1), dark: (0.3059, 0.3059, 0.3373, 1))
     public static let success = Color.rdlDynamic(light: (0.1216, 0.7216, 0.4667, 1), dark: (0.4863, 0.8784, 0.702, 1))
     public static let successSoft = Color.rdlDynamic(light: (0.9176, 0.9843, 0.9529, 1), dark: (0.1216, 0.7216, 0.4667, 0.14))
     public static let successText = Color.rdlDynamic(light: (0.0549, 0.4392, 0.2824, 1), dark: (0.4863, 0.8784, 0.702, 1))
@@ -131,19 +180,34 @@ public enum RDLColor {
     public static let info = Color.rdlDynamic(light: (0.1843, 0.4, 0.9647, 1), dark: (0.5176, 0.6627, 1, 1))
     public static let infoSoft = Color.rdlDynamic(light: (0.9333, 0.9569, 1, 1), dark: (0.1843, 0.4, 0.9647, 0.16))
     public static let scrim = Color.rdlDynamic(light: (0.0431, 0.0431, 0.051, 0.48), dark: (0, 0, 0, 0.64))
+    public static let glassFill = Color.rdlDynamic(light: (1, 1, 1, 0.56), dark: (0.1098, 0.1176, 0.1294, 0.52))
+    public static let glassFillStrong = Color.rdlDynamic(light: (1, 1, 1, 0.78), dark: (0.1412, 0.149, 0.1647, 0.72))
+    public static let glassBorder = Color.rdlDynamic(light: (1, 1, 1, 0.72), dark: (1, 1, 1, 0.1))
+    public static let glassShade = Color.rdlDynamic(light: (0.0784, 0.0784, 0.0941, 0.06), dark: (0, 0, 0, 0.3))
+    public static let glassText = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.9569, 0.9569, 0.9608, 1))
+    public static let glassTextMuted = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 0.55), dark: (0.9569, 0.9569, 0.9608, 0.55))
+    public static let glassDarkFill = Color.rdlDynamic(light: (0.0863, 0.0902, 0.102, 0.52), dark: (0.0863, 0.0902, 0.102, 0.52))
+    public static let glassDarkBorder = Color.rdlDynamic(light: (1, 1, 1, 0.1), dark: (1, 1, 1, 0.1))
+    public static let tick = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 0.28), dark: (0.9569, 0.9569, 0.9608, 0.3))
+    public static let tickStrong = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.9569, 0.9569, 0.9608, 1))
 }
 
-/// Accent pack. Pick one per product and inject with `.rdlAccent(.lime)`.
+/// Accent pack. Pick one per product and inject with `.rdlAccent(.volt)`.
 public struct RDLAccent {
     public let accent: Color, accentStrong: Color, accentSoft: Color, onAccent: Color, accentText: Color
+    public static let volt = RDLAccent(accent: Color(rdlR: 0.8667, g: 0.949, b: 0.2275, a: 1), accentStrong: Color(rdlR: 0.7725, g: 0.8588, b: 0.1176, a: 1), accentSoft: Color.rdlDynamic(light: (0.9569, 0.9804, 0.7608, 1), dark: (0.8667, 0.949, 0.2275, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.3725, 0.4157, 0.0235, 1), dark: (0.898, 0.9608, 0.3686, 1)))
     public static let lime = RDLAccent(accent: Color(rdlR: 0.7961, g: 0.9373, b: 0.2627, a: 1), accentStrong: Color(rdlR: 0.698, g: 0.851, b: 0.1647, a: 1), accentSoft: Color.rdlDynamic(light: (0.9333, 0.9843, 0.7686, 1), dark: (0.7961, 0.9373, 0.2627, 0.16)), onAccent: Color(rdlR: 0.0431, g: 0.0431, b: 0.051, a: 1), accentText: Color.rdlDynamic(light: (0.3725, 0.4784, 0.0314, 1), dark: (0.8471, 0.9608, 0.4353, 1)))
+    public static let gold = RDLAccent(accent: Color(rdlR: 0.9216, g: 0.7686, b: 0.3608, a: 1), accentStrong: Color(rdlR: 0.8667, g: 0.6824, b: 0.2275, a: 1), accentSoft: Color.rdlDynamic(light: (0.9922, 0.9725, 0.9176, 1), dark: (0.9216, 0.7686, 0.3608, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.4314, 0.3137, 0.0549, 1), dark: (0.9569, 0.8549, 0.5569, 1)))
+    public static let signal = RDLAccent(accent: Color(rdlR: 0.2941, g: 0.8784, b: 0.4314, a: 1), accentStrong: Color(rdlR: 0.1333, g: 0.7725, b: 0.3216, a: 1), accentSoft: Color.rdlDynamic(light: (0.9176, 0.9882, 0.9373, 1), dark: (0.2941, 0.8784, 0.4314, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.0549, 0.4314, 0.1725, 1), dark: (0.4824, 0.9216, 0.5922, 1)))
+    public static let electric = RDLAccent(accent: Color(rdlR: 0.1333, g: 0.2, b: 0.9412, a: 1), accentStrong: Color(rdlR: 0.0902, g: 0.149, b: 0.7882, a: 1), accentSoft: Color.rdlDynamic(light: (0.9294, 0.9373, 1, 1), dark: (0.1333, 0.2, 0.9412, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.0902, 0.149, 0.7882, 1), dark: (0.549, 0.5843, 1, 1)))
+    public static let ember = RDLAccent(accent: Color(rdlR: 1, g: 0.3529, b: 0.1216, a: 1), accentStrong: Color(rdlR: 0.8588, g: 0.2667, b: 0.0627, a: 1), accentSoft: Color.rdlDynamic(light: (1, 0.9451, 0.9216, 1), dark: (1, 0.3529, 0.1216, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.6196, 0.1882, 0.0392, 1), dark: (1, 0.6039, 0.4392, 1)))
+    public static let orchid = RDLAccent(accent: Color(rdlR: 0.6471, g: 0.2824, b: 0.9333, a: 1), accentStrong: Color(rdlR: 0.5176, g: 0.1882, b: 0.7882, a: 1), accentSoft: Color.rdlDynamic(light: (0.9804, 0.9412, 1, 1), dark: (0.6471, 0.2824, 0.9333, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.5176, 0.1882, 0.7882, 1), dark: (0.8431, 0.6078, 1, 1)))
     public static let violet = RDLAccent(accent: Color(rdlR: 0.4431, g: 0.3216, b: 0.9608, a: 1), accentStrong: Color(rdlR: 0.3529, g: 0.2314, b: 0.8588, a: 1), accentSoft: Color.rdlDynamic(light: (0.9569, 0.9451, 1, 1), dark: (0.4431, 0.3216, 0.9608, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.3529, 0.2314, 0.8588, 1), dark: (0.6902, 0.6118, 1, 1)))
     public static let orange = RDLAccent(accent: Color(rdlR: 0.9608, g: 0.3725, b: 0.1412, a: 1), accentStrong: Color(rdlR: 0.8235, g: 0.2824, b: 0.0706, a: 1), accentSoft: Color.rdlDynamic(light: (1, 0.9529, 0.9333, 1), dark: (0.9608, 0.3725, 0.1412, 0.16)), onAccent: Color(rdlR: 0.0431, g: 0.0431, b: 0.051, a: 1), accentText: Color.rdlDynamic(light: (0.8235, 0.2824, 0.0706, 1), dark: (1, 0.6157, 0.4588, 1)))
     public static let ocean = RDLAccent(accent: Color(rdlR: 0.1843, g: 0.4, b: 0.9647, a: 1), accentStrong: Color(rdlR: 0.1216, g: 0.3098, b: 0.8196, a: 1), accentSoft: Color.rdlDynamic(light: (0.9333, 0.9569, 1, 1), dark: (0.1843, 0.4, 0.9647, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.1216, 0.3098, 0.8196, 1), dark: (0.5176, 0.6627, 1, 1)))
-    public static let gold = RDLAccent(accent: Color(rdlR: 0.8667, g: 0.6824, b: 0.2275, a: 1), accentStrong: Color(rdlR: 0.7647, g: 0.5725, b: 0.1333, a: 1), accentSoft: Color.rdlDynamic(light: (0.9922, 0.9725, 0.9176, 1), dark: (0.8667, 0.6824, 0.2275, 0.16)), onAccent: Color(rdlR: 0.0431, g: 0.0431, b: 0.051, a: 1), accentText: Color.rdlDynamic(light: (0.4314, 0.3137, 0.0549, 1), dark: (0.9216, 0.7686, 0.3608, 1)))
 }
 
-private struct RDLAccentKey: EnvironmentKey { static let defaultValue = RDLAccent.lime }
+private struct RDLAccentKey: EnvironmentKey { static let defaultValue = RDLAccent.volt }
 public extension EnvironmentValues {
     var rdlAccent: RDLAccent { get { self[RDLAccentKey.self] } set { self[RDLAccentKey.self] = newValue } }
 }
@@ -151,24 +215,52 @@ public extension View {
     func rdlAccent(_ accent: RDLAccent) -> some View { environment(\.rdlAccent, accent) }
 }
 
+// MARK: - Aura gradients
+
+/// Soft gradient washes for card fills and screen backdrops.
+public enum RDLAura {
+    public static let gold = RadialGradient(stops: [.init(color: Color(rdlR: 0.949, g: 0.7882, b: 0.3608, a: 1), location: 0), .init(color: Color(rdlR: 0.9529, g: 0.8902, b: 0.7373, a: 1), location: 0.38), .init(color: Color(rdlR: 0.9373, g: 0.9373, b: 0.9451, a: 1), location: 0.78)], center: UnitPoint(x: 0.85, y: 0), startRadius: 0, endRadius: 520)
+    public static let sunset = RadialGradient(stops: [.init(color: Color(rdlR: 1, g: 0.5412, b: 0.1216, a: 1), location: 0), .init(color: Color(rdlR: 1, g: 0.4353, b: 0.6275, a: 1), location: 0.45), .init(color: Color(rdlR: 0.6235, g: 0.7176, b: 1, a: 1), location: 1)], center: UnitPoint(x: 0.5, y: 0.5), startRadius: 0, endRadius: 520)
+    public static let meadow = LinearGradient(stops: [.init(color: Color(rdlR: 0.1843, g: 0.749, b: 0.3059, a: 1), location: 0), .init(color: Color(rdlR: 0.7216, g: 0.9412, b: 0.2353, a: 1), location: 0.7), .init(color: Color(rdlR: 0.9333, g: 0.9686, b: 0.7843, a: 1), location: 1)], startPoint: UnitPoint(x: 0.329, y: 0.03), endPoint: UnitPoint(x: 0.671, y: 0.97))
+    public static let dusk = LinearGradient(stops: [.init(color: Color(rdlR: 0.4314, g: 0.4157, b: 0.1882, a: 1), location: 0), .init(color: Color(rdlR: 0.6353, g: 0.4157, b: 0.3451, a: 1), location: 0.55), .init(color: Color(rdlR: 0.7216, g: 0.4667, b: 0.5255, a: 1), location: 1)], startPoint: UnitPoint(x: 0.371, y: 0.017), endPoint: UnitPoint(x: 0.629, y: 0.983))
+    public static let orchid = LinearGradient(stops: [.init(color: Color(rdlR: 0.8784, g: 0.2745, b: 0.7843, a: 1), location: 0), .init(color: Color(rdlR: 0.5412, g: 0.2314, b: 0.9373, a: 1), location: 1)], startPoint: UnitPoint(x: 0.25, y: 0.067), endPoint: UnitPoint(x: 0.75, y: 0.933))
+    public static let ocean = LinearGradient(stops: [.init(color: Color(rdlR: 0.0706, g: 0.1373, b: 0.2784, a: 1), location: 0), .init(color: Color(rdlR: 0.1059, g: 0.3569, b: 0.4196, a: 1), location: 1)], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 1))
+    public static let ember = LinearGradient(stops: [.init(color: Color(rdlR: 0.949, g: 0.6275, b: 0.2902, a: 1), location: 0), .init(color: Color(rdlR: 0.9216, g: 0.8235, b: 0.6824, a: 1), location: 1)], startPoint: UnitPoint(x: 0.25, y: 0.067), endPoint: UnitPoint(x: 0.75, y: 0.933))
+    public static let fog = LinearGradient(stops: [.init(color: Color(rdlR: 0.8627, g: 0.8902, b: 0.9176, a: 1), location: 0), .init(color: Color(rdlR: 0.9569, g: 0.9608, b: 0.9686, a: 1), location: 1)], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 1))
+}
+
 // MARK: - Type
 
+/// Set `RDLFont.family` to a bundled font name (e.g. "Urbanist") to match the web; nil uses the system font.
+public enum RDLFont {
+    public static var family: String? = "Urbanist"
+}
 public struct RDLTextStyle {
     public let size: CGFloat, lineHeight: CGFloat, weight: Font.Weight, tracking: CGFloat
-    public var font: Font { .system(size: size, weight: weight, design: .default) }
+    public var font: Font {
+        #if canImport(UIKit)
+        if let family = RDLFont.family, UIFont(name: family, size: size) != nil {
+            return .custom(family, size: size).weight(weight)
+        }
+        #endif
+        return .system(size: size, weight: weight, design: .default)
+    }
 }
 public enum RDLType {
-    public static let displayXl = RDLTextStyle(size: 56, lineHeight: 60, weight: .medium, tracking: -1.96)
-    public static let display = RDLTextStyle(size: 44, lineHeight: 48, weight: .medium, tracking: -1.32)
-    public static let h1 = RDLTextStyle(size: 32, lineHeight: 38, weight: .semibold, tracking: -0.8)
-    public static let h2 = RDLTextStyle(size: 26, lineHeight: 32, weight: .semibold, tracking: -0.52)
-    public static let h3 = RDLTextStyle(size: 20, lineHeight: 26, weight: .semibold, tracking: -0.3)
-    public static let title = RDLTextStyle(size: 17, lineHeight: 22, weight: .semibold, tracking: -0.17)
-    public static let body = RDLTextStyle(size: 15, lineHeight: 22, weight: .regular, tracking: -0.07)
-    public static let bodyStrong = RDLTextStyle(size: 15, lineHeight: 22, weight: .medium, tracking: -0.07)
-    public static let label = RDLTextStyle(size: 14, lineHeight: 18, weight: .medium, tracking: -0.07)
-    public static let caption = RDLTextStyle(size: 12, lineHeight: 16, weight: .medium, tracking: 0)
-    public static let micro = RDLTextStyle(size: 11, lineHeight: 14, weight: .medium, tracking: 0.11)
+    public static let displayXl = RDLTextStyle(size: 72, lineHeight: 72, weight: .light, tracking: -2.52)
+    public static let display = RDLTextStyle(size: 56, lineHeight: 58, weight: .light, tracking: -1.68)
+    public static let numeral = RDLTextStyle(size: 40, lineHeight: 44, weight: .light, tracking: -0.8)
+    public static let h1 = RDLTextStyle(size: 34, lineHeight: 38, weight: .regular, tracking: -0.68)
+    public static let h2 = RDLTextStyle(size: 26, lineHeight: 30, weight: .regular, tracking: -0.39)
+    public static let h3 = RDLTextStyle(size: 20, lineHeight: 24, weight: .medium, tracking: -0.2)
+    public static let title = RDLTextStyle(size: 17, lineHeight: 22, weight: .medium, tracking: -0.09)
+    public static let body = RDLTextStyle(size: 15, lineHeight: 22, weight: .regular, tracking: 0)
+    public static let bodyStrong = RDLTextStyle(size: 15, lineHeight: 22, weight: .semibold, tracking: 0)
+    public static let label = RDLTextStyle(size: 14, lineHeight: 18, weight: .medium, tracking: 0)
+    public static let caption = RDLTextStyle(size: 12, lineHeight: 16, weight: .regular, tracking: 0.06)
+    public static let micro = RDLTextStyle(size: 11, lineHeight: 14, weight: .medium, tracking: 0.44)
+    /// Units next to numbers render at this fraction of the number size.
+    public static let unitScale: CGFloat = 0.38
 }
 public extension View {
     /// Applies an RDL type role: size, weight, tracking and line height.
@@ -179,7 +271,7 @@ public extension View {
     }
 }
 
-// MARK: - Space, radius, size, motion
+// MARK: - Space, radius, size, glass, motion
 
 public enum RDLSpace {
     public static let s0: CGFloat = 0
@@ -212,10 +304,13 @@ public enum RDLRadius {
     public static let sm: CGFloat = 10
     public static let md: CGFloat = 14
     public static let lg: CGFloat = 20
-    public static let xl: CGFloat = 24
-    public static let xxl: CGFloat = 28
-    public static let xxxl: CGFloat = 32
+    public static let xl: CGFloat = 28
+    public static let xxl: CGFloat = 32
+    public static let xxxl: CGFloat = 40
+    public static let tile: CGFloat = 14
     public static let pill: CGFloat = 999
+    public static let card: CGFloat = 28
+    public static let widget: CGFloat = 40
 }
 public enum RDLSize {
     public static let controlSm: CGFloat = 36
@@ -229,6 +324,12 @@ public enum RDLSize {
     public static let iconSm: CGFloat = 16
     public static let iconMd: CGFloat = 20
     public static let iconLg: CGFloat = 24
+    public static let tile: CGFloat = 44
+    public static let dock: CGFloat = 64
+    public static let orb: CGFloat = 64
+}
+public enum RDLGlass {
+    public static let blur: CGFloat = 24
 }
 public enum RDLMotion {
     public static let fast: Double = 0.12

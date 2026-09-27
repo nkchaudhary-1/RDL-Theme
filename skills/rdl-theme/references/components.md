@@ -1,110 +1,98 @@
 # Components
 
-Base components exist on web (`assets/templates/rdl-components.css`) and SwiftUI
-(`assets/ios/RDLComponents.swift`) with matching names. Build domain components by composing
-these — don't restyle them per screen.
+Web classes live in `assets/templates/rdl-components.css`. Part 1 has the base components, shared
+by both styles. Part 2 has the V2 glass components. The SwiftUI equivalents are in
+`assets/ios/RDLComponents.swift` (part 1) and `RDLGlassComponents.swift` (part 2). Compose
+domain components from these; don't restyle them per screen.
 
-| Component | Web class | SwiftUI |
-|---|---|---|
-| Card | `.rdl-card` `--muted` `--hero` `--accent` `--web` | `.rdlCard(.surface / .muted / .hero / .accent)` |
-| Button | `.rdl-btn` `--accent` `--secondary` `--md` `--block` | `.buttonStyle(.rdl(.primary / .accent / .secondary / .ghost))` |
-| Icon button | `.rdl-iconbtn` `--accent` | `RDLIconButton("bell")` |
-| Quick action | `.rdl-action` | compose `RDLIconButton` + caption |
-| Chip | `.rdl-chip[aria-pressed]` | `RDLChip("Gold", selected:)` |
-| Segmented | `.rdl-seg` | `RDLSegmented(options, selection:)` |
-| Delta pill | `.rdl-delta` `--down` `--on-accent` | `RDLDeltaPill(12.4)` |
-| Amount | `.rdl-amount` + `<small>` for decimals | `RDLAmount(48209.36)` |
-| Bar chart | `.rdl-bars` + `.rdl-bars__fill.is-active` / `.rdl-hatch` | `RDLBarChart(data, highlighted:)` |
-| Hatch pattern | `.rdl-hatch` | `RDLHatch()` shape |
-| Gauge | inline SVG arc (see templates) | `RDLGauge(progress:)` |
-| Progress | `.rdl-progress > span` | `ProgressView` styled, or capsule pair |
-| List row | `.rdl-row` | `RDLListRow(title:subtitle:trailing:)` |
-| Section header | `.rdl-section-head` | HStack title + "See all" |
-| Tab bar | `.rdl-tabbar` | `RDLFloatingTabBar(items, selection:)` |
-| Avatar / stack | `.rdl-avatar`, `.rdl-avatars` | Circle + initials |
-| Input / search | `.rdl-input` | TextField in capsule `fill-control` |
-| Tooltip | `.rdl-tooltip` | ink capsule overlay |
+## V2 glass components
+
+| Component | Web | SwiftUI | Notes |
+|---|---|---|---|
+| Glass pane | `.rdl-glass` `--strong` `--dark` `--iridescent` | `.rdlGlass(.light/.dark, iridescent:)` | Needs a backdrop. `--dark` works on any theme |
+| Aura widget | `.rdl-widget.rdl-aura--{gold,sunset,meadow,dusk,orchid,ocean,ember,fog}` + `.rdl-grain` | `.rdlAura(RDLAura.gold)` | Radius 40 |
+| Blueprint card | `.rdl-blueprint` | `.rdlBlueprint()` | Electric blue, white line art |
+| Figure | `.rdl-figure` > `.rdl-cur` `.rdl-lead` `.rdl-unit` | `RDLFigure("84.2", unit: "kW")` | Light numeral with small muted unit |
+| Dot-matrix figure | `.rdl-figure--dot` (Doto) | `RDLDotMatrixText("84%")` or `RDLFigure(dotMatrix: true)` | One per screen |
+| Mixed headline | `.rdl-mix` with `<b>` | `Text("Hello ") + Text("Alex").bold()` | Light + one heavy word |
+| Orb | `.rdl-orb` `--lg` `--solid` `--white` `--accent` `--outline` | `RDLOrb("bell", kind:)` | 44 (56 in action rows) |
+| Tile | `.rdl-tile[aria-pressed]` | `.rdlCard(radius: RDLRadius.tile)` | 44 square, radius 14, industrial toolbars |
+| Action row | `.rdl-actionrow` (orb · pill · orb) | `RDLActionRow("Buy gold", leading:, trailing:)` | Bottom of screen |
+| Slide to confirm | `.rdl-slide` > `__knob` `__label` `__chev` | `RDLSlideToConfirm("Slide to buy")` | Irreversible money movement |
+| Glass segmented | `.rdl-seg.rdl-seg--glass` / `--accent` | `RDLSegmented` inside `.rdlGlass` | Active = white (or accent) |
+| Chips and tags | `.rdl-chip--glass` `--outline`, `.rdl-tag` `--dark` `--crit` | `RDLChip` | Tags are 22px, 11/600 |
+| Status | `.rdl-status` `--warn` `--crit` `--info` `--idle` | `RDLStatus("Operational", kind:)` | Dot with halo, plus label |
+| Key/value | `.rdl-kv` `--row` `--leader` | `RDLKeyValue(k, v, layout:)` | Label above, beside, or dotted leader |
+| Dock | `.rdl-dock` `--accent` | `RDLDock(items, selection:)` | Glass capsule of 52 orbs |
+| Tick ruler | `.rdl-ticks` > `__needle`, `.rdl-ticks__labels` | `RDLTickRuler(value:)` | Slider, timeline, gauge |
+| Meter line | `.rdl-meter` > `__track > span` | `RDLMeter(label, value:, progress:)` | 2pt line, value right |
+| Line bars | `.rdl-lines > i(.is-active)` | (SwiftUI Charts `BarMark` width 2) | Hairline columns, one lit |
+| Month grid | `.rdl-monthgrid > .is-paid/.is-missed/.is-now` | `RDLMonthGrid(months)` | SIP/EMI/loan history |
+| Textures | `.rdl-grain`, `.rdl-dotgrid` | overlay images | |
+
+### SVG patterns (see the templates for working code)
+- **Window curve:** draw the full series as a dotted ghost path, redraw it solid inside a
+  `clipPath` window, put glass beads (`r 7–9`, white 65%, white stroke) at the window edges and
+  an ink dot with an accent ring at the cursor, then a dashed drop line to the axis.
+- **Beaded arc gauge:** a dotted semicircle track, a solid segment for the healthy range, glass
+  beads at the segment ends, and a glass pill in the middle with the verdict ("Within limits").
+- **Thin arc gauge (credit style):** a 2px ink arc with a needle tick and the numeral beside it.
+- **Radial dot plot:** ticks around a circle with accent dots at their values, and the score in
+  the middle.
 
 ## Specs
 
-### Card
-- Padding 20 (mobile) / 24 (web). Radius xl 24 (mobile), lg 20 (web), 2xl 28 (hero).
-- Header row: title (title/h3) left, caption or "See all" right, 12–16 below.
-- Tones: surface (default), muted (wells inside a card or on web canvas), hero (max one per
-  screen), accent (max one per screen, usually a nudge/CTA or KPI).
-- States: pressable cards scale to 0.98; loading = same shape filled with `fill-control` and a
-  2s shimmer; empty = centred caption + secondary button inside the same card size.
+**Glass pane.** Padding 20 (web 22–24), radius 28, 1px rim. Content inside uses `--rdl-ctl`
+(stronger glass) for nested controls. Use at most one iridescent pane per screen.
 
-### Button
-- Heights: lg 56 (mobile primary), md 44 (inline / web), sm 36 (dense).
-- Primary = ink fill (white text). Accent = accent fill (on-accent text) — use when the screen
-  has no other accent element competing. Secondary = container-aware control fill. Ghost = text only.
-- One primary per view. Paired buttons: secondary (flex 1) + primary (flex 2), 8 apart.
-- Icon + label: 16pt icon, 8 gap. Disabled: 40% opacity, no hover.
-- Focus: 2px accent ring, 2px offset.
+**Figure.** The label (caption, gray) sits above. The figure goes at display/numeral size. The
+context line below is a status dot or delta tag plus a caption. Never bold the number.
 
-### Icon button
-44 circle; 20pt icon; control fill per container. Notification dot: 8pt orange with a 2pt
-canvas-colored ring, top-right. In the hero: `bg-hero-raised` with white icon.
+**Orbs.** Glass by default. Use solid ink for the primary icon action, white when on a dark or
+photo backdrop, accent for the single most important icon, and outline on plain white screens.
 
-### Quick action
-56 circle + 12pt label 8 below, 4 per row, evenly distributed. Labels are verbs: Send, Request,
-Exchange, More.
+**Action row.** Orb 56, pill 56, orb 56, with 8px gaps, pinned 36px above the home indicator. The
+pill is the primary verb ("Buy gold", "Start journey", "Book").
 
-### Segmented control
-Pill container (control fill) with 4 padding; segments 36 tall; selected = ink pill with
-white text (inside hero: accent pill with on-accent text). Selection glides.
+**Slide to confirm.** 64 tall with a 52 knob. Confirm at 85% travel, spring back otherwise.
+Provide an accessibility action that confirms without dragging.
 
-### Delta pill
-24 tall, 8 horizontal padding, caption weight 600, arrow glyph + value. Up = success-soft /
-success-text; down = danger-soft / danger-text; on accent card = 10% ink / on-accent.
+**Status dot.** A 7px dot with a 3px halo at 22% of its color, then a 13/500 label. Put the
+status next to entity names and in tables. Use pills (`.rdl-tag--crit`) only for escalations.
 
-### Amount
-Integer part at the role size (display / display-xl / h2), decimals as `<small>` (55% size,
-secondary color). Tabular numerals, weight 500, tracking -3.5%. Animate value changes by rolling digits.
+**Tick ruler.** Minor ticks every 6px (10 tall), major every 30px (18 tall), `--rdl-tick`
+color. The needle is 2px, 28 tall, in the accent with a glow. Labels are 11px tertiary, justified.
 
-### Bar chart
-Capsule bars on a `chart-track` capsule of full height. Past = `chart-muted` solid; projected
-or inactive = hatch; current/selected = accent + ink tooltip 8 above the bar top. Labels 11pt,
-tertiary, active label primary. 7 bars (week) on mobile, 12 (months) on web. Bars grow in with
-40ms stagger.
+**Month grid.** 6 columns, cells radius 14 at aspect 1:1.05, with the month label on top and the
+marker at the bottom. Paid = accent check, missed = gray ×, current = accent outline,
+upcoming = dashed ring.
 
-### Line chart
-Ink 2.25 stroke, smooth curve; area fill accent 35% → 0% vertical gradient; dashed grid lines in
-`border-subtle`; scrub cursor = dashed ink line + accent dot 9r with 4pt canvas ring + ink tooltip.
+**Dock.** A glass capsule with 6 padding and 52 orbs. The active item is solid ink (or accent in
+`--accent`). It can sit centred and floating, or inside a bottom sheet.
 
-### Gauge
-Semi-circle, 16–18 stroke, round caps, track `chart-track`, value accent. Number (display) sits
-on the baseline, caption beneath.
+## Base components (both styles)
 
-### List row
-40 circular lead (glyph, logo or initials) → title (body-strong) + caption → trailing amount
-(body-strong, tabular) + caption. 1px `border-subtle` separator between rows inside a card only.
-Positive amounts in success-text with "+"; negatives stay primary with "−".
-
-### Floating tab bar
-Ink capsule, 8 padding, 4–5 items, 52 circles; active = accent circle with on-accent icon;
-inactive icons `text-on-hero-muted`. 20 from the sides, 28 from the bottom, `shadow-float`.
-Icons only; add accessibility labels.
-
-### Input / search
-44 pill, control fill, 16pt leading icon, placeholder secondary. Focused: 2px accent ring.
-Error: caption in danger-text under the field + danger ring.
+Card, button (`.rdl-btn` `--accent` `--secondary` `--glass` `--white`), icon button, quick
+action, chip, segmented, delta pill, amount, bar chart with hatch, gauge, progress, list row,
+section header, floating tab bar (flat), avatar, input. Specs are unchanged from v1. In glass
+style, prefer orbs over `.rdl-iconbtn`, the dock over `.rdl-tabbar`, and status dots over
+delta pills for state (keep delta pills for money changes).
 
 ## Composing domain components
 
-Recipe: *container* (card tone) + *focal value* (amount / gauge / chart) + *context* (caption,
-delta, chip) + *one action* (button or circular arrow).
+Recipe: **surface** (glass / aura / blueprint / white card) + **figure** (the number) +
+**instrument** (ruler, meter, curve, grid) + **context** (status dot, tag, key/value) + **one
+action** (orb or pill).
 
 | Domain component | Composition |
 |---|---|
-| Portfolio / holding card | surface card → lead avatar + name + chip (asset class) → Amount (h2) + delta → mini line chart |
-| Live price ticker (gold, crypto) | hero card → caption "24K · per gram" → Amount (display) rolling → delta pill → segmented (1D…All) |
-| Buy/sell amount entry | canvas → Amount (display-xl) centred → quick-amount chips (₹500 · ₹1,000 · ₹5,000) → numeric keypad (56 circles) → primary button |
-| SIP / recurring plan card | surface card → title + frequency chip → Amount (h2) "/month" → progress (installments done) → next-date caption + ghost "Manage" |
-| Goal card | surface card → gauge or progress → "₹x of ₹y" caption → accent circular arrow |
-| Credit / health score | surface card → gauge + number + band label → factor rows with progress |
-| Transaction / activity | list rows grouped by date caption ("Today", "Yesterday") inside one card |
-| Nudge / upsell | accent card → title + caption → ink circular arrow button |
-| Map overlay card (logistics, property) | surface card sm shadow over map → status chip → route/address rows → primary button |
-| KPI tile (web) | card → label + circular ↗ → Amount (h1–display) → delta pill |
+| Live price card (gold, crypto) | glass → label → figure (₹ cur, .20 unit) → window curve → day labels → tag delta |
+| Holdings widget | ink widget → caption → dot-matrix figure in accent + unit |
+| Amount entry | dark screen → glass segmented (₹/g) → display-xl figure → conversion line → lock chip → tick ruler → leader key/values → slide to confirm |
+| SIP / EMI history | dusk aura card (paid, term, 2 glass pills) → month grid → meters → next-debit key/value |
+| Vault / asset card | blueprint → line-art → status dot → three stacked key/values |
+| Sensor / machine row | label + value + meter line (colored by severity) |
+| Map entity card | glass over map → ID in light numeral → status dot → key/value grid → action row |
+| Score card | aura or white → thin arc gauge or beaded arc → figure → verdict label → ↗ orb |
+| Product card (retail/health) | stone-50 squircle (radius 40) → tag → 3D render → name (gray) → price figure |
+| Node card (AI/workflow) | dark glass on dot grid → icon + title → glass inputs → port dots → glowing connectors |

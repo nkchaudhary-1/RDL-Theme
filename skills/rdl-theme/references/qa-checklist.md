@@ -1,41 +1,46 @@
 # QA checklist
 
-Run before presenting any RDL screen. Fix, don't annotate.
+Run this before presenting any RDL screen. Fix problems rather than annotating them. Items
+marked **G** apply to the glass style, **F** to the flat style, and the rest to both.
 
 ## Identity
-- [ ] Screen has one clear focal number, and it is the largest text on screen (≥ 40pt mobile hero).
-- [ ] Exactly one hero (ink) card — or none, if the focal element is a chart/gauge.
-- [ ] One accent pack; accent used 1–3 times (CTA/hero action, active tab, highlighted datum, one card).
-- [ ] Canvas gray, cards white, no card borders, no shadows on cards resting on the canvas.
-- [ ] Controls invert against their container (no gray-on-gray, no white-on-white).
-- [ ] Radii from the scale: cards 24/20, hero 28, wells 14, everything interactive is a pill or circle.
-- [ ] At least three signature moves present (see SKILL.md).
+- [ ] One focal number per screen, and it's the largest thing on screen (≥ 48pt on mobile heroes).
+- [ ] **G** The number is weight 300 with its unit at ~38% in gray. The currency is small and raised. Nothing bold except one headline word.
+- [ ] **F** The number is weight 500, decimals muted, with one ink hero card.
+- [ ] One accent pack, spent 1–3 times (active orb/dock, needle/selected datum, one tag or the checks).
+- [ ] **G** Glass has something behind it (photo, 3D, map, aura, fog). No glass floating on flat gray.
+- [ ] **G** At most two auras and at most one iridescent rim per screen.
+- [ ] Everything tappable is a circle, pill or tile (Swiss variant: sharp blocks). No mixed corner languages on one screen.
+- [ ] At least three signature moves (see SKILL.md).
 
 ## Typography
-- [ ] Only Inter/SF Pro; weights 400/500/600 only.
-- [ ] Numbers tabular, weight 500, tight tracking; decimals muted and smaller.
-- [ ] Sentence case; no uppercase overlines; nothing below 11pt.
+- [ ] Urbanist (glass) or Inter (flat) only; dot-matrix used for at most one figure.
+- [ ] Sentence case. Uppercase is only for rare eyebrows/addresses, never on buttons.
+- [ ] Mixed-weight headlines use light + one 600 word, not two bold phrases.
 
-## Data viz
-- [ ] Monochrome + one accent; history muted, projection hatched, current accent + ink tooltip.
-- [ ] Axis labels tertiary; no chart legends with more than two entries.
-- [ ] Deltas use arrow + soft pill + `-text` color (not color alone).
+## Data and instruments
+- [ ] Instruments over charts: tick rulers, meters, hairline bars, window curves, month grids.
+- [ ] Monochrome except the accent, plus status colors on status dots only.
+- [ ] Axis/tick labels are tertiary, at 11px. Legends have two entries at most.
+- [ ] Every status has a dot plus a word (not color alone). Money deltas show a sign or arrow.
 
 ## Layout
-- [ ] 4pt grid; 20 gutters / 20 card padding / 12 card gap / 28 section gap (mobile).
-- [ ] Web: bento rows align; 16 gaps; 24 padding.
-- [ ] Content clears the floating tab bar (≥ 120 bottom padding on scroll views).
+- [ ] 4pt grid, 20 gutters, 12–14 gaps between cards.
+- [ ] Bottom actions pinned: circle–pill–circle, slide-to-confirm, or dock. Content clears them (≥ 120pt).
+- [ ] Web: bento rows align; the header has a light 44–48 title with a KPI row on the right.
 
-## Tokens & code
-- [ ] No raw hex, px radius or spacing in components — tokens only.
-- [ ] Works in dark mode (`data-theme="dark"` / system) and with a second accent pack.
-- [ ] Generated files untouched; any token change made in `tokens.json` + rebuilt.
+## Tokens and code
+- [ ] No raw hex, radius or blur values in components. Use tokens or component classes.
+- [ ] Works in light and dark, and with `data-style="flat"` (glass degrades to solid surfaces).
+- [ ] Generated files are untouched; token changes go in `tokens.json`, then rebuild.
 
 ## Accessibility
-- [ ] Text contrast ≥ 4.5:1 (tertiary gray only on redundant info).
-- [ ] Hit targets ≥ 44pt; icon-only buttons have labels.
-- [ ] Focus ring visible (web); Dynamic Type doesn't clip the hero amount (use `minimumScaleFactor(0.6)`).
-- [ ] Reduce Motion removes growth/stagger animations.
+- [ ] Text contrast ≥ 4.5:1 **measured on the actual backdrop** (glass over photo can fail). Add `glass-fill-strong` or a scrim where needed.
+- [ ] Hit targets ≥ 44pt. Orbs and dock items have labels. Slide-to-confirm has an accessibility action.
+- [ ] Dot-matrix and figure views expose the plain value to VoiceOver.
+- [ ] Reduce Motion: no needle glide, blur-in or number roll (fades only). Reduce Transparency: glass becomes solid.
 
 ## States
-- [ ] Loading, empty and error states exist where the screen has async data, and reuse the same card shapes.
+- [ ] Loading (skeleton panes at the same size, a shimmer on glass), empty (one line + one action
+  in the same card), error (a status dot turns `crit` + a caption with the fix), and stale data
+  (`warn` dot + "Updated n min ago"), wherever the screen has async data.

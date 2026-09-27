@@ -1,159 +1,162 @@
 # Foundations
 
-All values live in `assets/tokens/tokens.json`. This file explains the intent so you can make
-correct calls when a case isn't covered.
+All values live in `assets/tokens/tokens.json`. This file explains the intent behind them, so you
+can make the right call when a case isn't covered. The glass style is the default; notes marked
+**Flat** apply to `data-style="flat"` (v1).
+
+## Modes and attributes
+
+Put these on `<html>` (web), or inject them at the SwiftUI root:
+
+| Attribute | Values | SwiftUI |
+|---|---|---|
+| `data-theme` | `light` · `dark` (or follow the system) | `.preferredColorScheme` |
+| `data-style` | `glass` (default) · `flat` | `.rdlSurfaceStyle(.glass/.flat)` |
+| `data-accent` | `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `lime` · `violet` · `orange` · `ocean` | `.rdlAccent(.gold)` |
+
+A single screen may switch theme locally. Put `data-theme="dark"` on a dark hero screen inside a
+light app, which is common on the board.
 
 ## Color
 
-### Layers (light)
-
-```
-bg-canvas  #F3F3F5   ← screen / page
-  bg-surface  #FFFFFF   ← cards
-    bg-surface-muted / fill-control  #F3F3F5   ← wells, chips, icon buttons inside cards
-  bg-hero  #0B0B0D   ← the one dark card
-    bg-hero-raised  #26262B   ← buttons / chips inside the hero
-```
-
-Three luminance steps (canvas → surface → well) do the work borders and shadows do elsewhere.
-Dark mode keeps the same structure: canvas #0B0B0D → surface #17171A → well #202024, and the hero
-becomes #232327 (a raised card rather than an inverted one).
-
-### Container-aware controls
-Controls take the fill that contrasts with their container (`--rdl-ctl` in CSS):
-
-| Container | Control fill |
-|---|---|
-| Canvas | `bg-surface` (white) |
-| Surface card / sidebar | `fill-control` (gray) |
-| Muted well | `bg-surface` |
-| Hero | `bg-hero-raised` |
+### Neutrals: stone
+A cool, very slightly warm gray ramp (`stone.0` to `stone.950`). The light canvas is `stone.100`
+`#EFEFF1`, cards are white, and ink is `stone.950` `#0A0B0C`. The dark canvas is `stone.950`,
+with surfaces at `stone.900` and `stone.800`.
 
 ### Accent packs
-Pick **one** per product via `data-accent` / `.rdlAccent()`:
+Use one pack per product, and spend the accent 1–3 times per screen.
 
-| Pack | accent | on-accent | Use for |
-|---|---|---|---|
-| `lime` (default) | #CBEF43 | ink | Fintech, trading, savings, creator tools — the RDL signature |
-| `violet` | #7152F5 | white | Credit, AI, productivity, crypto |
-| `orange` | #F55F24 | ink | Logistics, delivery, fitness, energetic consumer |
-| `ocean` | #2F66F6 | white | Health, insurance, enterprise SaaS, travel |
-| `gold` | #DDAE3A | ink | Precious metals, wealth, premium tiers |
+| Pack | Accent | On-accent | Seen on the board | Use for |
+|---|---|---|---|---|
+| **volt** | `#DDF23A` | ink | QuickBooks tags, TD Bank checks, "Best Seller", e-bike | Default. Fintech, AI, productivity |
+| **gold** | `#EBC45C` | ink | Solar (mustard), Credit 832 aura | Precious metals, wealth, energy |
+| **signal** | `#4BE06E` | ink | Compliance folders, fuel card, lawn, HRV | Health, ops "all good", sustainability |
+| **electric** | `#2233F0` | white | Blueprint cards, fleet AI, containers | Automotive, industrial, insurance |
+| **ember** | `#FF5A1F` | ink | Robot arm, oil field, traffic, stress relief | Logistics, alerts-heavy ops, fitness |
+| **orchid** | `#A548EE` | white | Weight management, e-bike widgets | Wellness, consumer health |
+| lime / violet / orange / ocean | v1 packs | | | Flat-style products |
 
-Each pack defines `accent`, `accent-strong` (hover/pressed), `accent-soft` (tinted wells and
-avatars), `on-accent` (text/icons on accent) and `accent-text` (accent used as text on white —
-darkened to pass contrast; lighter in dark mode).
+**Where the accent goes:** the active orb or dock item, a needle or selected tick, the selected
+data point or cell, one tag ("Best Seller", "+2.4%"), paid checkmarks, the brand dot. It never
+goes on body text or large background areas. The exception is a single accent widget or a
+blueprint card.
 
-**Where accent goes** (budget: 1–3 uses per screen): primary CTA *or* hero action, active tab,
-highlighted data point, one nudge/KPI card, brand mark. Never on body text, never as a page
-background, never two accent cards side by side.
+### Auras (gradient washes)
+`--rdl-aura-*` / `RDLAura.*`. These fill widgets, hero cards and screen backdrops. Add
+`.rdl-grain` for the film-grain finish.
+
+| Aura | Stops | Use |
+|---|---|---|
+| `gold` | amber → cream → canvas (radial, top-right) | Wealth home screens, credit scores |
+| `sunset` | orange → pink → periwinkle (radial) | Health scores, "biological age" |
+| `meadow` | green → lime → cream | Positive health states, growth |
+| `dusk` | olive → terracotta → rose | Payment timelines, journals (white text) |
+| `orchid` | magenta → violet | Widgets, wellness |
+| `ocean` | navy → teal | Night/analytics widgets |
+| `ember` | amber → sand | Energy, warm cards |
+| `fog` | pale blue-gray → white | Desktop backdrops |
+
+Rules: use at most two auras per screen. Text on an aura is ink or white, never gray-on-color
+(check contrast). Keep auras soft, never neon rainbow.
+
+### Glass
+| Token | Light | Dark |
+|---|---|---|
+| `glass-fill` | `rgba(255,255,255,.56)` | `rgba(28,30,33,.52)` |
+| `glass-fill-strong` | `rgba(255,255,255,.78)` | `rgba(36,38,42,.72)` |
+| `glass-border` | `rgba(255,255,255,.72)` | `rgba(255,255,255,.10)` |
+| blur / saturate | 24px / 1.6 | same |
+| `shadow-glass` | inset top highlight + soft 50px drop | stronger drop |
+
+Glass needs something behind it (a photo, 3D render, map, aura or fog). On a flat gray canvas,
+use `glass-fill-strong` or a plain white card. The iridescent rim
+(`.rdl-glass--iridescent`) is reserved for one premium card per screen. **Flat:** glass becomes
+solid surfaces with no blur.
 
 ### Semantic
-`success` / `danger` / `warning` / `info` each have a base (charts, dots, icons), a `-soft` tint
-(pill backgrounds) and — for the first three — a `-text` shade that passes 4.5:1 on its tint.
-Deltas are always a soft pill with the `-text` color and an arrow glyph (↑ / ↓), never color alone.
-
-### Contrast (checked)
-| Pair | Ratio |
-|---|---|
-| text-secondary on surface / canvas | 5.0 / 4.6 |
-| ink on lime / gold / orange | 15.0 / 9.5 / 6.1 |
-| white on violet / ocean | 5.0 / 4.8 |
-| success-text / danger-text / warning-text on their tints | 5.7 / 4.7 / 5.5 |
-| text-tertiary (#9A9AA3) on white | 2.8 — decorative/redundant only (axis labels, placeholder) |
+`success`/`danger`/`warning`/`info` each have base, `-soft` and `-text` variants (text passes
+4.5:1 on its tint). In glass style, **status is shown as a dot** (`.rdl-status`): signal green
+for ok, amber for warn, red for critical, electric for info, stone for idle.
 
 ## Typography
 
-One family: **Inter** on web (with `cv11` single-storey a and `tnum` for figures), **SF Pro**
-on iOS. Manrope is the approved alternate for a softer brand. No second display face.
-
-| Role | Size/Line | Weight | Tracking | Use |
-|---|---|---|---|---|
-| display-xl | 56/60 | 500 | -3.5% | Hero number on detail screens, web hero KPI |
-| display | 44/48 | 500 | -3% | Balance on hero card |
-| h1 | 32/38 | 600 | -2.5% | Screen title (large-title screens), web page greeting |
-| h2 | 26/32 | 600 | -2% | Section-level numbers, onboarding headlines |
-| h3 | 20/26 | 600 | -1.5% | Web card titles |
-| title | 17/22 | 600 | -1% | Mobile card titles, nav titles, stat values |
-| body | 15/22 | 400 | -0.5% | Paragraphs |
-| body-strong | 15/22 | 500 | -0.5% | List row titles, buttons |
-| label | 14/18 | 500 | -0.5% | Chips, segmented, field labels |
-| caption | 12/16 | 500 | 0 | Secondary info under titles, deltas |
-| micro | 11/14 | 500 | +1% | Axis labels, tooltips |
-
-Rules: numbers use tabular figures; decimals/cents at ~55% size in `text-secondary`; currency
-symbol same size as the integer part; sentence case; never below 11pt; max two weights per card.
-
-## Spacing and layout
-
-4pt base. Most used: 8 (inline gaps), 12 (card gap), 16, 20 (gutter / card padding), 24, 28
-(section gap), 32.
-
-| Context | Mobile | Web |
+| Family | Token | Use |
 |---|---|---|
-| Screen gutter | 20 | 16 around floating shell, 32 content |
-| Card padding | 20 (hero 20–24) | 24 |
-| Gap between cards | 12 | 16 |
-| Section gap | 28 | 24 |
-| Sidebar | — | 248 |
-| Bottom safe space above tab bar | 120 | — |
+| **Urbanist** (geometric, rounded terminals) | `--rdl-font-sans` | Everything |
+| **Doto** (dot-matrix) | `--rdl-font-dot` / `RDLDotMatrixText` | One signature numeral per screen, maximum |
+| Inter | `--rdl-font-flat` | Flat style only |
 
-Web dashboards use a 4-column bento grid (12-col underneath for complex pages). Cards span 1, 2
-or 3 columns; heights align per row.
+| Role | Size/Line | Weight | Use |
+|---|---|---|---|
+| display-xl | 72/72 | 300 | Amount-entry screens, single-metric heroes |
+| display | 56/58 | 300 | Hero figure on home and detail screens |
+| numeral | 40/44 | 300 | Card figures, KPI tiles |
+| h1 | 34/38 | 400 | Screen titles, often two lines |
+| h2 | 26/30 | 400 | Section titles, greetings |
+| h3 | 20/24 | 500 | Web card titles |
+| title | 17/22 | 500 | Mobile card titles, nav titles |
+| body | 15/22 | 400 | Paragraphs |
+| body-strong | 15/22 | 600 | Emphasis inside body; list titles |
+| label | 14/18 | 500 | Buttons, chips, segmented |
+| caption | 12/16 | 400 | Labels above values, axis |
+| micro | 11/14 | 500, +4% | Eyebrows (uppercase optional, used sparingly) |
 
-## Radius
+**Numeral rules**
+- The number is weight 300, tracked −3%, with tabular figures.
+- The unit sits at 38% size in gray, on the baseline. The currency symbol is at 38% size, raised
+  to the cap line (`.rdl-cur`).
+- Mute leading zeros in tiny crypto or metal quantities (`.rdl-lead`).
+- Mixed-weight headlines: light plus one `<b>` word at 600.
+- **Flat:** Inter, numerals at 500.
 
-| Token | px | Use |
+## Spacing, layout, radius
+
+The spacing scale is unchanged from v1 (4pt base; 20 mobile gutter; 20 card padding; 12 card gap).
+
+| Radius token | px | Use |
 |---|---|---|
-| xs | 6 | Tooltip tails, tiny tags |
-| sm | 10 | Logo tile, small thumbnails |
-| md | 14 | Stat wells, inner cards, inputs in dense web forms |
-| lg | 20 | Web cards |
-| xl | 24 | Mobile cards |
-| 2xl | 28 | Hero cards, web sidebar |
-| 3xl | 32 | Bottom sheets, modal cards |
-| pill | 999 | Buttons, chips, segmented, search, tab bar, progress |
+| tile / md | 14 | Square-rounded tool tiles, month cells, small cards |
+| lg | 20 | Blueprint cards, web tables |
+| xl = **card** | 28 | Cards, glass panes |
+| 2xl | 32 | Sheets, large panes |
+| 3xl = **widget** | 40 | Aura widgets, product cards, squircles |
+| pill | 999 | Buttons, chips, segmented, dock, slide |
+| circle | 50% | Orbs, knobs, beads |
 
-Nested radius rule: inner radius = outer radius − padding (min 10). Use `.continuous` corners on iOS.
+The Swiss variant uses radius 0–4 on blocks and buttons. Use it only when the whole product
+takes that tone, and don't mix it with rounded glass on the same screen.
 
-## Elevation
+## Textures and lines
 
-Flat by default. Shadows only when something floats over other content.
-
-| Token | Use |
-|---|---|
-| none | Cards on canvas (default) |
-| sm | Cards over imagery or maps |
-| md | Popovers, dropdowns |
-| lg | Bottom sheets, modals, presentation mockups |
-| float | Floating tab bar, FAB |
+- **Film grain** (`.rdl-grain`): on auras and photo-backed screens.
+- **Dot grid** (`.rdl-dotgrid`): 14px dots on dark canvases (node editors, document spaces).
+- **Hairlines**: 1px `border-subtle` between rows; dotted leaders for label……value.
+- **Dotted/dashed**: ghost curves, drop lines to a data point, selection rectangles, radius circles.
 
 ## Iconography
 
-Line icons, 1.75 stroke, rounded caps/joins, 24 grid (Lucide / SF Symbols "regular"). 20pt in
-buttons and rows, 16pt in chips and pills. Icons sit in circles (icon buttons, list leads);
-never float bare next to text except inside buttons. Arrow-up-right (↗) is the studio's
-favourite "open / send / go" glyph.
+Line icons at 1.6–1.75 stroke with rounded joins (Lucide / SF Symbols regular), sitting inside
+orbs or tiles. The ↗ arrow in a circle is the universal "open" affordance. Use outlined icons in
+circles (not filled) for list leads.
 
 ## Imagery
 
-- Avatars: circular, initials on `accent-soft` with `accent-text` when there's no photo.
-- Photography (health, travel, property): full-bleed inside a rounded card, never edge-to-edge
-  on the screen; gradient scrim only for overlaid text.
-- 3D objects (cards, coins, gold bars): one per screen, on onboarding or empty states.
-- Maps: desaturated/light basemap; routes and pins in ink + accent.
+- **3D renders** of the product's physical world: gold bars, vaults, trucks, machines, houses,
+  pills, organs. Use soft studio light on neutral ground, and one render per screen.
+- **Line-art / blueprint**: isometric technical drawings with dimension lines, white on electric
+  blue or ink on white.
+- **Selective color**: a grayscale scene with one object in the accent.
+- **Photography**: full-bleed behind glass (people, landscapes). Blur or fade it where text sits.
 
 ## Motion
 
-| Token | Value | Use |
-|---|---|---|
-| fast | 120ms | Press states, toggles |
-| base | 200ms | Color/fill changes, segmented, tab switches |
-| slow | 320ms | Sheets, card expansion |
-| chart | 600ms | Bars/lines drawing in |
-| stagger | 40ms | Between bars, list items |
-| spring | response 0.35, damping 0.82 | iOS interactive transitions |
+Same durations as v1 (fast 120 · base 200 · slow 320 · chart 600 · stagger 40 · spring
+0.35/0.82). Signature V2 motions:
+- the needle glides across the tick ruler;
+- numbers roll (`contentTransition(.numericText())`);
+- glass panes fade and rise 12px with blur easing in;
+- the dock highlight morphs (`matchedGeometryEffect`);
+- the slide knob springs back when released early.
 
-Signature motions: bars grow from the baseline with stagger; numbers roll (`contentTransition(.numericText())`);
-the selected pill/tab glides (`matchedGeometryEffect` / FLIP); buttons scale to 0.97 on press.
-Respect Reduce Motion: drop growth/stagger, keep opacity fades.
+With Reduce Motion, keep fades and drop the travel and blur animation.

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-style="flat" data-accent="lime">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDL Mobile Flat</title>
+<!-- Reference implementation of the RDL mobile archetypes: Home / Asset detail / Score.
+     Presented as a Dribbble-style 1600×1200 shot. Params: ?theme=dark&accent=violet|orange|ocean|gold -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="rdl-components.css">
+<style>
+  /* ---------- Shot presentation (see references/presentation.md) ---------- */
+  body { min-height: 100vh; display: grid; place-items: center; background: var(--rdl-bg-canvas); }
+  .shot { width: 1600px; height: 1200px; position: relative; overflow: hidden; background: var(--shot-bg, var(--rdl-gray-150)); display: flex; align-items: center; justify-content: center; gap: 56px; }
+  [data-theme="dark"] .shot { --shot-bg: #050506; }
+  .shot__brand { position: absolute; top: 56px; left: 64px; display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+  .shot__brand i { width: 36px; height: 36px; border-radius: 12px; background: var(--rdl-accent); display: block; }
+  .shot__tag { position: absolute; top: 60px; right: 64px; font-size: 15px; color: var(--rdl-text-secondary); }
+  .phone { width: 390px; height: 844px; border-radius: 52px; background: var(--rdl-bg-canvas); position: relative; overflow: hidden; box-shadow: 0 0 0 10px var(--rdl-ink-950), var(--rdl-shadow-lg); flex: none; }
+  .phone--up { transform: translateY(-48px); }
+  .phone--down { transform: translateY(48px); }
+  .status { height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px 0 36px; font-size: 15px; font-weight: 600; }
+  .status span:last-child { display: flex; gap: 6px; align-items: center; }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 34px; border-radius: 20px; background: #000; }
+  .screen { padding: 8px var(--rdl-mobile-gutter) 120px; display: grid; gap: var(--rdl-card-gap); }
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .topbar__title { flex: 1; }
+  .topbar__title p { margin: 0; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .between { display: flex; align-items: center; justify-content: space-between; }
+  .actions { display: grid; grid-template-columns: repeat(4, 1fr); padding: 4px 0; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stats .rdl-card { padding: 14px 16px; border-radius: var(--rdl-radius-md); }
+  .stats p { margin: 0; }
+  .center { text-align: center; }
+  h1, h2, p { margin: 0; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M17 7 7 17M16 17H7V8"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-6"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  <symbol id="i-signal" viewBox="0 0 24 24"><path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6"/></symbol>
+  <symbol id="i-bat" viewBox="0 0 28 24"><rect x="2" y="7" width="21" height="10" rx="3"/><path d="M26 11v2"/><rect x="4" y="9" width="15" height="6" rx="1.5" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<main class="shot">
+  <div class="shot__brand"><i></i>Coinly</div>
+  <div class="shot__tag">Personal finance · iOS</div>
+
+  <!-- ============ 1. HOME ============ -->
+  <section class="phone phone--down" aria-label="Home">
+    <div class="island"></div>
+    <div class="status"><span>9:41</span><span><svg class="rdl-icon rdl-icon--sm"><use href="#i-signal"/></svg><svg class="rdl-icon" style="width:26px"><use href="#i-bat"/></svg></span></div>
+    <div class="screen">
+      <header class="topbar">
+        <div class="rdl-avatar">AM</div>
+        <div class="topbar__title"><p class="rdl-caption rdl-muted">Good morning</p><p class="rdl-title">Alex Morgan</p></div>
+        <button class="rdl-iconbtn" aria-label="Notifications"><svg class="rdl-icon"><use href="#i-bell"/></svg><span class="rdl-iconbtn__dot"></span></button>
+      </header>
+
+      <article class="rdl-card rdl-card--hero" style="display:grid;gap:18px">
+        <div class="between"><p class="rdl-label rdl-muted">Total balance</p><span class="rdl-chip" style="height:28px;font-size:12px">USD ▾</span></div>
+        <div class="row" style="align-items:flex-end;gap:10px">
+          <p class="rdl-amount" style="font-size:40px;line-height:44px">$48,209<small>.36</small></p>
+        </div>
+        <div class="row"><span class="rdl-delta">↑ 12.4%</span><span class="rdl-caption rdl-muted">+$5,318 this month</span></div>
+        <div class="row" style="gap:8px">
+          <button class="rdl-btn rdl-btn--accent rdl-btn--md" style="flex:1"><svg class="rdl-icon rdl-icon--sm"><use href="#i-plus"/></svg>Top up</button>
+          <button class="rdl-btn rdl-btn--md" style="flex:1;background:var(--rdl-bg-hero-raised);color:var(--rdl-text-on-hero)"><svg class="rdl-icon rdl-icon--sm"><use href="#i-send"/></svg>Transfer</button>
+        </div>
+      </article>
+
+      <nav class="actions" aria-label="Quick actions">
+        <button class="rdl-action"><span class="rdl-iconbtn"><svg class="rdl-icon"><use href="#i-send"/></svg></span>Send</button>
+        <button class="rdl-action"><span class="rdl-iconbtn"><svg class="rdl-icon"><use href="#i-down"/></svg></span>Request</button>
+        <button class="rdl-action"><span class="rdl-iconbtn"><svg class="rdl-icon"><use href="#i-swap"/></svg></span>Exchange</button>
+        <button class="rdl-action"><span class="rdl-iconbtn"><svg class="rdl-icon"><use href="#i-grid"/></svg></span>More</button>
+      </nav>
+
+      <article class="rdl-card">
+        <div class="between" style="margin-bottom:4px"><h3 class="rdl-title">Spending</h3><span class="rdl-caption rdl-muted">This week</span></div>
+        <p class="rdl-amount" style="font-size:26px;margin-bottom:16px">$2,184<small>.50</small></p>
+        <div class="rdl-bars" style="--h:120px">
+          <div class="rdl-bars__col"><div class="rdl-bars__track"><div class="rdl-bars__fill rdl-hatch" style="--v:45%;--i:0"></div></div><span class="rdl-bars__label">M</span></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track"><div class="rdl-bars__fill rdl-hatch" style="--v:62%;--i:1"></div></div><span class="rdl-bars__label">T</span></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track"><div class="rdl-bars__fill rdl-hatch" style="--v:38%;--i:2"></div></div><span class="rdl-bars__label">W</span></div>
+          <div class="rdl-bars__col is-active"><div class="rdl-bars__track"><div class="rdl-bars__fill is-active" style="--v:84%;--i:3"></div><span class="rdl-tooltip" style="--v:84%">$612</span></div><span class="rdl-bars__label">T</span></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track"><div class="rdl-bars__fill rdl-hatch" style="--v:52%;--i:4"></div></div><span class="rdl-bars__label">F</span></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track"><div class="rdl-bars__fill rdl-hatch" style="--v:28%;--i:5"></div></div><span class="rdl-bars__label">S</span></div>
+          <div class="rdl-bars__col"><div class="rdl-bars__track"><div class="rdl-bars__fill rdl-hatch" style="--v:20%;--i:6"></div></div><span class="rdl-bars__label">S</span></div>
+        </div>
+      </article>
+    </div>
+    <nav class="rdl-tabbar" aria-label="Tabs">
+      <button aria-current="page" aria-label="Home"><svg class="rdl-icon"><use href="#i-home"/></svg></button>
+      <button aria-label="Stats"><svg class="rdl-icon"><use href="#i-chart"/></svg></button>
+      <button aria-label="Cards"><svg class="rdl-icon"><use href="#i-card"/></svg></button>
+      <button aria-label="Profile"><svg class="rdl-icon"><use href="#i-user"/></svg></button>
+    </nav>
+  </section>
+
+  <!-- ============ 2. ASSET DETAIL ============ -->
+  <section class="phone phone--up" aria-label="Asset detail">
+    <div class="island"></div>
+    <div class="status"><span>9:41</span><span><svg class="rdl-icon rdl-icon--sm"><use href="#i-signal"/></svg><svg class="rdl-icon" style="width:26px"><use href="#i-bat"/></svg></span></div>
+    <div class="screen" style="padding-bottom:24px">
+      <header class="topbar">
+        <button class="rdl-iconbtn" aria-label="Back"><svg class="rdl-icon"><use href="#i-back"/></svg></button>
+        <div class="topbar__title center"><p class="rdl-title">Portfolio</p></div>
+        <button class="rdl-iconbtn" aria-label="More"><svg class="rdl-icon"><use href="#i-more"/></svg></button>
+      </header>
+
+      <div style="padding:12px 4px 4px">
+        <p class="rdl-label rdl-muted">Invested value</p>
+        <p class="rdl-amount" style="font-size:52px;line-height:58px;margin:4px 0 10px">$18,420<small>.08</small></p>
+        <div class="row"><span class="rdl-delta">↑ 8.2%</span><span class="rdl-caption rdl-muted">+$1,396.40 · 1M</span></div>
+      </div>
+
+      <figure style="margin:8px -20px 0;position:relative">
+        <svg viewBox="0 0 390 190" width="390" height="190" aria-label="Value over the last month">
+          <defs>
+            <linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--rdl-accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--rdl-accent)" stop-opacity="0"/></linearGradient>
+          </defs>
+          <g stroke="var(--rdl-border-subtle)" stroke-dasharray="2 6"><path d="M0 40H390M0 95H390M0 150H390"/></g>
+          <path d="M0 150 C30 146 44 128 70 132 S112 150 136 126 S178 88 204 100 S246 122 268 86 S304 44 330 58 S368 36 390 30 V190 H0Z" fill="url(#area)"/>
+          <path d="M0 150 C30 146 44 128 70 132 S112 150 136 126 S178 88 204 100 S246 122 268 86 S304 44 330 58 S368 36 390 30" fill="none" stroke="var(--rdl-text-primary)" stroke-width="2.25" stroke-linecap="round"/>
+          <line x1="268" x2="268" y1="86" y2="190" stroke="var(--rdl-text-primary)" stroke-dasharray="3 4"/>
+          <circle cx="268" cy="86" r="9" fill="var(--rdl-accent)" stroke="var(--rdl-bg-canvas)" stroke-width="4"/>
+        </svg>
+        <span class="rdl-tooltip" style="left:268px;bottom:auto;top:36px">$17,904 · Sep 22</span>
+      </figure>
+
+      <div class="rdl-seg" role="tablist">
+        <button role="tab">1D</button><button role="tab">1W</button><button role="tab" aria-selected="true">1M</button><button role="tab">1Y</button><button role="tab">All</button>
+      </div>
+
+      <div class="stats" style="margin-top:4px">
+        <div class="rdl-card"><p class="rdl-caption rdl-muted">Returns</p><p class="rdl-title rdl-num rdl-pos">+$2,904</p></div>
+        <div class="rdl-card"><p class="rdl-caption rdl-muted">Invested</p><p class="rdl-title rdl-num">$15,516</p></div>
+        <div class="rdl-card"><p class="rdl-caption rdl-muted">Holdings</p><p class="rdl-title rdl-num">12 assets</p></div>
+        <div class="rdl-card"><p class="rdl-caption rdl-muted">Next SIP</p><p class="rdl-title rdl-num">Oct 05</p></div>
+      </div>
+
+      <div class="row" style="gap:8px;margin-top:8px">
+        <button class="rdl-btn rdl-btn--secondary" style="flex:1">Sell</button>
+        <button class="rdl-btn" style="flex:2">Buy more</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. SCORE / GOALS ============ -->
+  <section class="phone phone--down" aria-label="Credit score">
+    <div class="island"></div>
+    <div class="status"><span>9:41</span><span><svg class="rdl-icon rdl-icon--sm"><use href="#i-signal"/></svg><svg class="rdl-icon" style="width:26px"><use href="#i-bat"/></svg></span></div>
+    <div class="screen">
+      <header class="topbar">
+        <div class="topbar__title"><h1 class="rdl-h1">Credit score</h1></div>
+        <button class="rdl-iconbtn" aria-label="More"><svg class="rdl-icon"><use href="#i-more"/></svg></button>
+      </header>
+
+      <article class="rdl-card center" style="padding-top:28px">
+        <div style="position:relative;width:260px;margin:0 auto">
+          <svg viewBox="0 0 260 140" width="260" height="140" aria-hidden="true">
+            <path d="M20 130 A110 110 0 0 1 240 130" fill="none" stroke="var(--rdl-chart-track)" stroke-width="18" stroke-linecap="round"/>
+            <path d="M20 130 A110 110 0 0 1 231 87" fill="none" stroke="var(--rdl-accent)" stroke-width="18" stroke-linecap="round"/>
+          </svg>
+          <div style="position:absolute;inset:auto 0 0 0">
+            <p class="rdl-amount" style="font-size:52px;line-height:56px">742</p>
+            <p class="rdl-caption rdl-muted">of 850 · updated today</p>
+          </div>
+        </div>
+        <div class="row" style="justify-content:center;margin-top:16px"><span class="rdl-delta">↑ 18 pts</span><span class="rdl-label">Excellent</span></div>
+      </article>
+
+      <article class="rdl-card">
+        <div class="rdl-section-head"><h3>Score factors</h3><a href="#">See all</a></div>
+        <div style="display:grid;gap:16px">
+          <div><div class="between rdl-label" style="margin-bottom:8px"><span>Payment history</span><span class="rdl-num">98%</span></div><div class="rdl-progress"><span style="--v:98%"></span></div></div>
+          <div><div class="between rdl-label" style="margin-bottom:8px"><span>Credit usage</span><span class="rdl-num">24%</span></div><div class="rdl-progress"><span style="--v:24%"></span></div></div>
+          <div><div class="between rdl-label" style="margin-bottom:8px"><span>Account age</span><span class="rdl-num">6 yrs</span></div><div class="rdl-progress"><span style="--v:60%"></span></div></div>
+        </div>
+      </article>
+
+      <article class="rdl-card rdl-card--accent" style="display:flex;align-items:center;gap:14px">
+        <div style="flex:1"><p class="rdl-title">Boost your score</p><p class="rdl-caption" style="opacity:.7;margin-top:2px">3 quick wins could add ~24 pts</p></div>
+        <button class="rdl-iconbtn" style="background:var(--rdl-ink-950);color:#fff" aria-label="Open"><svg class="rdl-icon"><use href="#i-send"/></svg></button>
+      </article>
+    </div>
+    <nav class="rdl-tabbar" aria-label="Tabs">
+      <button aria-label="Home"><svg class="rdl-icon"><use href="#i-home"/></svg></button>
+      <button aria-current="page" aria-label="Stats"><svg class="rdl-icon"><use href="#i-chart"/></svg></button>
+      <button aria-label="Cards"><svg class="rdl-icon"><use href="#i-card"/></svg></button>
+      <button aria-label="Profile"><svg class="rdl-icon"><use href="#i-user"/></svg></button>
+    </nav>
+  </section>
+</main>
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.get("theme")) document.documentElement.dataset.theme = q.get("theme");
+  if (q.get("accent")) document.documentElement.dataset.accent = q.get("accent");
+</script>
+</body>
+</html>

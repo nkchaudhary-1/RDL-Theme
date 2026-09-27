@@ -1,124 +1,131 @@
 ---
 name: rdl-theme
-description: Design and build apps in the RonDesignLab (RDL) Dribbble style — soft-gray canvas, white rounded cards, one near-black hero card, a single loud accent (lime by default), big medium-weight numbers, pill controls, hatched bar charts, floating dark tab bar. Use whenever the user asks for the "RDL theme", "RDL style", "RonDesignLab style", or a polished Dribbble-grade fintech, health, logistics, credit, SaaS-dashboard or wellness app/screen/component, and whenever work happens in a project that already uses RDL tokens (tokens.css, RDLTokens.swift, tailwind.preset.js). Covers iOS (SwiftUI), web (HTML/CSS, Tailwind, React), web dashboards and Dribbble-shot presentation.
+description: Design and build apps in the RonDesignLab (RDL) style. The default V2 "glass" language (2025–26) has frosted glass over photos, 3D renders and soft gradient auras; huge light-weight numerals with small muted units; dot-matrix figures; orbs, pills and circle–pill–circle action rows; tick-ruler and hairline instruments; status dots; line-art and blueprint illustration. There is also a V1 "flat" fintech style. Use whenever the user asks for the "RDL theme/style", "RonDesignLab style", or a Dribbble-grade fintech, wealth/gold, health, energy, logistics, industrial/IoT, property or SaaS app, screen, dashboard or shot, and whenever a project already uses RDL tokens (tokens.css, RDLTokens.swift, tailwind.preset.js). Covers SwiftUI, HTML/CSS, Tailwind/React, web dashboards and portfolio presentation.
 ---
 
-# RDL Theme
+# RDL Theme · v2
 
-A production design system distilled from the RonDesignLab portfolio on Dribbble
-(fintech, credit, health, logistics, SaaS dashboards). It gives you tokens, components,
-screen archetypes and a QA bar so anything you build reads as "RDL" without copying a shot.
+A production design system distilled from a frame-by-frame scan of 220 RonDesignLab shots
+(`references/design-study.md`, raw notes in `research/moodboard-notes.md`). It gives you tokens,
+components, screen archetypes, domain playbooks and a QA bar, so that what you build reads as
+RDL without copying any single shot.
 
-## The RDL DNA — ten rules
+## The RDL DNA (v2 · glass)
 
-1. **Gray canvas, white cards.** Screens sit on `bg-canvas` (#F3F3F5). Content lives on white
-   `bg-surface` cards. Separation comes from fill contrast — not borders, not heavy shadows.
-2. **One dark hero per screen.** The most important number (balance, revenue, score) goes on a
-   near-black `bg-hero` card with a 28pt radius. Exactly one; it anchors the eye.
-3. **One accent, used loudly but rarely.** Pick one accent pack per product (lime default). It
-   appears on: the primary CTA or the hero's action, the active tab, the highlighted data point,
-   and at most one accent card. Everything else is ink + grays.
-4. **Numbers are the headline.** Money and metrics are the largest type on screen: 40–56pt,
-   weight 500, tight tracking (-3%), tabular figures, decimals de-emphasised (`$48,209.36` with
-   `.36` smaller and gray).
-5. **Everything is round.** Cards 24 (mobile) / 20 (web), hero 28, inner wells 14, buttons,
-   chips, segmented controls, inputs and tab bar are full pills; icon buttons are circles.
-6. **Controls invert against their container.** White on the gray canvas, gray inside white
-   cards, raised-ink inside the hero. Never gray-on-gray or white-on-white.
-7. **Data viz is quiet except for one bar.** Rounded capsule bars on a track. History is muted
-   gray, future/projected is 45° hatched, the selected/current value is solid accent with a
-   small ink tooltip. Line charts: ink stroke, accent area fade, one accent dot.
-8. **Generous, regular spacing.** 4pt grid; 20pt mobile gutters and card padding; 12pt between
-   cards; 28pt between sections. Web: 16pt bento gaps, 24pt card padding.
-9. **Floating dark tab bar.** Mobile navigation is a pill-shaped ink capsule floating 28pt above
-   the bottom edge; the active item sits in an accent circle. Icons only, 1.75 stroke.
-10. **Calm type, confident weights.** One grotesk (Inter / SF Pro). Titles 600, numbers 500,
-    body 400, secondary text gray-500. No uppercase labels, no letter-spaced overlines.
+1. **Glass over something.** Cards are frosted panes over a photo, 3D render, map, aura gradient
+   or fog. Light glass is white at ~56% with a bright rim; dark glass is graphite at ~52% with a
+   10% rim. At most one iridescent rim per screen.
+2. **Numbers are huge and light.** Use weight 300 at 48–84pt in Urbanist, tracked tight. The unit
+   is 38% size and gray; the currency symbol is small and raised; leading zeros are muted. At
+   most one dot-matrix figure per screen, as a signature.
+3. **Headlines whisper.** Large and light, often two lines, with at most one 600-weight word
+   ("Good morning, **Aarav**").
+4. **Circles and pills only.** Orbs for icons (glass / solid ink / white / accent / outline),
+   pills for words, circle–pill–circle rows or slide-to-confirm at the bottom, and a glass dock
+   instead of a tab bar. The industrial variant uses square-rounded tiles (radius 14).
+5. **One loud accent.** Volt, gold, signal, electric, ember or orchid, spent 1–3 times: the active
+   orb, the needle or selected datum, one tag or the checkmarks.
+6. **Color lives in auras.** Soft gradient washes (gold, sunset, meadow, dusk, orchid, ocean,
+   ember, fog) fill widgets and backdrops, often with film grain. Use at most two per screen.
+7. **Instruments, not charts.** Tick rulers with a glowing needle, 2pt meter lines, hairline
+   bars with one lit, dotted ghost curves with a solid window and glass beads, month grids,
+   beaded arcs.
+8. **Status is a dot.** "● Operational", "● In transit", "● Delayed · 2h". Use colored pills
+   only for escalations ("High Priority").
+9. **Technical illustration.** Isometric line-art, blueprints on electric blue, wireframe 3D,
+   and selective color (one accent object in a grayscale scene).
+10. **Photographic presentation.** Hands holding phones, angled devices, depth-of-field
+    close-ups, flat mustard/gray backdrops (`references/presentation.md`).
+
+**Flat style (v1)** is available with `data-style="flat"` / `.rdlSurfaceStyle(.flat)`. It gives
+solid white cards on gray, Inter, medium numerals, an ink hero card, a lime CTA, hatched bars and
+a dark floating tab bar. Use it when a product needs the calmer 2023–24 fintech look, or when
+there is no imagery to put glass on.
 
 ## Workflow
 
-1. **Classify the request.** Domain (fintech, credit, health, logistics/map, SaaS, crypto,
-   wellness, travel) and platform (iOS, web app, web dashboard, Dribbble shot).
-   Read `references/domain-playbooks.md` for that domain's accent pack, hero, charts and
-   domain components.
-2. **Wire the tokens** (never hard-code hex, radius or spacing values):
-   - Web: link `assets/tokens/tokens.css` + `assets/templates/rdl-components.css`; set
-     `<html data-theme="light|dark" data-accent="lime|violet|orange|ocean|gold">`.
-   - Tailwind: import `tokens.css` globally and add `assets/tokens/tailwind.preset.js` to `presets`.
-   - SwiftUI: add `assets/ios/RDLTokens.swift` + `assets/ios/RDLComponents.swift`; inject the
-     accent with `.rdlAccent(.lime)` at the root. Target iOS 17+.
-   - Changing a value? Edit `assets/tokens/tokens.json`, then run
-     `node scripts/build_tokens.mjs` (from the skill folder). Never edit generated files.
-3. **Pick a screen archetype** from `references/screen-patterns.md` (Home/Wallet, Asset detail,
-   Score/Goal, Amount entry → Review → Success, Activity list, Onboarding, Web bento overview,
-   Map ops, Table/CRM). Start from its layout; don't invent structure from scratch.
-4. **Compose with components** from `references/components.md`. Build domain components on top
-   of base components (e.g., a "SIP card" = `rdl-card` + `RDLAmount` + `rdl-progress` + chip),
-   never as one-offs.
-5. **Cover real states** — loading (skeleton cards in `fill-control`), empty (one line + one
-   CTA inside the card), error (inline `danger-soft` banner) — only where the screen has them.
-6. **Run `references/qa-checklist.md`** before you present. Render and look at the result when
-   you can (the templates render cleanly in Playwright).
-
-For a Dribbble-style presentation image, follow `references/presentation.md`.
+1. **Classify.** Domain (see `references/domain-playbooks.md`), platform (iOS / web app / web
+   dashboard / shot), and style (glass by default; flat if there's no imagery or the brand is
+   conservative). Pick the accent pack and the backdrop (aura, photo, 3D or fog).
+2. **Wire the tokens.** Never hard-code hex, radius, blur or type values.
+   - Web: `assets/tokens/tokens.css` + `assets/templates/rdl-components.css`, with fonts
+     Urbanist (300–700) and Doto (700) from Google Fonts.
+     `<html data-theme="light|dark" data-style="glass|flat" data-accent="gold">`.
+   - Tailwind: import `tokens.css` and add `assets/tokens/tailwind.preset.js` to `presets`
+     (`bg-aura-gold`, `rounded-card`, `rounded-widget`, `font-dot`, `backdrop-blur-glass`).
+   - SwiftUI (iOS 17+): add `RDLTokens.swift`, `RDLComponents.swift` and
+     `RDLGlassComponents.swift`; bundle Urbanist (optional). At the root:
+     `.rdlAccent(.gold).rdlSurfaceStyle(.glass)`.
+   - To change a value, edit `assets/tokens/tokens.json`, then run
+     `node scripts/build_tokens.mjs`.
+3. **Pick an archetype** from `references/screen-patterns.md`: G1 home over aura, G2 detail over
+   3D, G3 instrument, G4 amount → slide to confirm, G5 map ops, G6 history/month grid, G7
+   widgets, G8 questionnaire; web W5 bento over fog, W6 3D console, W7 node canvas (flat: M1–M7,
+   W1–W4).
+4. **Compose** from `references/components.md`: surface + figure + instrument + context + one
+   action. Build domain components from these; never one-off styles.
+5. **Handle the real states**: loading (skeleton panes), empty (one line + one action), error
+   (a crit dot + the fix), stale (a warn dot + "Updated n min ago").
+6. **QA** with `references/qa-checklist.md`, measuring contrast on the actual backdrop. Render
+   it and look (the templates render in Playwright).
 
 ## Token quick reference
 
-| Role | Light | Dark | Notes |
-|---|---|---|---|
-| `bg-canvas` | #F3F3F5 | #0B0B0D | page / screen background |
-| `bg-surface` | #FFFFFF | #17171A | cards |
-| `bg-hero` | #0B0B0D | #232327 | the one dark card |
-| `text-primary` / `secondary` | #0B0B0D / #6E6E78 | #F5F5F7 / #A3A3AD | |
-| `accent` (lime) | #CBEF43 | same | text on it is ink (`on-accent`) |
-| `accent` violet / orange / ocean / gold | #7152F5 / #F55F24 / #2F66F6 / #DDAE3A | same | |
-| `success` / `danger` | #1FB877 / #F0453E | lighter tints | deltas use the `-soft` fill |
+| Role | Light | Dark |
+|---|---|---|
+| canvas / surface | `#EFEFF1` / `#FFFFFF` | `#0A0B0C` / `#131416` |
+| text primary / secondary | `#0A0B0C` / `#6B6B74` | `#F4F4F5` / `#A1A1AA` |
+| glass fill / rim | `rgba(255,255,255,.56)` / `.72` | `rgba(28,30,33,.52)` / `rgba(255,255,255,.10)` |
+| accents | volt `#DDF23A` · gold `#EBC45C` · signal `#4BE06E` · electric `#2233F0` · ember `#FF5A1F` · orchid `#A548EE` | same |
 
 | Scale | Values |
 |---|---|
-| Type | display-xl 56, display 44, h1 32, h2 26, h3 20, title 17, body 15, label 14, caption 12, micro 11 |
-| Space | 4 · 8 · 12 · 16 · 20 · 24 · 28 · 32 · 40 · 48 · 64 |
-| Radius | xs 6 · sm 10 · md 14 · lg 20 · xl 24 · 2xl 28 · 3xl 32 · pill |
-| Controls | sm 36 · md 44 · lg 56 · icon button 44 · tab bar 64 |
-| Motion | fast 120ms · base 200ms · slow 320ms · chart 600ms, 40ms stagger · spring 0.35 / 0.82 |
+| Type | display-xl 72 · display 56 · numeral 40 (all 300) · h1 34 · h2 26 (400) · h3 20 · title 17 (500) · body 15 · label 14 · caption 12 · micro 11 |
+| Radius | tile 14 · lg 20 · **card 28** · 2xl 32 · **widget 40** · pill · circle |
+| Controls | orb 44 (56 in action rows) · tile 44 · dock item 52 · slide 64 |
+| Glass | blur 24 · saturate 1.6 |
+| Motion | 120 / 200 / 320 / 600 ms · stagger 40 · spring 0.35 / 0.82 |
 
-Full spec and rationale: `references/foundations.md`.
+Full rationale: `references/foundations.md`.
 
 ## Signature moves (use at least three per screen)
 
-- Hero balance card: label (muted) → big amount with muted decimals → delta pill + context →
-  two pill buttons (accent + raised-ink).
-- Quick-action row: 4 circular 56pt icon buttons with 12pt labels beneath.
-- Hatched history bars with one accent bar and an ink tooltip bubble.
-- Semi-circle gauge (score, goal %) with the number centred on the baseline.
-- Segmented pill (1D · 1W · 1M · 1Y · All) with the selected segment in ink.
-- Accent "nudge" card at the bottom of a scroll: title + caption + ink circular arrow button.
-- 2×2 stat wells (caption label + 17pt value) under a chart.
-- Bento dashboard: ink hero KPI spanning 2 columns, one accent KPI, one plain KPI.
+- A hero figure with a small raised currency and a muted unit or decimals, plus a status dot line.
+- A window curve: dotted ghost series, a solid active window, glass beads, and an ink cursor
+  with an accent ring.
+- A tick ruler with a glowing accent needle (amount, tenure, timeline, gauge).
+- A dot-matrix figure in an ink or aura widget.
+- A circle–pill–circle action row, or slide-to-confirm, pinned at the bottom.
+- A month grid of paid/missed/current/upcoming (SIP, EMI, medication).
+- A blueprint card: electric blue, white isometric line-art, three stacked key/values.
+- A dark iridescent glass card with a beaded arc gauge and a glass verdict pill.
+- Glass chips floating over a 3D render with leader lines to labels.
 
-## Anti-patterns (these break the look)
+## Anti-patterns
 
-- Multiple accents or gradients on one screen; accent-colored body text on white (use `accent-text`).
-- Hairline borders around every card; drop shadows on cards sitting on the canvas.
-- Small numbers: a balance under 32pt, or bold (700) numerals.
-- Square or 8pt-radius cards; rectangular buttons; outline-only primary buttons.
-- Colorful charts with a legend of five hues — RDL charts are monochrome + one accent.
-- Stock-UI gray list separators everywhere; icons with fills or mixed stroke weights.
-- More than one hero card, or a hero card that doesn't hold the screen's key number.
+- Bold or 700-weight numbers; units at the same size as the number; big currency symbols.
+- Glass on plain gray with nothing behind it; stacking more than two auras; neon rainbow gradients.
+- Rectangular buttons in the glass style; mixing sharp Swiss blocks with rounded glass on one screen.
+- Colorful multi-series charts, pie charts with many slices, and chunky filled bars as the
+  default viz.
+- Status shown only as colored text; red used for anything that isn't an error.
+- More than one dot-matrix figure, iridescent rim or accent widget per screen.
+- Gray text on aura gradients (it fails contrast), and tiny captions over busy photos without
+  a scrim.
 
 ## Files
 
 | Path | Use |
 |---|---|
-| `references/design-study.md` | Portfolio analysis: shot inventory, recurring patterns, evolution, evidence level |
-| `references/foundations.md` | Color, type, spacing, radius, elevation, icons, imagery, motion — with rationale |
-| `references/components.md` | Base component specs, states, and how domain components compose from them |
-| `references/screen-patterns.md` | Mobile + web screen archetypes with wireframes and state handling |
-| `references/domain-playbooks.md` | Per-domain recipes: fintech/wealth/gold, credit, health, logistics, SaaS, crypto, wellness, travel |
-| `references/presentation.md` | Dribbble-shot composition (canvas, phones, type, animation) |
-| `references/qa-checklist.md` | Pre-delivery review list |
-| `assets/tokens/` | `tokens.json` (source), generated `tokens.css`, `tailwind.preset.js` |
-| `assets/ios/` | Generated `RDLTokens.swift`, hand-written `RDLComponents.swift` |
-| `assets/templates/` | `rdl-components.css`, `mobile-app.html`, `web-dashboard.html` reference builds |
+| `references/design-study.md` | 220-frame analysis: frequencies, the ten observations, variants, finance frames, v1→v2 |
+| `references/foundations.md` | Modes, color, accent packs, auras, glass, type and numerals, radius, textures, imagery, motion |
+| `references/components.md` | V2 + base components, SVG patterns, specs, domain compositions |
+| `references/screen-patterns.md` | Glass archetypes G1–G8, W5–W7; flat M1–M7, W1–W4 |
+| `references/domain-playbooks.md` | Wealth/gold/SIP/lease, banking, health, energy, logistics, industrial, property, creative, sport |
+| `references/presentation.md` | 2026 shot composition: hands, DOF close-ups, angled devices, three-phone perspective |
+| `references/qa-checklist.md` | Pre-delivery review |
+| `assets/tokens/` | `tokens.json` (source) → `tokens.css`, `tailwind.preset.js` |
+| `assets/ios/` | `RDLTokens.swift` (generated), `RDLComponents.swift` (base), `RDLGlassComponents.swift` (V2) |
+| `assets/templates/` | `rdl-components.css`; glass `mobile-app.html`, `web-dashboard.html`; flat `*-flat.html` |
 | `scripts/build_tokens.mjs` | Regenerates platform outputs from `tokens.json` |
-| `scripts/extract_palette.py` | Calibrates tokens against real shot images (ΔE drift report) |
+| `scripts/extract_palette.py` | Calibrates tokens against exported shots (ΔE drift report) |

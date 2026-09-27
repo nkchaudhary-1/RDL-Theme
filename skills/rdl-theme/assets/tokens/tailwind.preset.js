@@ -95,6 +95,67 @@ module.exports = {
           "600": "var(--rdl-amber-600)",
           "700": "var(--rdl-amber-700)"
         },
+        "volt": {
+          "50": "var(--rdl-volt-50)",
+          "100": "var(--rdl-volt-100)",
+          "200": "var(--rdl-volt-200)",
+          "300": "var(--rdl-volt-300)",
+          "400": "var(--rdl-volt-400)",
+          "500": "var(--rdl-volt-500)",
+          "600": "var(--rdl-volt-600)",
+          "700": "var(--rdl-volt-700)"
+        },
+        "signal": {
+          "50": "var(--rdl-signal-50)",
+          "100": "var(--rdl-signal-100)",
+          "300": "var(--rdl-signal-300)",
+          "400": "var(--rdl-signal-400)",
+          "500": "var(--rdl-signal-500)",
+          "600": "var(--rdl-signal-600)",
+          "700": "var(--rdl-signal-700)"
+        },
+        "electric": {
+          "50": "var(--rdl-electric-50)",
+          "100": "var(--rdl-electric-100)",
+          "300": "var(--rdl-electric-300)",
+          "400": "var(--rdl-electric-400)",
+          "500": "var(--rdl-electric-500)",
+          "600": "var(--rdl-electric-600)",
+          "700": "var(--rdl-electric-700)"
+        },
+        "ember": {
+          "50": "var(--rdl-ember-50)",
+          "100": "var(--rdl-ember-100)",
+          "300": "var(--rdl-ember-300)",
+          "400": "var(--rdl-ember-400)",
+          "500": "var(--rdl-ember-500)",
+          "600": "var(--rdl-ember-600)",
+          "700": "var(--rdl-ember-700)"
+        },
+        "orchid": {
+          "50": "var(--rdl-orchid-50)",
+          "100": "var(--rdl-orchid-100)",
+          "300": "var(--rdl-orchid-300)",
+          "400": "var(--rdl-orchid-400)",
+          "500": "var(--rdl-orchid-500)",
+          "600": "var(--rdl-orchid-600)",
+          "700": "var(--rdl-orchid-700)"
+        },
+        "stone": {
+          "0": "var(--rdl-stone-0)",
+          "50": "var(--rdl-stone-50)",
+          "100": "var(--rdl-stone-100)",
+          "150": "var(--rdl-stone-150)",
+          "200": "var(--rdl-stone-200)",
+          "300": "var(--rdl-stone-300)",
+          "400": "var(--rdl-stone-400)",
+          "500": "var(--rdl-stone-500)",
+          "600": "var(--rdl-stone-600)",
+          "700": "var(--rdl-stone-700)",
+          "800": "var(--rdl-stone-800)",
+          "900": "var(--rdl-stone-900)",
+          "950": "var(--rdl-stone-950)"
+        },
         "bg-canvas": "var(--rdl-bg-canvas)",
         "bg-surface": "var(--rdl-bg-surface)",
         "bg-surface-muted": "var(--rdl-bg-surface-muted)",
@@ -126,6 +187,16 @@ module.exports = {
         "info": "var(--rdl-info)",
         "info-soft": "var(--rdl-info-soft)",
         "scrim": "var(--rdl-scrim)",
+        "glass-fill": "var(--rdl-glass-fill)",
+        "glass-fill-strong": "var(--rdl-glass-fill-strong)",
+        "glass-border": "var(--rdl-glass-border)",
+        "glass-shade": "var(--rdl-glass-shade)",
+        "glass-text": "var(--rdl-glass-text)",
+        "glass-text-muted": "var(--rdl-glass-text-muted)",
+        "glass-dark-fill": "var(--rdl-glass-dark-fill)",
+        "glass-dark-border": "var(--rdl-glass-dark-border)",
+        "tick": "var(--rdl-tick)",
+        "tick-strong": "var(--rdl-tick-strong)",
         "accent": "var(--rdl-accent)",
         "accent-strong": "var(--rdl-accent-strong)",
         "accent-soft": "var(--rdl-accent-soft)",
@@ -136,8 +207,11 @@ module.exports = {
         "sans": [
           "var(--rdl-font-sans)"
         ],
-        "alt": [
-          "var(--rdl-font-sans-alt)"
+        "dot": [
+          "var(--rdl-font-dot)"
+        ],
+        "flat": [
+          "var(--rdl-font-flat)"
         ],
         "mono": [
           "var(--rdl-font-mono)"
@@ -145,58 +219,66 @@ module.exports = {
       },
       "fontSize": {
         "display-xl": [
-          "56px",
+          "72px",
           {
-            "lineHeight": "60px",
+            "lineHeight": "72px",
             "letterSpacing": "-0.035em",
-            "fontWeight": "500"
+            "fontWeight": "300"
           }
         ],
         "display": [
-          "44px",
+          "56px",
           {
-            "lineHeight": "48px",
+            "lineHeight": "58px",
             "letterSpacing": "-0.03em",
-            "fontWeight": "500"
+            "fontWeight": "300"
+          }
+        ],
+        "numeral": [
+          "40px",
+          {
+            "lineHeight": "44px",
+            "letterSpacing": "-0.02em",
+            "fontWeight": "300"
           }
         ],
         "h1": [
-          "32px",
+          "34px",
           {
             "lineHeight": "38px",
-            "letterSpacing": "-0.025em",
-            "fontWeight": "600"
+            "letterSpacing": "-0.02em",
+            "fontWeight": "400"
           }
         ],
         "h2": [
           "26px",
           {
-            "lineHeight": "32px",
-            "letterSpacing": "-0.02em",
-            "fontWeight": "600"
+            "lineHeight": "30px",
+            "letterSpacing": "-0.015em",
+            "fontWeight": "400"
           }
         ],
         "h3": [
           "20px",
           {
-            "lineHeight": "26px",
-            "letterSpacing": "-0.015em",
-            "fontWeight": "600"
+            "lineHeight": "24px",
+            "letterSpacing": "-0.01em",
+            "fontWeight": "500"
           }
         ],
         "title": [
           "17px",
           {
             "lineHeight": "22px",
-            "letterSpacing": "-0.01em",
-            "fontWeight": "600"
+            "letterSpacing": "-0.005em",
+            "fontWeight": "500"
           }
         ],
         "body": [
           "15px",
           {
             "lineHeight": "22px",
-            "letterSpacing": "-0.005em",
+            "letterSpacing": "0em",
             "fontWeight": "400"
           }
         ],
@@ -204,15 +286,15 @@ module.exports = {
           "15px",
           {
             "lineHeight": "22px",
-            "letterSpacing": "-0.005em",
-            "fontWeight": "500"
+            "letterSpacing": "0em",
+            "fontWeight": "600"
           }
         ],
         "label": [
           "14px",
           {
             "lineHeight": "18px",
-            "letterSpacing": "-0.005em",
+            "letterSpacing": "0em",
             "fontWeight": "500"
           }
         ],
@@ -220,15 +302,15 @@ module.exports = {
           "12px",
           {
             "lineHeight": "16px",
-            "letterSpacing": "0em",
-            "fontWeight": "500"
+            "letterSpacing": "0.005em",
+            "fontWeight": "400"
           }
         ],
         "micro": [
           "11px",
           {
             "lineHeight": "14px",
-            "letterSpacing": "0.01em",
+            "letterSpacing": "0.04em",
             "fontWeight": "500"
           }
         ]
@@ -247,17 +329,36 @@ module.exports = {
         "rdl-sm": "10px",
         "rdl-md": "14px",
         "rdl-lg": "20px",
-        "rdl-xl": "24px",
-        "rdl-2xl": "28px",
-        "rdl-3xl": "32px",
-        "pill": "999px"
+        "rdl-xl": "28px",
+        "rdl-2xl": "32px",
+        "rdl-3xl": "40px",
+        "rdl-tile": "14px",
+        "pill": "999px",
+        "card": "var(--rdl-radius-card)",
+        "widget": "var(--rdl-radius-widget)"
       },
       "boxShadow": {
         "rdl-none": "none",
         "rdl-sm": "0 1px 2px rgba(16,16,20,0.04), 0 2px 8px rgba(16,16,20,0.04)",
         "rdl-md": "0 4px 12px rgba(16,16,20,0.05), 0 12px 32px rgba(16,16,20,0.06)",
         "rdl-lg": "0 12px 24px rgba(16,16,20,0.08), 0 24px 56px rgba(16,16,20,0.10)",
-        "rdl-float": "0 16px 40px rgba(11,11,13,0.24)"
+        "rdl-float": "0 16px 40px rgba(11,11,13,0.24)",
+        "rdl-glass": "0 1px 0 rgba(255,255,255,0.6) inset, 0 20px 50px rgba(20,20,24,0.12)",
+        "rdl-glass-dark": "0 1px 0 rgba(255,255,255,0.08) inset, 0 24px 60px rgba(0,0,0,0.45)",
+        "rdl-glow": "0 0 32px var(--rdl-accent)"
+      },
+      "backgroundImage": {
+        "aura-gold": "var(--rdl-aura-gold)",
+        "aura-sunset": "var(--rdl-aura-sunset)",
+        "aura-meadow": "var(--rdl-aura-meadow)",
+        "aura-dusk": "var(--rdl-aura-dusk)",
+        "aura-orchid": "var(--rdl-aura-orchid)",
+        "aura-ocean": "var(--rdl-aura-ocean)",
+        "aura-ember": "var(--rdl-aura-ember)",
+        "aura-fog": "var(--rdl-aura-fog)"
+      },
+      "backdropBlur": {
+        "glass": "var(--rdl-glass-blur)"
       },
       "transitionTimingFunction": {
         "rdl-standard": "cubic-bezier(0.2, 0, 0, 1)",

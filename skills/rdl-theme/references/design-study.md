@@ -1,119 +1,130 @@
 # RDL design study
 
-Analysis of the RonDesignLab (RDL) Dribbble portfolio — dribbble.com/RonDesignLab — and the
-design language this skill encodes.
+What the RonDesignLab (RDL) visual language is, based on a frame-by-frame scan of 220 shots.
+Raw per-frame notes: `research/moodboard-notes.md` at the repo root.
 
-## Evidence and method
+## Sources and evidence
 
 | Source | What it gave | Confidence |
 |---|---|---|
-| Search-indexed shot titles and descriptions (links below) | Project list, domains, platforms, product intent | High |
-| The studio's publicly known visual language across its long-running Dribbble output | Layout, color, type, chart and presentation conventions | Medium — not re-sampled pixel by pixel for v1 |
-| Reference builds in `assets/templates/`, rendered and reviewed | Proof the rules produce the look when combined | High (for internal consistency) |
+| **Figma "Design Moodboard 2026"**: 220 RDL shots (1600×1200), each viewed and annotated | V2: the current glass language, components, type, color, charts, presentation | **High.** Seen directly, colors judged by eye |
+| Search-indexed Dribbble shot titles (Coin, Mint, SavingPro, Credit Pros, Aella, Oscar…) | V1: the 2023–24 flat fintech series | Medium. From text, not pixels |
+| Reference builds in `assets/templates/`, rendered and reviewed | Proof that the rules add up to the look | High for internal consistency |
 
-**Calibration loop.** v1 tokens were set by eye, not sampled. To tighten them: export 20–40
-recent shots into `research/shots/`, run `scripts/extract_palette.py research/shots`, and update
-`tokens.json` wherever ΔE > 8. Then run `build_tokens.mjs`. Record what changed in the repo
-CHANGELOG so the theme stays traceable to its source.
+To pixel-calibrate, export shots to `research/shots/`, run `scripts/extract_palette.py`, and
+update `tokens.json` wherever ΔE > 8.
 
-## Studio profile
+## What the 220 frames contain
 
-- Product-design studio (UX/UI, branding, motion). ~25k Dribbble followers; clients cited include
-  Ford, Fox Sports and Colgate. Shots are authored by individual designers "for RonDesignLab"
-  (e.g., Jack R., Stav D., "RD UX/UI"), so the style is a studio system, not one person's taste.
-- Stated thesis: make technology "accessible and human" by organising information so the key
-  idea stands out. In the UI that means **one focal number per screen**.
+**Domains** (by frame title): industrial, IoT and operations make up about 40% (energy/solar,
+ports and cranes, rail, fleets and trucks, robotics, drones, water and air plants, oil fields,
+traffic and GIS). Health and wellness is about 30% (glucose, cortisol, heart, stress/HRV,
+supplements, telehealth). Fintech and property is about 12% (TD Bank, Finora, Salesforce,
+QuickBooks, crypto converter, CityBldr, real-estate investment). Creative and AI tools are about
+10% (Cinemaro VFX, Accela docs, AI workflows, notes). Sport, travel and retail make up the rest.
 
-## Portfolio inventory
+**Formats:** about 45% mobile, 25% desktop/tablet dashboards, 30% close-ups (widgets, cards,
+single components). **Mode:** about 45% dark or photo-backed, 55% light.
 
-| Project | Domain | Platform | Link |
-|---|---|---|---|
-| Coin — Financial Wallet | Fintech / wallet | iOS | [shot](https://dribbble.com/shots/18421629-Coin-Financial-Wallet-Mobile-App) |
-| Bloom Trading — Investment | Fintech / trading | iOS | [shot](https://dribbble.com/shots/22624428-Bloom-Trading-Investment-Mobile-App) |
-| Mint App — Personal Finance SaaS | Fintech / budgeting | iOS + web | [shot](https://dribbble.com/shots/24184169-Mint-App-Personal-Finance-SaaS) |
-| SavingPro — Savings SaaS Dashboard | Fintech / savings goals | iOS + web | [shot](https://dribbble.com/shots/24028927-SavingPro-Mobile-App-Savings-SaaS-Dashboard) |
-| Creative Juice — Blogger Finance | Fintech / creator income | iOS + web | [shot](https://dribbble.com/shots/24424794-Creative-Juice-Blogger-Finance-SaaS-Dashboard) |
-| QuickBooks — Finance Service Management | Fintech / SMB accounting | Web dashboard | [shot](https://dribbble.com/shots/21225716-QuickBooks-Finance-Service-Management) |
-| Credit Pros — Credit Score Dashboard | Credit | iOS + web | [shot](https://dribbble.com/shots/24230013-Credit-Pros-SaaS-Credit-Score-Dashboard) |
-| Aella — Credit Score SaaS | Credit / ML scoring | Web dashboard | [shot](https://dribbble.com/shots/23992108-Aella-Credit-Dashboard-Credit-Score-SaaS) |
-| Salesforce CRM — Invoice Management | SaaS / CRM | Web dashboard | [shot](https://dribbble.com/shots/23203289-Salesforce-CRM-Invoice-Management-Software) |
-| PHR — Personal Health Record | Health | iOS | [shot](https://dribbble.com/shots/19557425-PHR-Personal-Health-Record-App) |
-| Oscar Health — Health Insurance | Health / insurance | iOS | [shot](https://dribbble.com/shots/22977229-Oscar-Health-Health-Insurance-App) |
-| EHR — Electronic Health Record System | Health / clinical | Web + case study | [shot](https://dribbble.com/shots/15858154-EHR-Electronic-Health-Record-System-Behance-Case) |
-| Vessel Health, Dentale EHR, Veri CGM tracker, Vizo neuro-optical scan, HealtIV, Dr+ ambulance | Health | iOS / web | project pages on the profile |
-| Lendora — Property Map Management | Property / map ops | Web dashboard | profile |
-| Helvio Logistics, Moverta | Logistics / route tracking | iOS + web | profile |
-| Urbis — City Task Management | Civic ops | iOS | profile |
-| Monte, S&T Financial Assistant, Daneel crypto bot, MBOX NFT | Fintech / crypto | iOS | profile |
-| Luma meditation, Fitness workout tracker | Wellness | iOS | profile |
-| Booki, AI Travel dashboard, Customer Journey CRM | Travel / SaaS | iOS / web | profile |
+**How often each pattern appears** (share of the 220 frame notes that mention it):
 
-**Mix:** roughly half fintech and credit, a quarter health, the rest logistics/ops, SaaS and
-wellness. The system is tuned for **data-dense consumer and prosumer products where a number
-is the hero** — which is why it fits a gold-investment app well.
+| Pattern | Frames | Note |
+|---|---|---|
+| Glass surfaces (frosted, liquid, iridescent rim) | ~60% | The main surface material |
+| Big light-weight numerals with a small muted unit | ~59% | `84.2 kW`, `98 %`, `$ 3,450 /mo` |
+| Circular buttons (orbs) | ~41% | Back, more, add, play, send, knobs |
+| Pills (buttons, chips, segmented) | ~43% | Glass or solid, never rectangles, except in the Swiss variant |
+| Yellow / lime / mustard accent | ~30% | The most frequent accent family |
+| Green signal | ~31% | Status, "in range", active |
+| 3D renders as the hero visual | ~29% | Machines, buildings, products, anatomy |
+| Gradient washes ("auras") | ~25% | Card fills and screen backdrops |
+| Photography behind the UI | ~20% | Full-bleed, glass on top |
+| Mixed-weight headlines | ~18% | "Hello **Alex**", "Lawn Mower **Status**" |
+| Square-rounded tiles | ~17% | Industrial toolbars, map tools |
+| Tick rulers and tick dials | ~16% | Sliders, timelines, gauges |
+| Dotted/dashed lines | ~17% | Ghost curves, leaders, guides, selection boxes |
+| Line-art, blueprint and wireframe drawings | ~14% | Trucks, engines, cars, trusses, figures |
+| Dot-matrix (LED) numerals | ~7% | `84%`, `16.2`, `22K`, `25`, `8`, a signature accent |
+| Circle–pill–circle action rows and slide-to-confirm | ~9% | `← [Start journey] →`, `(→) Convert balance ›››` |
 
-## Cross-portfolio patterns
+## The V2 language in ten observations
 
-### Layout
-- Mobile: 20pt gutters, stacked full-width cards with 12pt gaps; a greeting header (avatar +
-  two-line greeting + circular bell) on home screens; centred title with circular back/more
-  buttons on detail screens.
-- Web: floating white sidebar (rounded, inset from the viewport), page title as a greeting,
-  search pill + bell + primary pill button top-right, and a **bento grid** of cards with one
-  dark KPI card spanning two columns.
-- Map products put the map full-bleed and float white cards and pill filters over it.
+1. **Glass is the material.** Cards are frosted panes over something: a photo, a 3D render, a map,
+   an aura gradient, or plain fog. Light glass is about 55% white with a bright 1px rim. Dark glass
+   is about 50% graphite with a 10% white rim, often with an iridescent rim (pink → cyan → lime)
+   on premium cards.
+2. **Numbers are light, not bold.** Hero numbers are 48–84pt at weight 300 in a geometric sans
+   (Urbanist/Outfit family), tracked tight. Units sit at about 38% size in gray (`kW`, `%`,
+   `mg/dl`), and currency symbols are small and raised (`$ 12,340`). Leading zeros can be
+   greyed (`0.00`**321** BNB). About 7% of frames swap in dot-matrix digits.
+3. **Headlines whisper, with one heavy word.** Titles are large and light, often two lines, with
+   one bold word ("Hello **Richard!**", "**Completed 88%** of your planned workout").
+4. **Everything you tap is a circle or a pill.** Orbs (glass, solid black, white, accent) for
+   icons; pills for text actions; circle–pill–circle rows at the bottom; glass docks instead of
+   tab bars. The industrial and Swiss variant switches to square-rounded tiles (radius 12–14) or
+   sharp rectangles.
+5. **One loud accent, lots of neutral.** Electric yellow/lime (`#DDF23A`), mustard/gold
+   (`#EBC45C`), signal green (`#4BE06E`), electric blue (`#2233F0`), ember orange-red (`#FF5A1F`)
+   or orchid. The accent goes on the active orb, the needle, the selected cell, and one tag.
+6. **Color lives in auras, not in UI chrome.** Soft gradient washes fill widgets and backdrops:
+   gold-white radial (credit 832), orange→pink→blue radial (biological age), olive→rose (TD Bank,
+   cortisol), magenta→violet (widgets), green→lime (heart age), navy→teal. Often with film grain.
+7. **Instruments, not charts.** Data is drawn like hardware: tick rulers with a glowing needle;
+   tick dials; thin 2px meters with a value on the right; vertical hairline bars with one lit;
+   dotted ghost curves where a solid "window" shows the active range; glass beads as nodes;
+   radial dot plots; pixel heatmaps. Chunky filled bars are rare.
+8. **Status is a dot.** "● Operational", "● Congested", "● In Progress". Small colored dots with
+   a soft halo, plus "Label: value" pairs. Colored pills are used for severity ("High Priority",
+   "Maintenance").
+9. **Illustration is technical.** Isometric line-art (trucks, trusses, vaults, cars), blueprint
+   drawings on electric blue, wireframe 3D, cutaways, and selective color, where a grayscale 3D
+   scene has one object lit in the accent (a red building, a yellow truck, blue containers).
+10. **Presentation is photographic.** Phones held in hands (often silhouetted), angled monitors
+    and iPads, shallow depth-of-field close-ups of one component, flat mustard/orange/gray
+    backgrounds, and dark vignettes with glow.
 
-### Color
-- Monochrome base: off-white canvas, white cards, near-black ink for hero cards, primary buttons,
-  selected segments and tooltips.
-- One saturated accent per product. Neon lime/chartreuse is the studio's most recognisable
-  signature in fintech work; violet, orange and blue appear in other products; health work
-  leans on softer blues and mints. Accent is spent on the single most important interactive or
-  data element.
-- Semantic green/red only on deltas, always as a soft-tinted pill.
+## Variants inside the language
 
-### Typography
-- Neutral grotesk (Inter / SF Pro / similar). Large medium-weight numerals with tight tracking;
-  decimals and currency codes visibly smaller or grayer. Titles semibold; captions gray.
-- Sentence case everywhere. Labels are short ("Total balance", "This week").
+| Variant | When RDL uses it | Traits |
+|---|---|---|
+| **Glass on photo/3D** (dominant) | Health, energy, mobility, security | Dark or light glass, orbs, dock, auras |
+| **Light instrument** | Health dashboards, fintech, logistics mobile | White/very light gray cards (radius 28–40), light numerals, tick rulers, lime tags |
+| **Blueprint** | Automotive, industrial, insurance | Electric blue fields, white line art, outlined inputs, square buttons |
+| **Swiss / editorial** | QuickBooks, Oil Well, Smart Home, Greenhouse | Sharp or small radii, neon-yellow blocks, hairline dividers, bold/light type contrast |
+| **Node canvas** | AI workflows, VFX, documents | Black dot-grid canvas, glowing bezier connectors, node cards with ports |
 
-### Data visualisation
-- Capsule bar charts on a light track; the current/selected bar in accent with an ink tooltip;
-  other periods muted; projected periods hatched with 45° lines.
-- Smooth line charts with a thin ink stroke, soft accent area gradient, dashed vertical cursor
-  and an accent dot with a white ring.
-- Semi-circle gauges for scores/goals, number centred on the baseline.
-- Thin rounded progress bars for factors/goals. No pie charts with many slices; donuts with
-  2–4 segments at most.
+## Finance frames (most relevant for money products)
 
-### Components
-- Pill buttons (56pt primary on mobile), circular icon buttons (44pt), quick-action circles
-  (56pt) with labels beneath, pill chips and segmented controls, avatar stacks, list rows with
-  a circular leading glyph and right-aligned amount + caption.
-- Floating dark capsule tab bar with an accent circle for the active item.
+- **Credit Score 832 (gold):** white→amber radial aura, huge medium numeral, "-1 pts" above,
+  "Excellent / Checked Daily" beside, thin black arc gauge with a needle, black ↗ orb.
+- **TD Bank paid-amount timeline:** olive→rose glass screen, "$ 12,340" with a small `$`,
+  "Term 36 m.", "You've paid / Left to pay" glass pills with lime radio dots, a **month grid of
+  glass tiles with lime check circles** (missed = gray ×). This maps directly onto SIP and EMI
+  history.
+- **Bank Account $22K:** fluted-glass distortion over a portrait, a glass notification card
+  "$22 K +14% ↗ upcoming this week", an account row with a card thumbnail and a white ⇄ orb.
+- **Crypto converter:** plum gradient glass, "0.00**321**BNB" with muted leading zeros,
+  right-aligned label/value rows, **slide-to-convert** pill.
+- **QuickBooks / Salesforce desktops:** Swiss light layouts, neon-yellow delta tags, line
+  semicircle gauges, hairline bar columns, aura gradient bento tiles.
 
-### Imagery and depth
-- Depth from fill contrast and radius, not shadow. Shadows only on floating elements (tab bar,
-  sheets, phone mockups in presentation).
-- Occasional 3D objects (cards, coins) or cut-out photography as hero illustration; used
-  sparingly, one per screen at most.
+## V1 → V2: what changed
 
-### Presentation
-- 4:3 shots (1600×1200) with 2–3 phone screens on a flat light-gray or accent-tinted canvas,
-  phones staggered vertically; small product wordmark top-left, category label top-right.
-- Dashboards shown flat, edge-to-edge, sometimes with one phone overlapping.
-- Many shots are animated: bars grow in with stagger, numbers count up, the tab indicator glides.
+| | V1 (2023–24 flat fintech) | V2 (2025–26 glass) |
+|---|---|---|
+| Surface | Flat white cards on gray | Glass over photo/3D/aura; white cards in light mode |
+| Type | Inter; numerals 500 | Urbanist; numerals 300; dot-matrix option |
+| Accent | Lime `#CBEF43` as a CTA fill | Volt/gold/signal/electric as needle, dot, orb, tag |
+| Charts | Capsule bars, hatched history | Tick rulers, hairline bars, dotted ghost curves, beads |
+| Navigation | Dark floating tab bar | Glass dock of orbs; circle–pill–circle rows |
+| Illustration | Occasional 3D objects | 3D renders, line-art, blueprint, selective color |
+| Presentation | Three flat phones on gray | Hands, angled devices, DOF close-ups |
 
-## Evolution (why v1 is tuned the way it is)
+V1 stays available as `data-style="flat"` for products that want the calmer fintech look.
 
-Earlier RDL work used more gradients, illustration and multi-color palettes. The more recent
-fintech/credit/SaaS series converges on **monochrome + one neon accent + bento cards + big
-numerals**. This skill defaults to that current language (lime pack) and keeps the other accent
-packs for domains where lime is wrong (health → ocean, luxury/gold → gold, playful → violet/orange).
+## V1 portfolio inventory (Dribbble, search-indexed)
 
-## What this means for building
-
-1. Decide the screen's one number before anything else; that decides the hero card.
-2. Spend the accent once or twice per screen; make everything else ink/gray.
-3. Keep components generic and compose domain components from them (see `components.md`).
-4. Present work the RDL way (see `presentation.md`) when the goal is a portfolio shot.
+Coin (wallet), Bloom Trading, Mint (personal finance), SavingPro, Creative Juice, QuickBooks,
+Credit Pros, Aella, Salesforce CRM, PHR, Oscar Health, EHR, Vessel, Dentale, Veri CGM, Vizo,
+Lendora, Helvio, Moverta, Urbis, Monte, Daneel, MBOX, Luma, Booki. Links are in the git history
+of this file (v1).
