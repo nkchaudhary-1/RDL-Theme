@@ -23,6 +23,7 @@ const shots = [
   { file: "web-dashboard.html?theme=dark&accent=volt", out: "v3-dashboard-dark.png", w: 1440, h: 960 },
   { file: "mobile-app-flat.html", out: "v1-flat-mobile.png", w: 1600, h: 1200 },
   { file: "web-dashboard-flat.html", out: "v1-flat-dashboard.png", w: 1440, h: 960 },
+  { file: "radius-demo.html", out: "radius-demo.png", w: 1440, h: 900, full: true },
 ];
 
 const browser = await chromium.launch();
@@ -31,7 +32,7 @@ for (const s of shots) {
   await page.goto(tpl(s.file));
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(900); // let entrance animations settle
-  await page.screenshot({ path: join(root, "docs", s.out) });
+  await page.screenshot({ path: join(root, "docs", s.out), fullPage: !!s.full });
   await page.close();
   console.log("rendered", s.out);
 }

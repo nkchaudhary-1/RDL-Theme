@@ -78,6 +78,7 @@ skills/rdl-theme/
 ├── references/
 │   ├── layout.md                Spacing ladder, screen skeleton, grids, alignment, control heights, radius
 │   ├── anatomy.md               Exact specs for every component and layout primitive
+│   ├── radius.md                Corner radius: scale, concentric nesting, strict vs soft, code, audit
 │   ├── guidelines.md            Rulebook: hierarchy, type, color budget, consistency, minimalism
 │   ├── design-study.md          220-frame analysis: frequencies, 20 structural rules, v1→v3
 │   ├── foundations.md           Modes, color, accents, auras, glass, type and numerals, radius, imagery, motion
@@ -89,7 +90,7 @@ skills/rdl-theme/
 ├── assets/
 │   ├── tokens/                  tokens.json (source) → tokens.css, tailwind.preset.js
 │   ├── ios/                     RDLTokens.swift (generated), RDLComponents.swift, RDLGlassComponents.swift, RDLLayout.swift
-│   └── templates/               rdl-components.css, glass + flat mobile and dashboard references
+│   └── templates/               rdl-components.css, glass + flat mobile and dashboard references, radius-demo.html
 └── scripts/
     ├── build_tokens.mjs         tokens.json → CSS / Tailwind / Swift
     ├── audit_ui.mjs             Layout, consistency and contrast audit for any HTML build
@@ -103,8 +104,9 @@ research/
 
 Single-file style guide: [`DESIGN-STYLE.md`](DESIGN-STYLE.md).
 
-Corner-radius demo (concentric nesting, strict vs soft, interactive playground):
-[`docs/radius-demo.html`](docs/radius-demo.html)
+Corner-radius guide and interactive demo (concentric nesting, strict vs soft, playground):
+[`references/radius.md`](skills/rdl-theme/references/radius.md) ·
+[`assets/templates/radius-demo.html`](skills/rdl-theme/assets/templates/radius-demo.html)
 
 ![Concentric corners](docs/radius-demo.png)
 

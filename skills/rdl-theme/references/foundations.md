@@ -146,7 +146,8 @@ See `layout.md` for the full system. In short:
 | pill / circle | — | Buttons, chips, segmented, dock, slide, orbs, knobs, beads |
 
 Nested radius is concentric: inner = outer − gap, where gap = padding + border. To nest deeper,
-halve the gap (host padding 12, then 8 → 4) instead of clamping the radius (`layout.md` §6). The Swiss variant uses radius 0–4 on blocks and
+use A · strict (halve the padding: host 12, then 8 → 4) or B · soft (keep the padding, radius −
+padding/2) instead of clamping the radius (`radius.md`). The Swiss variant uses radius 0–4 on blocks and
 buttons. Use it only when the whole product takes that tone, and don't mix it with rounded glass
 on the same screen.
 

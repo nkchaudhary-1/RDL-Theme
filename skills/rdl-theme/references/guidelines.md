@@ -151,6 +151,6 @@ arrival. Stagger lists by 40ms. With Reduce Motion, fades only.
 | Accent on one thing | Accent on every icon |
 | Status dot + word | Red text alone |
 | Radius from one family | 28 cards next to 6 buttons |
-| Nested radius = outer − gap (padding + border); halve the gap to go deeper | Inner pane with the same radius as its container, or a clamped radius that breaks concentricity |
+| Nested radius = outer − gap (padding + border); go deeper with A · strict or B · soft (`radius.md`) | Inner pane with the same radius as its container, or a clamped radius that breaks concentricity |
 | Glass over a backdrop | Glass on plain gray |
 | Instruments (ticks, hairlines) | Rainbow pies, chunky 3D bars |

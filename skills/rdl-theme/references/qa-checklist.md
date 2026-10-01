@@ -30,7 +30,7 @@ marked **G** apply to the glass style, **F** to the flat style, and the rest to 
 - [ ] Margins 20 (mobile) / 32 (web). Header row items all 48. Header → title 24.
 - [ ] One control height per row (ladder 24 · 32 · 40 · 48 · 56 · 64).
 - [ ] Cards are corner-anchored: label TL, action TR, figure BL, context BR.
-- [ ] Nested corners are concentric: inner = outer − gap (padding + border). Deeper levels halve the gap; no clamped radii; ≤ 3 levels. One radius family per product.
+- [ ] Nested corners follow `radius.md`: inner = outer − gap (padding + border). Deeper levels use A · strict (halve the padding) or B · soft (radius − padding/2), one method per stack; no clamped radii; ≤ 3 levels. One radius family per product.
 - [ ] Bottom actions pinned: action row, slide-to-confirm or dock, 34 from the bottom. Content stays 12+ clear of it (≥ 120 bottom zone).
 - [ ] Web: 12-column bento, equal row heights, cells span 3/4/6/8/12; every cell uses the card radius.
 - [ ] Budgets (`guidelines.md`): ≤ 5 type sizes per screen, ≤ 3 per card, accent ≤ 3 uses, ≤ 2 auras.

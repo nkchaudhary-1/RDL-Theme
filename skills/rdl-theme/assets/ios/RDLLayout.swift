@@ -267,16 +267,23 @@ public extension View {
     }
 }
 
+/// How nested corners shrink (references/radius.md §3).
+/// `.strict`: inner = outer − gap; concentric at every level (default; halve the padding to go deeper).
+/// `.soft`: inner = outer − gap/2; the article's deep-nesting method, which keeps padding (and bands) even.
+public enum RDLNestMethod { case strict, soft }
+
 public extension RDLRadius {
-    /// Concentric nesting: inner radius = outer − gap, where gap = padding + border (+ any extra inset).
-    /// Floors at 0 — never clamp upward: if the result is too small, halve the gap instead
-    /// (`hostPadding`, then 8 → 4). Pills and circles are exempt.
+    /// Nested corner radius. gap = padding + border (+ any extra inset). Floors at 0 — never clamp
+    /// upward: if the result is too small, halve the gap (`hostPadding`, then 8 → 4) or use `.soft`.
+    /// Pills and circles are exempt.
     ///
-    ///     RDLRadius.nested(outer: RDLRadius.card, padding: RDLSpace.cardPadding)          // 8
-    ///     RDLRadius.nested(outer: RDLRadius.widget, padding: RDLRadius.hostPadding)       // 28
+    ///     RDLRadius.nested(outer: RDLRadius.sheet, padding: RDLSpace.cardPadding)            // 28
+    ///     RDLRadius.nested(outer: RDLRadius.widget, padding: RDLRadius.hostPadding)          // 28
     ///     RDLRadius.nested(outer: RDLRadius.card, padding: RDLRadius.hostPadding, border: 1) // 15
-    static func nested(outer: CGFloat, padding: CGFloat, border: CGFloat = 0) -> CGFloat {
-        max(0, outer - padding - border)
+    ///     RDLRadius.nested(outer: RDLRadius.card, padding: 20, method: .soft)               // 18
+    static func nested(outer: CGFloat, padding: CGFloat, border: CGFloat = 0, method: RDLNestMethod = .strict) -> CGFloat {
+        let gap = padding + border
+        return max(0, outer - (method == .soft ? gap / 2 : gap))
     }
 
     /// Padding for a surface that hosts nested panes: the card gap (20) halved and snapped to the ladder.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Concentric Corners</title>
-<!-- RDL Theme · radius demo. Self-contained (inlines the few tokens it needs) so it opens anywhere.
+<!-- RDL Theme · radius demo (references/radius.md). Self-contained (inlines the few tokens it needs) so it opens anywhere.
      Rule: outer = inner + gap (gap = padding + border). Deeper levels: A strict (halve padding) or B soft (radius − padding/2). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -182,7 +182,7 @@
         <div class="spec-row"><span>Value chip</span><span class="dots"></span><b>8</b></div>
       </div>
       <p class="meta">With the default 20 padding the pane would get 28 − 20 = 8, and the chip would hit 0. Halving the host padding to 12 keeps real curves at every level.</p>
-      <p class="meta">Code: <b style="font-weight:600;color:var(--ink)">.rdl-nest</b> + <b style="font-weight:600;color:var(--ink)">.rdl-card--host</b> on web · <b style="font-weight:600;color:var(--ink)">RDLRadius.nested(outer:padding:border:)</b> in SwiftUI.</p>
+      <p class="meta">Code: <b style="font-weight:600;color:var(--ink)">.rdl-nest</b> / <b style="font-weight:600;color:var(--ink)">.rdl-nest--soft</b> + <b style="font-weight:600;color:var(--ink)">.rdl-card--host</b> on web · <b style="font-weight:600;color:var(--ink)">RDLRadius.nested(outer:padding:border:method:)</b> in SwiftUI. Guide: references/radius.md.</p>
     </article>
   </section>
 </main>

@@ -473,23 +473,24 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-spread { justify-content: space-between; }
 .rdl-fill { flex: 1; min-width: 0; }
 
-/* ---------- Concentric nesting (references/layout.md §6) ----------
-   inner radius = outer radius − gap, gap = padding + border. Each surface hands its direct
-   children the exact concentric radius in --rdl-nest-r; give a nested pane the .rdl-nest class.
-   Going deeper? Halve the gap (use the --host padding of 12, then 8 → 4) instead of clamping the
-   radius — clamping is what produces the flat, "pinched" inner corners. Negative results floor at 0. */
-.rdl-card > *                   { --rdl-nest-r: max(0px, calc(var(--rdl-radius-card) - var(--rdl-card-padding))); }
-.rdl-glass > *                  { --rdl-nest-r: max(0px, calc(var(--rdl-radius-card) - var(--rdl-card-padding) - 1px)); }
-.rdl-widget > *                 { --rdl-nest-r: max(0px, calc(var(--rdl-radius-widget) - var(--rdl-card-padding))); }
-.rdl-widget.rdl-glass > *       { --rdl-nest-r: max(0px, calc(var(--rdl-radius-widget) - var(--rdl-card-padding) - 1px)); }
-.rdl-sheet > *                  { --rdl-nest-r: max(0px, calc(var(--rdl-radius-sheet) - var(--rdl-card-padding))); }
-.rdl-blueprint > *              { --rdl-nest-r: max(0px, calc(var(--rdl-radius-lg) - var(--rdl-card-padding))); }
+/* ---------- Concentric nesting (references/radius.md) ----------
+   A · strict (default): inner radius = outer − gap, gap = padding + border → .rdl-nest
+   B · soft (deep stacks with even bands): inner radius = outer − gap/2 → .rdl-nest--soft
+   Each surface hands its direct children both values; wrappers pass them on by inheritance.
+   Going deeper with A? Halve the gap: --host padding 12, then 8 → 4. Never clamp the radius up. */
+.rdl-card > *                                { --rdl-nest-r: max(0px, calc(var(--rdl-radius-card) - var(--rdl-card-padding))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-card) - (var(--rdl-card-padding)) / 2)); }
+.rdl-glass > *                               { --rdl-nest-r: max(0px, calc(var(--rdl-radius-card) - var(--rdl-card-padding) - 1px)); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-card) - (var(--rdl-card-padding) + 1px) / 2)); }
+.rdl-widget > *                              { --rdl-nest-r: max(0px, calc(var(--rdl-radius-widget) - var(--rdl-card-padding))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-widget) - (var(--rdl-card-padding)) / 2)); }
+.rdl-widget.rdl-glass > *                    { --rdl-nest-r: max(0px, calc(var(--rdl-radius-widget) - var(--rdl-card-padding) - 1px)); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-widget) - (var(--rdl-card-padding) + 1px) / 2)); }
+.rdl-sheet > *                               { --rdl-nest-r: max(0px, calc(var(--rdl-radius-sheet) - var(--rdl-card-padding))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-sheet) - (var(--rdl-card-padding)) / 2)); }
+.rdl-blueprint > *                           { --rdl-nest-r: max(0px, calc(var(--rdl-radius-lg) - var(--rdl-card-padding))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-lg) - (var(--rdl-card-padding)) / 2)); }
 /* Host variant: a surface that holds nested panes halves its gap (20 → 12) so the panes keep real curves:
    card 28 → 16 · widget 40 → 28 · blueprint 20 → 8 */
 .rdl-card--host, .rdl-glass--host, .rdl-widget--host, .rdl-blueprint--host { padding: var(--rdl-space-3); }
-.rdl-card.rdl-card--host > *            { --rdl-nest-r: calc(var(--rdl-radius-card) - var(--rdl-space-3)); }
-.rdl-glass.rdl-glass--host > *          { --rdl-nest-r: calc(var(--rdl-radius-card) - var(--rdl-space-3) - 1px); }
-.rdl-widget.rdl-widget--host > *        { --rdl-nest-r: calc(var(--rdl-radius-widget) - var(--rdl-space-3)); }
-.rdl-widget.rdl-glass.rdl-widget--host > * { --rdl-nest-r: calc(var(--rdl-radius-widget) - var(--rdl-space-3) - 1px); }
-.rdl-blueprint.rdl-blueprint--host > *  { --rdl-nest-r: calc(var(--rdl-radius-lg) - var(--rdl-space-3)); }
+.rdl-card.rdl-card--host > *                 { --rdl-nest-r: max(0px, calc(var(--rdl-radius-card) - var(--rdl-space-3))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-card) - (var(--rdl-space-3)) / 2)); }
+.rdl-glass.rdl-glass--host > *               { --rdl-nest-r: max(0px, calc(var(--rdl-radius-card) - var(--rdl-space-3) - 1px)); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-card) - (var(--rdl-space-3) + 1px) / 2)); }
+.rdl-widget.rdl-widget--host > *             { --rdl-nest-r: max(0px, calc(var(--rdl-radius-widget) - var(--rdl-space-3))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-widget) - (var(--rdl-space-3)) / 2)); }
+.rdl-widget.rdl-glass.rdl-widget--host > *   { --rdl-nest-r: max(0px, calc(var(--rdl-radius-widget) - var(--rdl-space-3) - 1px)); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-widget) - (var(--rdl-space-3) + 1px) / 2)); }
+.rdl-blueprint.rdl-blueprint--host > *       { --rdl-nest-r: max(0px, calc(var(--rdl-radius-lg) - var(--rdl-space-3))); --rdl-nest-r-soft: max(0px, calc(var(--rdl-radius-lg) - (var(--rdl-space-3)) / 2)); }
 .rdl-nest, .rdl-glass.rdl-nest, .rdl-card.rdl-nest, .rdl-widget.rdl-nest { border-radius: var(--rdl-nest-r, var(--rdl-radius-md)); }
+.rdl-nest--soft, .rdl-glass.rdl-nest--soft, .rdl-card.rdl-nest--soft, .rdl-widget.rdl-nest--soft { border-radius: var(--rdl-nest-r-soft, var(--rdl-radius-md)); }

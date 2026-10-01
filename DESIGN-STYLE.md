@@ -209,8 +209,11 @@ bottom-left and the context bottom-right. An optional instrument sits between th
 
 **Concentric nesting.** inner radius = outer radius − gap, where gap = padding + border. Examples:
 sheet 48 / 20 → card 28 · widget 40 / 20 → pane 20 · card 28 / 12 → pane 16. To nest deeper,
-**halve the gap** at each level (24 ─8→ 16 ─4→ 12 ─4→ 8) instead of clamping the inner radius;
-clamping is what makes inner corners look pinched or flat. If padding ≥ radius, the inner corner is
+don't let the radius run out (24 ─8→ 16 ─8→ 8 ─8→ **0**). Use **A · strict**, halving the padding
+(24 ─8→ 16 ─4→ 12 ─4→ 8, concentric, the default), or **B · soft**, keeping the padding and
+subtracting half of it from the radius (same radii, even bands, slightly soft curves). Never clamp
+the inner radius up to a minimum; that is what makes inner corners look pinched. Full guide and
+live demo: `skills/rdl-theme/references/radius.md`, `assets/templates/radius-demo.html`. If padding ≥ radius, the inner corner is
 square. Pills inside pills are already concentric when inner height = outer height − 2 × gap. Use at
 most three levels, continuous (squircle) corners on iOS, and one radius family per product.
 

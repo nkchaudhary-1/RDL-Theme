@@ -32,7 +32,8 @@ out **consistent, minimal and well spaced** by construction rather than by eye.
 8. **Status is a dot plus a word.** Soft-tint pills are for escalations only. Destructive actions
    use a red-tinted tile, never a red solid.
 9. **Measured space.** Use the 4pt ladder by relationship (4 < 8 < 12 < 20 < 32), one control
-   height per row, and concentric corners (inner radius = outer − gap; halve the gap to go deeper).
+   height per row, and concentric corners (inner radius = outer − gap; to go deeper use A · strict,
+   halving the padding, or B · soft, radius − padding/2; never clamp). See `references/radius.md`.
 10. **Technical illustration and photographic presentation.** Blueprints, line-art, selective
     color; hands, angled devices and depth-of-field shots.
 
@@ -53,7 +54,10 @@ status bar
   (slide, dock).
 - **Radius:** 8 · 12 · 14 (tile) · 16 · 20 · 24 · **28 card** · 32 · **40 widget** · 48 sheet · pill.
   Nested: inner = outer − gap (padding + border). Chains: 48→28→16→8, 40→20, 28/12→16. Going
-  deeper? Halve the gap; never clamp. Web `.rdl-nest` + `--host`; SwiftUI `RDLRadius.nested`.
+  deeper? **A · strict** halves the padding (concentric, default); **B · soft** keeps the padding and
+  subtracts half of it (even bands). Never clamp. Web `.rdl-nest` / `.rdl-nest--soft` + `--host`;
+  SwiftUI `RDLRadius.nested(…, method:)`. Full guide `references/radius.md`; live demo
+  `assets/templates/radius-demo.html`.
 - **Web:** 12 columns, gutter 32, bento gap 12, equal row heights, every cell at the card radius.
 
 ## Workflow
@@ -129,6 +133,7 @@ status bar
 |---|---|
 | `references/layout.md` | **Spacing ladder, screen skeleton, grids, alignment, control heights, radius** |
 | `references/anatomy.md` | **Exact specs for every component and layout primitive** |
+| `references/radius.md` | **Corner radius: scale, concentric nesting, strict vs soft, procedure, code, audit** |
 | `references/guidelines.md` | **Rulebook: hierarchy, type, color budget, app consistency, minimalism, content** |
 | `references/foundations.md` | Color (calibrated), accents, auras, glass, type roles, textures, imagery, motion |
 | `references/components.md` | Component catalog (web class ↔ SwiftUI type), SVG patterns, compositions |
@@ -139,7 +144,7 @@ status bar
 | `references/qa-checklist.md` | Pre-delivery review, including the audit |
 | `assets/tokens/` | `tokens.json` (source) → `tokens.css`, `tailwind.preset.js` |
 | `assets/ios/` | `RDLTokens.swift` (generated), `RDLComponents.swift`, `RDLGlassComponents.swift`, `RDLLayout.swift` |
-| `assets/templates/` | `rdl-components.css`; glass `mobile-app.html`, `web-dashboard.html` (audit-clean); flat `*-flat.html` |
+| `assets/templates/` | `rdl-components.css`; glass `mobile-app.html`, `web-dashboard.html` (audit-clean); flat `*-flat.html`; `radius-demo.html` (interactive corner-radius demo) |
 | `scripts/build_tokens.mjs` | Regenerates CSS / Tailwind / Swift from `tokens.json` |
 | `scripts/audit_ui.mjs` | Automated layout, consistency and contrast audit (Playwright) |
 | `scripts/extract_palette.py` | Calibrates tokens against exported shots (ΔE report) |

@@ -110,8 +110,9 @@ A surface inside a surface (a sub-pane in a widget, a card in a sheet, a field b
 Its radius is **outer − gap** (gap = padding + border); see `layout.md` §6.
 - Cards in a sheet: 28 (48 − 20). Panes in a widget: 20 (40 − 20), or 28 with a host widget (pad 12).
 - Panes in a card: 8 at the default 20 padding, so prefer a host card (pad 12) → 16.
-- The next level halves the gap again (8 → 4). Max three levels.
-- Web: `.rdl-nest` (+ `--host` on the container). SwiftUI: `RDLRadius.nested(outer:padding:border:)`
+- Deeper levels: **A · strict** halves the padding again (8 → 4, concentric) or **B · soft** keeps the
+  padding and subtracts half of it from the radius (even bands). Max three levels. Guide: `radius.md`.
+- Web: `.rdl-nest` / `.rdl-nest--soft` (+ `--host` on the container). SwiftUI: `RDLRadius.nested(outer:padding:border:method:)`
   or `ContainerRelativeShape()` inside `.rdlConcentricContainer(radius:)`.
 
 ## Key / value

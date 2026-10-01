@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.2.0 — Corner radius in the skill
+Everything from the corner-radius work now ships inside `skills/rdl-theme/`.
+
+- **New `references/radius.md`:**
+  - Covers the scale, the concentric rule with an RDL nesting table, and A · strict vs B · soft (with when to use each).
+  - Adds a step-by-step procedure, gold-app worked examples (SIP sheet, Lease card), web, Tailwind and SwiftUI code, audit and eye checks, and sources.
+  - `layout.md` §6 now summarises it and links to it.
+- **Demo:** moved to `assets/templates/radius-demo.html`, and `scripts/render-previews.mjs` renders `docs/radius-demo.png`.
+- **Method B in code:**
+  - CSS: every surface also passes `--rdl-nest-r-soft` (outer − gap/2), and there's a new `.rdl-nest--soft` class.
+  - SwiftUI: `RDLRadius.nested(…, method: .soft)` with `RDLNestMethod`.
+- **Docs:** SKILL.md, anatomy, components, QA, guidelines, foundations, DESIGN-STYLE.md and the README all reference both methods, the guide and the demo.
+
 ## 3.1.1 — Soft nesting (article method B)
 Verified against the article's own figures: at deeper levels it keeps the padding and subtracts **half** of it from the radius (24 → 16 → 12 → 8, bands stay equal). 3.1.0 halved the real padding instead (same radii, thinner bands, perfectly concentric).
 
