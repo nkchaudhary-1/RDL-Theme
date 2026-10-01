@@ -21,13 +21,26 @@ marked **G** apply to the glass style, **F** to the flat style, and the rest to 
 ## Data and instruments
 - [ ] Instruments over charts: tick rulers, meters, hairline bars, window curves, month grids.
 - [ ] Monochrome except the accent, plus status colors on status dots only.
-- [ ] Axis/tick labels are tertiary, at 11px. Legends have two entries at most.
+- [ ] Axis/tick labels are secondary, at 11px. Legends have two entries at most.
 - [ ] Every status has a dot plus a word (not color alone). Money deltas show a sign or arrow.
 
-## Layout
-- [ ] 4pt grid, 20 gutters, 12–14 gaps between cards.
-- [ ] Bottom actions pinned: circle–pill–circle, slide-to-confirm, or dock. Content clears them (≥ 120pt).
-- [ ] Web: bento rows align; the header has a light 44–48 title with a KPI row on the right.
+## Layout and spacing (`layout.md`)
+- [ ] Every gap, padding and margin is on the ladder (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64 · 80).
+- [ ] Gaps follow relationships: label→value 4 < group 8 < in-card 12–16 < card padding 20 < section 32. No two neighbouring gaps are equal by accident.
+- [ ] Margins 20 (mobile) / 32 (web). Header row items all 48. Header → title 24.
+- [ ] One control height per row (ladder 24 · 32 · 40 · 48 · 56 · 64).
+- [ ] Cards are corner-anchored: label TL, action TR, figure BL, context BR.
+- [ ] Nested radius = outer − padding (min 8). One radius family per product.
+- [ ] Bottom actions pinned: action row, slide-to-confirm or dock, 34 from the bottom. Content stays 12+ clear of it (≥ 120 bottom zone).
+- [ ] Web: 12-column bento, equal row heights, cells span 3/4/6/8/12; every cell uses the card radius.
+- [ ] Budgets (`guidelines.md`): ≤ 5 type sizes per screen, ≤ 3 per card, accent ≤ 3 uses, ≤ 2 auras.
+
+## Automated audit
+Run `node scripts/audit_ui.mjs <page.html> [--w 1440 --h 960]` on any HTML build. It checks the
+type scale, spacing ladder, radius scale, control heights, mixed row heights, pinned-zone
+clearance, accent budget, hit targets and **measured** text contrast on the rendered pixels. Mark
+the product UI root with `data-audit-scope` and presentation chrome with `data-audit-ignore`.
+Ship at 0 errors.
 
 ## Tokens and code
 - [ ] No raw hex, radius or blur values in components. Use tokens or component classes.

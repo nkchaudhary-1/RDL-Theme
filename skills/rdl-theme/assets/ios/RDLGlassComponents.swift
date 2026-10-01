@@ -184,10 +184,10 @@ public struct RDLOrb: View {
     @Environment(\.rdlAccent) private var accent
     let systemName: String
     var kind: RDLOrbKind = .glass
-    var size: CGFloat = RDLSize.iconButton
+    var size: CGFloat = RDLSize.orb
     let action: () -> Void
 
-    public init(_ systemName: String, kind: RDLOrbKind = .glass, size: CGFloat = RDLSize.iconButton, action: @escaping () -> Void) {
+    public init(_ systemName: String, kind: RDLOrbKind = .glass, size: CGFloat = RDLSize.orb, action: @escaping () -> Void) {
         self.systemName = systemName
         self.kind = kind
         self.size = size
@@ -269,7 +269,7 @@ public struct RDLSlideToConfirm: View {
 
     public var body: some View {
         GeometryReader { geo in
-            let knob: CGFloat = 52
+            let knob: CGFloat = RDLSize.slideKnob
             let maxX = geo.size.width - knob - 12
             ZStack(alignment: .leading) {
                 Capsule().fill(.ultraThinMaterial).overlay(Capsule().strokeBorder(Color.white.opacity(0.25)))
@@ -296,7 +296,7 @@ public struct RDLSlideToConfirm: View {
                         })
             }
         }
-        .frame(height: 64)
+        .frame(height: RDLSize.slide)
         .accessibilityElement()
         .accessibilityLabel(title)
         .accessibilityAddTraits(.isButton)
@@ -492,7 +492,7 @@ public struct RDLDock: View {
                 Image(systemName: item.systemImage)
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(active ? (accentActive ? accent.onAccent : RDLColor.textOnStrong) : RDLColor.textPrimary.opacity(0.7))
-                    .frame(width: 52, height: 52)
+                    .frame(width: RDLSize.dockItem, height: RDLSize.dockItem)
                     .background {
                         if active { Circle().fill(accentActive ? accent.accent : RDLColor.fillControlStrong).matchedGeometryEffect(id: "dock", in: ns) }
                     }

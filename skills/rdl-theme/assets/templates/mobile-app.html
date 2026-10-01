@@ -4,41 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RDL Mobile Glass</title>
-<!-- V2 reference: RDL glass language, three archetypes of a gold-savings app — Home (G1), Buy (G4), SIP history (G6).
-     Presented as a 1600×1200 shot. Params: ?accent=volt|signal|ember|orchid|electric  ?style=flat -->
+<!-- v3 reference: three archetypes of a gold-savings app — Home (G1), Buy (G4), SIP history (G6).
+     Built only from layout primitives and components: no inline sizes, every value on a token ladder.
+     Audit: node ../../scripts/audit_ui.mjs mobile-app.html
+     Params: ?accent=volt|signal|ember|orchid|electric|rose  ?style=flat -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&family=Doto:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="rdl-components.css">
 <style>
   h1, h2, h3, p { margin: 0; }
-  /* ---------- Shot presentation (references/presentation.md) ---------- */
+  /* ---------- Shot presentation only (references/presentation.md) — not product UI ---------- */
   body { min-height: 100vh; display: grid; place-items: center; background: #D9D9DC; }
-  .shot { width: 1600px; height: 1200px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 44px;
+  .shot { width: 1600px; height: 1200px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 48px;
     background: radial-gradient(90% 70% at 50% 40%, #EDEDEF 0%, #D6D6D9 70%, #CBCBCF 100%); perspective: 2400px; }
-  .shot__mark { position: absolute; left: 64px; top: 56px; display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; color: #0A0B0C; }
-  .shot__mark i { width: 34px; height: 34px; border-radius: 50%; background: var(--rdl-aura-gold); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
-  .shot__tag { position: absolute; right: 64px; top: 62px; font-size: 15px; color: #6B6B74; }
-  .phone { width: 390px; height: 844px; border-radius: 56px; position: relative; overflow: hidden; flex: none; background: var(--rdl-bg-canvas); color: var(--rdl-text-primary);
+  .shot__mark { position: absolute; left: 64px; top: 56px; }
+  .shot__tag { position: absolute; right: 64px; top: 64px; font-size: 15px; color: #55555C; }
+  .phone { width: 393px; height: 852px; border-radius: 56px; position: relative; overflow: hidden; flex: none; background: var(--rdl-bg-canvas); color: var(--rdl-text-primary);
     box-shadow: 0 0 0 11px #0E0F10, 0 0 0 12.5px #3A3B3F, 0 60px 120px rgba(0,0,0,0.28); }
-  .phone--l { transform: rotateY(14deg) translateZ(-60px) translateY(30px); }
-  .phone--r { transform: rotateY(-14deg) translateZ(-60px) translateY(30px); }
+  .phone--l { transform: rotateY(14deg) translateZ(-60px) translateY(32px); }
+  .phone--r { transform: rotateY(-14deg) translateZ(-60px) translateY(32px); }
   .phone--c { transform: translateY(-24px); }
-  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 122px; height: 35px; border-radius: 20px; background: #000; z-index: 5; }
-  .status { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 4px 34px 0 38px; font-size: 16px; font-weight: 600; position: relative; z-index: 2; }
-  .status svg { width: 62px; height: 14px; }
-  .screen { position: relative; z-index: 1; padding: 6px 20px 0; display: grid; gap: 14px; align-content: start; height: 788px; }
-  .pin { position: absolute; left: 20px; right: 20px; bottom: 36px; }
-  .row { display: flex; align-items: center; gap: 8px; }
-  .between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .muted { color: var(--rdl-text-secondary); }
-  .ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-
-  /* Home backdrop: gold aura bleeding from the top-right */
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; border-radius: 20px; background: #000; z-index: 5; }
+  .statusbar { height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 6px 36px 0 40px; font-size: 16px; font-weight: 600; position: relative; z-index: 2; }
+  .statusbar svg { width: 64px; height: 14px; }
+  .phone .rdl-screen { min-height: 0; }
+  /* Backdrops */
   .bg-gold { position: absolute; inset: 0; background: var(--rdl-aura-gold); }
-  /* Buy backdrop: near-black with a warm glow */
-  .bg-night { position: absolute; inset: 0; background: radial-gradient(80% 45% at 70% 8%, rgba(242,201,92,0.42), transparent 70%), radial-gradient(60% 40% at 10% 100%, rgba(242,201,92,0.14), transparent 70%), #0A0B0C; }
-  .wave { width: 100%; height: 96px; display: block; overflow: visible; }
+  .bg-night { position: absolute; inset: 0; background: radial-gradient(80% 45% at 70% 8%, rgba(236,188,68,0.42), transparent 70%), radial-gradient(60% 40% at 10% 100%, rgba(236,188,68,0.14), transparent 70%), #0A0B0C; }
+  .wave { width: 100%; height: 72px; display: block; overflow: visible; }
+  .ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .ico--sm { width: 16px; height: 16px; }
+  .rdl-orb--lg .ico { width: 24px; height: 24px; }
 </style>
 </head>
 <body>
@@ -59,149 +56,168 @@
 </svg>
 
 <main class="shot">
-  <div class="shot__mark"><i></i>Aurum</div>
-  <div class="shot__tag">Digital gold · iOS · RDL glass</div>
+  <div class="shot__mark rdl-logo" data-audit-ignore><i></i>Aurum</div>
+  <div class="shot__tag" data-audit-ignore>Digital gold · iOS · RDL glass</div>
 
-  <!-- ============ G1 · HOME ============ -->
-  <section class="phone phone--l" aria-label="Home">
+  <!-- ============ G1 · HOME ============
+       header → title-gap 24 → hero (section) → cards (card-gap 12) · pinned action row -->
+  <section class="phone phone--l" aria-label="Home" data-audit-scope>
     <div class="bg-gold"></div>
-    <div class="island"></div>
-    <div class="status"><span>9:41</span><svg><use href="#i-bars"/></svg></div>
-    <div class="screen">
-      <header class="between">
-        <span class="rdl-orb"><svg class="ico"><use href="#i-user"/></svg></span>
-        <span class="rdl-chip rdl-chip--glass" style="height:34px;font-size:13px">24K · 99.9% pure</span>
-        <span class="rdl-orb"><svg class="ico"><use href="#i-bell"/></svg></span>
+    <div class="island" data-audit-ignore></div>
+    <div class="statusbar" data-audit-ignore><span>9:41</span><svg><use href="#i-bars"/></svg></div>
+    <div class="rdl-screen rdl-stack--title rdl-on-light-aura">
+      <header class="rdl-header">
+        <button class="rdl-orb" aria-label="Profile"><svg class="ico"><use href="#i-user"/></svg></button>
+        <span class="rdl-chip rdl-chip--glass">24K · 99.9% pure</span>
+        <span><button class="rdl-orb" aria-label="Alerts"><svg class="ico"><use href="#i-bell"/></svg></button></span>
       </header>
 
-      <div style="padding:10px 2px 0">
-        <p class="rdl-h2 rdl-mix">Good morning, <b>Aarav</b></p>
-        <p class="rdl-caption muted" style="margin-top:18px">Portfolio value</p>
-        <p class="rdl-figure" style="font-size:52px;margin-top:6px"><span class="rdl-cur">₹</span>4,82,190<span class="rdl-unit">.36</span></p>
-        <div class="row" style="margin-top:12px"><span class="rdl-status">Live</span><span class="rdl-caption muted">+₹12,408 · 30 days</span></div>
-      </div>
-
-      <article class="rdl-glass" style="padding:18px 18px 14px">
-        <div class="between"><p class="rdl-label">Gold · per gram</p><span class="rdl-tag">+1.8%</span></div>
-        <p class="rdl-figure" style="font-size:30px;margin-top:8px"><span class="rdl-cur">₹</span>7,284<span class="rdl-unit">.20</span></p>
-        <svg class="wave" viewBox="0 0 310 96" aria-label="Price, last 7 days">
-          <defs><clipPath id="win1"><rect x="96" y="0" width="140" height="96"/></clipPath></defs>
-          <path d="M0 70 C24 66 36 52 60 56 S96 76 120 60 S160 22 188 34 S224 58 248 40 S286 18 310 22" fill="none" stroke="var(--rdl-tick)" stroke-width="1.4" stroke-dasharray="1.5 5" stroke-linecap="round"/>
-          <path clip-path="url(#win1)" d="M0 70 C24 66 36 52 60 56 S96 76 120 60 S160 22 188 34 S224 58 248 40 S286 18 310 22" fill="none" stroke="#0A0B0C" stroke-width="2"/>
-          <line x1="188" x2="188" y1="34" y2="96" stroke="#0A0B0C" stroke-dasharray="2 4"/>
-          <circle cx="120" cy="60" r="7" fill="rgba(255,255,255,0.7)" stroke="#fff"/>
-          <circle cx="236" cy="45" r="7" fill="rgba(255,255,255,0.7)" stroke="#fff"/>
-          <circle cx="188" cy="34" r="5" fill="#0A0B0C" stroke="var(--rdl-accent)" stroke-width="3"/>
-        </svg>
-        <div class="rdl-ticks__labels"><span>Mon</span><span>Wed</span><span>Fri</span><span>Today</span></div>
-      </article>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <article class="rdl-widget rdl-on-dark" style="padding:16px;border-radius:28px;background:#111214;color:#F4F4F5">
-          <p class="rdl-caption" style="opacity:.6">Holdings</p>
-          <p class="rdl-figure rdl-figure--dot" style="font-size:40px;margin-top:10px;color:var(--rdl-accent)">66.2<span class="rdl-unit" style="font-family:var(--rdl-font-sans)">g</span></p>
-        </article>
-        <article class="rdl-widget rdl-glass" style="padding:16px;border-radius:28px">
-          <div class="between"><p class="rdl-caption muted">Next SIP</p><svg class="ico" style="width:16px"><use href="#i-arrow"/></svg></div>
-          <p class="rdl-figure" style="font-size:28px;margin-top:12px">Oct 05</p>
-          <p class="rdl-caption muted" style="margin-top:6px">₹5,000 / month</p>
-        </article>
-      </div>
-
-      <article class="rdl-glass rdl-glass--strong" style="padding:6px 16px">
-        <div class="rdl-row"><span class="rdl-row__lead" style="background:var(--rdl-accent-soft)"><svg class="ico" style="width:16px"><use href="#i-down"/></svg></span><div class="rdl-row__main"><p class="rdl-row__title">Bought 0.686 g</p><p class="rdl-row__sub">SIP · Sep 05</p></div><div class="rdl-row__end rdl-label">₹5,000</div></div>
-      </article>
-
-      <div class="rdl-actionrow pin">
-        <button class="rdl-orb rdl-orb--lg" aria-label="Exchange"><svg class="ico"><use href="#i-swap"/></svg></button>
-        <button class="rdl-btn">Buy gold</button>
-        <button class="rdl-orb rdl-orb--lg" aria-label="Sell"><svg class="ico"><use href="#i-down"/></svg></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ G4 · BUY (dark) ============ -->
-  <section class="phone phone--c" aria-label="Buy gold" data-theme="dark" data-accent="gold">
-    <div class="bg-night"></div>
-    <div class="island"></div>
-    <div class="status" style="color:#fff"><span>9:41</span><svg><use href="#i-bars"/></svg></div>
-    <div class="screen rdl-on-dark" style="color:#F4F4F5">
-      <header class="between">
-        <span class="rdl-orb" style="color:#fff"><svg class="ico"><use href="#i-back"/></svg></span>
-        <p class="rdl-title">Buy gold</p>
-        <span class="rdl-orb" style="color:#fff"><svg class="ico"><use href="#i-more"/></svg></span>
-      </header>
-
-      <div class="rdl-seg rdl-seg--glass" role="tablist" style="margin:6px 40px 0">
-        <button role="tab" aria-selected="true">Rupees</button><button role="tab" style="color:rgba(255,255,255,.6)">Grams</button>
-      </div>
-
-      <div style="text-align:center;padding-top:22px">
-        <p class="rdl-caption" style="opacity:.55">You pay</p>
-        <p class="rdl-figure" style="font-size:72px;margin-top:10px"><span class="rdl-cur">₹</span>10,000</p>
-        <p class="rdl-label" style="margin-top:14px;opacity:.7">≈ <span style="color:var(--rdl-accent)">1.372 g</span> at ₹7,284.20/g</p>
-        <span class="rdl-chip rdl-chip--glass" style="margin-top:16px;height:32px;font-size:12px;color:#fff"><svg class="ico" style="width:14px"><use href="#i-lock"/></svg>Price locked · 04:59</span>
-      </div>
-
-      <div style="padding:16px 4px 0">
-        <div class="rdl-ticks" style="--at:40%"><span class="rdl-ticks__needle"></span></div>
-        <div class="rdl-ticks__labels" style="color:rgba(255,255,255,.4)"><span>₹500</span><span>₹5k</span><span>₹10k</span><span>₹25k</span></div>
-      </div>
-
-      <article class="rdl-glass rdl-glass--dark rdl-glass--iridescent" style="display:grid;gap:12px;padding:18px">
-        <div class="rdl-kv rdl-kv--leader"><span class="k">Gold value</span><span class="dots"></span><span class="v">₹9,708.74</span></div>
-        <div class="rdl-kv rdl-kv--leader"><span class="k">GST 3%</span><span class="dots"></span><span class="v">₹291.26</span></div>
-        <div class="rdl-kv rdl-kv--leader"><span class="k">Vault</span><span class="dots"></span><span class="v">Free · insured</span></div>
-      </article>
-
-      <div class="rdl-slide pin" style="color:#fff">
-        <span class="rdl-slide__knob"><svg class="ico"><use href="#i-right"/></svg></span>
-        <span class="rdl-slide__label">Slide to buy</span>
-        <span class="rdl-slide__chev">›››</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ G6 · SIP HISTORY ============ -->
-  <section class="phone phone--r" aria-label="Gold SIP">
-    <div class="island"></div>
-    <div class="status"><span>9:41</span><svg><use href="#i-bars"/></svg></div>
-    <div class="screen" style="gap:12px">
-      <header class="between">
-        <span class="rdl-orb rdl-orb--outline"><svg class="ico"><use href="#i-back"/></svg></span>
-        <span class="rdl-status">Active</span>
-      </header>
-      <p class="rdl-h1">Gold SIP</p>
-
-      <article class="rdl-widget rdl-aura--dusk rdl-grain" style="padding:18px">
-        <div class="between"><p class="rdl-caption" style="opacity:.8">Paid amount</p><p class="rdl-caption" style="opacity:.8">Term 24 m</p></div>
-        <p class="rdl-figure" style="font-size:44px;margin-top:8px;color:#fff"><span class="rdl-cur" style="color:rgba(255,255,255,.75)">₹</span>60,000</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
-          <div class="rdl-glass" style="padding:10px 12px;border-radius:18px;color:#fff;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)"><p class="rdl-label">8.24 g</p><p class="rdl-caption" style="opacity:.75">Accumulated</p></div>
-          <div class="rdl-glass" style="padding:10px 12px;border-radius:18px;color:#fff;background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)"><p class="rdl-label">₹60,000</p><p class="rdl-caption" style="opacity:.75">Left to pay</p></div>
+      <div class="rdl-stack rdl-stack--section">
+        <div class="rdl-stack rdl-stack--loose">
+          <h1 class="rdl-h2 rdl-mix">Good morning, <b>Aarav</b></h1>
+          <div class="rdl-stack rdl-stack--tight">
+            <p class="rdl-caption rdl-muted">Portfolio value</p>
+            <p class="rdl-figure rdl-display"><span class="rdl-cur">₹</span>4,82,190<span class="rdl-unit">.36</span></p>
+          </div>
+          <div class="rdl-inline"><span class="rdl-status">Live</span><span class="rdl-meta rdl-muted">+₹12,408 · 30 days</span></div>
         </div>
-      </article>
 
-      <div class="between" style="margin-top:4px"><p class="rdl-title">2026</p><p class="rdl-caption muted">12 of 24 paid</p></div>
-      <div class="rdl-monthgrid">
-        <div class="is-paid">Jan</div><div class="is-paid">Feb</div><div class="is-paid">Mar</div><div class="is-paid">Apr</div><div class="is-missed">May</div><div class="is-paid">Jun</div>
-        <div class="is-paid">Jul</div><div class="is-paid">Aug</div><div class="is-paid">Sep</div><div class="is-now">Oct</div><div>Nov</div><div>Dec</div>
+        <div class="rdl-stack rdl-stack--card">
+          <article class="rdl-glass rdl-metric">
+            <p class="rdl-metric__label">Gold · per gram</p>
+            <span class="rdl-tag rdl-metric__action">+1.8%</span>
+            <div class="rdl-metric__viz">
+              <svg class="wave" viewBox="0 0 313 72" aria-label="Price, last 7 days">
+                <defs><clipPath id="win1"><rect x="96" y="0" width="140" height="72"/></clipPath></defs>
+                <path d="M0 56 C24 52 36 40 60 44 S96 60 120 46 S160 14 188 24 S224 44 248 30 S286 12 313 14" fill="none" stroke="var(--rdl-tick-strong)" stroke-width="1.4" stroke-dasharray="1.5 5" stroke-linecap="round"/>
+                <path clip-path="url(#win1)" d="M0 56 C24 52 36 40 60 44 S96 60 120 46 S160 14 188 24 S224 44 248 30 S286 12 313 14" fill="none" stroke="#0A0B0C" stroke-width="2"/>
+                <line x1="188" x2="188" y1="24" y2="72" stroke="#0A0B0C" stroke-dasharray="2 4"/>
+                <circle cx="120" cy="46" r="7" fill="rgba(255,255,255,0.7)" stroke="#fff"/>
+                <circle cx="236" cy="34" r="7" fill="rgba(255,255,255,0.7)" stroke="#fff"/>
+                <circle cx="188" cy="24" r="5" fill="#0A0B0C" stroke="var(--rdl-accent)" stroke-width="3"/>
+              </svg>
+            </div>
+            <p class="rdl-figure rdl-numeral rdl-metric__figure"><span class="rdl-cur">₹</span>7,284<span class="rdl-unit">.20</span></p>
+            <span class="rdl-meta rdl-muted rdl-metric__context">7 days</span>
+          </article>
+
+          <div class="rdl-grid-2">
+            <article class="rdl-widget rdl-widget--ink rdl-metric">
+              <p class="rdl-metric__label">Holdings</p>
+              <p class="rdl-figure rdl-figure--dot rdl-numeral rdl-metric__figure" style="color:var(--rdl-accent)">66.2<span class="rdl-unit">g</span></p>
+            </article>
+            <article class="rdl-widget rdl-glass rdl-metric">
+              <p class="rdl-metric__label">Next SIP</p>
+              <button class="rdl-orb rdl-metric__action" aria-label="Open SIP"><svg class="ico"><use href="#i-arrow"/></svg></button>
+              <div class="rdl-stack rdl-stack--tight rdl-metric__figure">
+                <p class="rdl-figure rdl-h2">Oct 05</p>
+                <p class="rdl-meta rdl-muted">₹5,000/mo</p>
+              </div>
+            </article>
+          </div>
+        </div>
       </div>
-
-      <div class="rdl-card" style="display:grid;gap:14px;padding:16px 18px">
-        <div class="rdl-meter"><span class="muted">Goal · 20 g</span><span class="rdl-num">41%</span><div class="rdl-meter__track"><span style="--v:41%"></span></div></div>
-        <div class="rdl-meter"><span class="muted">Avg. buy price</span><span class="rdl-num">₹7,012/g</span><div class="rdl-meter__track"><span style="--v:72%;--c:var(--rdl-stone-950)"></span></div></div>
-      </div>
-
-      <div class="rdl-kv rdl-kv--row" style="padding:0 4px"><span class="k">Next debit · Oct 05</span><span class="v">HDFC •• 4821</span></div>
-
-      <nav class="rdl-dock rdl-dock--accent pin" style="left:50%;right:auto;transform:translateX(-50%)" aria-label="Tabs">
-        <button aria-label="Home"><svg class="ico"><use href="#i-home"/></svg></button>
-        <button aria-label="Markets"><svg class="ico"><use href="#i-chart"/></svg></button>
-        <button aria-current="page" aria-label="SIP"><svg class="ico"><use href="#i-cal"/></svg></button>
-        <button aria-label="Profile"><svg class="ico"><use href="#i-user"/></svg></button>
-      </nav>
     </div>
+    <div class="rdl-actionrow rdl-pin">
+      <button class="rdl-orb" aria-label="Exchange"><svg class="ico"><use href="#i-swap"/></svg></button>
+      <button class="rdl-btn">Buy gold</button>
+      <button class="rdl-orb" aria-label="Sell"><svg class="ico"><use href="#i-down"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ============ G4 · BUY (dark, single task → centred) ============ -->
+  <section class="phone phone--c" aria-label="Buy gold" data-theme="dark" data-accent="gold" data-audit-scope>
+    <div class="bg-night"></div>
+    <div class="island" data-audit-ignore></div>
+    <div class="statusbar" data-audit-ignore style="color:#fff"><span>9:41</span><svg><use href="#i-bars"/></svg></div>
+    <div class="rdl-screen rdl-stack--title rdl-on-dark">
+      <header class="rdl-header">
+        <button class="rdl-orb" aria-label="Back"><svg class="ico"><use href="#i-back"/></svg></button>
+        <p class="rdl-header__title">Buy gold</p>
+        <span><button class="rdl-orb" aria-label="More"><svg class="ico"><use href="#i-more"/></svg></button></span>
+      </header>
+
+      <div class="rdl-stack rdl-stack--section">
+        <div class="rdl-seg rdl-seg--glass" role="tablist" aria-label="Unit">
+          <button role="tab" aria-selected="true">Rupees</button><button role="tab">Grams</button>
+        </div>
+
+        <div class="rdl-stack rdl-stack--loose rdl-center">
+          <div class="rdl-stack rdl-stack--tight rdl-center">
+            <p class="rdl-caption rdl-muted">You pay</p>
+            <p class="rdl-figure rdl-display-xl"><span class="rdl-cur">₹</span>10,000</p>
+          </div>
+          <p class="rdl-label rdl-muted">≈ <span style="color:var(--rdl-accent)">1.372 g</span> at ₹7,284.20/g</p>
+          <span class="rdl-chip rdl-chip--glass rdl-chip--xs"><svg class="ico ico--sm"><use href="#i-lock"/></svg>Price locked · 04:59</span>
+        </div>
+
+        <div>
+          <div class="rdl-ticks" style="--at:40%"><span class="rdl-ticks__needle"></span></div>
+          <div class="rdl-ticks__labels"><span>₹500</span><span>₹5k</span><span>₹10k</span><span>₹25k</span></div>
+        </div>
+
+        <article class="rdl-glass rdl-glass--dark rdl-glass--iridescent rdl-stack rdl-stack--card">
+          <div class="rdl-kv rdl-kv--leader"><span class="k">Gold value</span><span class="dots"></span><span class="v">₹9,708.74</span></div>
+          <div class="rdl-kv rdl-kv--leader"><span class="k">GST 3%</span><span class="dots"></span><span class="v">₹291.26</span></div>
+          <div class="rdl-kv rdl-kv--leader"><span class="k">Vault</span><span class="dots"></span><span class="v">Free · insured</span></div>
+        </article>
+      </div>
+    </div>
+    <div class="rdl-slide rdl-pin" style="color:#fff">
+      <span class="rdl-slide__knob"><svg class="ico"><use href="#i-right"/></svg></span>
+      <span class="rdl-slide__label">Slide to buy</span>
+      <span class="rdl-slide__chev" aria-hidden="true">›››</span>
+    </div>
+  </section>
+
+  <!-- ============ G6 · SIP HISTORY ============
+       Reusable for Lease: summary aura → month grid → meters → pinned nav -->
+  <section class="phone phone--r" aria-label="Gold SIP" data-audit-scope>
+    <div class="island" data-audit-ignore></div>
+    <div class="statusbar" data-audit-ignore><span>9:41</span><svg><use href="#i-bars"/></svg></div>
+    <div class="rdl-screen rdl-stack--title">
+      <header class="rdl-header">
+        <button class="rdl-orb rdl-orb--outline" aria-label="Back"><svg class="ico"><use href="#i-back"/></svg></button>
+        <span></span>
+        <span><button class="rdl-orb rdl-orb--outline" aria-label="More"><svg class="ico"><use href="#i-more"/></svg></button></span>
+      </header>
+
+      <div class="rdl-stack rdl-stack--section">
+        <div class="rdl-stack rdl-stack--tight">
+          <h1 class="rdl-h1">Gold SIP</h1>
+          <div class="rdl-inline"><span class="rdl-status">Active</span><span class="rdl-meta rdl-muted">₹5,000 monthly · 5th</span></div>
+        </div>
+
+        <article class="rdl-widget rdl-aura--dusk rdl-grain rdl-stack rdl-stack--loose">
+          <div class="rdl-stack rdl-stack--tight">
+            <div class="rdl-inline rdl-inline--between"><p class="rdl-caption rdl-muted">Paid amount</p><p class="rdl-caption rdl-muted">Term 24 m</p></div>
+            <p class="rdl-figure rdl-numeral"><span class="rdl-cur">₹</span>60,000</p>
+          </div>
+          <div class="rdl-grid-2">
+            <div class="rdl-glass--tint rdl-stack rdl-stack--tight"><p class="rdl-title">8.24 g</p><p class="rdl-caption rdl-muted">Accumulated</p></div>
+            <div class="rdl-glass--tint rdl-stack rdl-stack--tight"><p class="rdl-title">₹60,000</p><p class="rdl-caption rdl-muted">Left to pay</p></div>
+          </div>
+        </article>
+
+        <div class="rdl-stack rdl-stack--card">
+          <div class="rdl-section-head rdl-inline rdl-inline--between"><h3>2026</h3><p class="rdl-meta rdl-muted">12 of 24 paid</p></div>
+          <div class="rdl-monthgrid">
+            <div class="is-paid"><span>Jan</span></div><div class="is-paid"><span>Feb</span></div><div class="is-paid"><span>Mar</span></div><div class="is-paid"><span>Apr</span></div><div class="is-missed"><span>May</span></div><div class="is-paid"><span>Jun</span></div>
+            <div class="is-paid"><span>Jul</span></div><div class="is-paid"><span>Aug</span></div><div class="is-paid"><span>Sep</span></div><div class="is-now"><span>Oct</span></div><div><span>Nov</span></div><div><span>Dec</span></div>
+          </div>
+          <div class="rdl-card rdl-stack rdl-stack--card">
+            <div class="rdl-meter"><span class="rdl-muted">Goal · 20 g</span><span class="rdl-num">41%</span><div class="rdl-meter__track"><span style="--v:41%"></span></div></div>
+            <div class="rdl-meter"><span class="rdl-muted">Avg. buy price</span><span class="rdl-num">₹7,012/g</span><div class="rdl-meter__track"><span style="--v:72%;--c:var(--rdl-stone-950)"></span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="rdl-dock rdl-dock--accent rdl-pin rdl-pin--center" aria-label="Tabs">
+      <button aria-label="Home"><svg class="ico"><use href="#i-home"/></svg></button>
+      <button aria-label="Markets"><svg class="ico"><use href="#i-chart"/></svg></button>
+      <button aria-current="page" aria-label="SIP"><svg class="ico"><use href="#i-cal"/></svg></button>
+      <button aria-label="Profile"><svg class="ico"><use href="#i-user"/></svg></button>
+    </nav>
   </section>
 </main>
 <script>

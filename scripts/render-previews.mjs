@@ -17,10 +17,10 @@ const tpl = (f) => {
   return pathToFileURL(join(root, "skills/rdl-theme/assets/templates", file)).href + (query ? `?${query}` : "");
 };
 const shots = [
-  { file: "mobile-app.html", out: "v2-mobile-gold.png", w: 1600, h: 1200 },
-  { file: "mobile-app.html?accent=volt", out: "v2-mobile-volt.png", w: 1600, h: 1200 },
-  { file: "web-dashboard.html", out: "v2-dashboard-light.png", w: 1440, h: 960 },
-  { file: "web-dashboard.html?theme=dark&accent=volt", out: "v2-dashboard-dark.png", w: 1440, h: 960 },
+  { file: "mobile-app.html", out: "v3-mobile-gold.png", w: 1600, h: 1200 },
+  { file: "mobile-app.html?accent=volt", out: "v3-mobile-volt.png", w: 1600, h: 1200 },
+  { file: "web-dashboard.html", out: "v3-dashboard-light.png", w: 1440, h: 960 },
+  { file: "web-dashboard.html?theme=dark&accent=volt", out: "v3-dashboard-dark.png", w: 1440, h: 960 },
   { file: "mobile-app-flat.html", out: "v1-flat-mobile.png", w: 1600, h: 1200 },
   { file: "web-dashboard-flat.html", out: "v1-flat-dashboard.png", w: 1440, h: 960 },
 ];

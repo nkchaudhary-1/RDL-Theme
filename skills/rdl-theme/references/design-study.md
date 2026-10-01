@@ -122,6 +122,38 @@ single components). **Mode:** about 45% dark or photo-backed, 55% light.
 
 V1 stays available as `data-style="flat"` for products that want the calmer fintech look.
 
+## v3: structural pass (how the screens are built)
+
+The second pass re-read all 220 frames at 1200px for structure rather than style. Per-frame notes
+are in `research/deep-scan.md`, measurements in `research/calibration.md`. These are the
+recurring construction rules, with example frames:
+
+| # | Rule | Evidence (frames) |
+|---|---|---|
+| 1 | **Corner anchoring**: label TL, action/tag TR, figure BL, context BR | 1:101, 1:116, 1:148, 1:163, 1:182, 1:185 |
+| 2 | **One control height per row**: header items, fields and tiles share one height (usually 48 or 56) | 1:97, 1:186, 1:194 |
+| 3 | **Nested radius = outer − padding** (widget 40 → panes 20; card 32 → 24) | 1:101, 1:146, 1:163 |
+| 4 | **Same-size two-tone headlines**: split by weight or opacity, never by size | 1:98, 1:111, 1:162, 1:180, 1:187 |
+| 5 | **Title tabs**: "Data / Records" at one size, inactive gray | 1:101 |
+| 6 | **Status = dot + word**; soft-tint pills (tint + same-hue dot + text) for escalation only | 1:102, 1:117, 1:120, 1:184 |
+| 7 | **Destructive = red-tinted tile at the row end**, never a red solid button | 1:113 |
+| 8 | **Selection = offset outline ring or white fill**, not color | 1:108, 1:143, 1:150 |
+| 9 | **Dashed outline = empty or placeholder slot** ("+ add", drop zones) | 1:108, 1:113, 1:151 |
+| 10 | **Units as small gray suffix or superscript**; ratios as "24/38" with gray denominator | 1:110, 1:127, 1:163, 1:207 |
+| 11 | **Muted leading zeros** on tiny quantities | 1:199 |
+| 12 | **Leader-line callouts** from 3D objects to label/value pairs | 1:137, 1:167 |
+| 13 | **Glass takes the hue of what's behind it** (ember glass over ember render) | 1:119, 1:126, 1:220 |
+| 14 | **Dark glass needs a dark backdrop**; on light canvases use an ink surface | 1:122, 1:166, 1:205 |
+| 15 | **Bottom sheets**: full width, top radius ~48, grabber, same header height inside | 1:110, 1:184, 1:198, 1:207 |
+| 16 | **Centred layout only for single-task screens** (amount entry, timer, verdict) | 1:160, 1:196, 1:199 |
+| 17 | **Dark layering** in ~4–6% luminance steps | 1:115, 1:203, 1:214 |
+| 18 | **Swiss variant** is radius 0 everywhere with 1px hairline grids; never mixed with glass | 1:99, 1:109, 1:121, 1:124, 1:168, 1:209 |
+| 19 | **Dashboards**: centred nav pills, light title + KPI row, bento with equal row heights | 1:163, 1:169, 1:182, 1:204 |
+| 20 | **One accent, spent 1–3×**: active nav/dock, needle, one tag, checks | 1:104, 1:122, 1:163, 1:209 |
+
+Pixel calibration moved four accents (volt brighter and more lime, electric deeper cobalt, gold
+and ember slightly warmer) and added **rose** for health products. Neutrals already matched.
+
 ## V1 portfolio inventory (Dribbble, search-indexed)
 
 Coin (wallet), Bloom Trading, Mint (personal finance), SavingPro, Creative Juice, QuickBooks,

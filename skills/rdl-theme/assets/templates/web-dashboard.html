@@ -4,33 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RDL Dashboard Glass</title>
-<!-- V2 reference: RDL glass web console (archetype W5 · bento over fog). Params: ?theme=dark&accent=volt|signal|ember|electric -->
+<!-- v3 reference: RDL glass web console (W5 · bento over fog) on the 12-column grid.
+     Gutter 32 · section gap 32 · bento gap 12 · rows 320 · card padding 20. Every value is on a token ladder.
+     Audit: node ../../scripts/audit_ui.mjs web-dashboard.html --w 1440 --h 960
+     Params: ?theme=dark&accent=volt|signal|ember|electric|rose -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&family=Doto:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../tokens/tokens.css">
 <link rel="stylesheet" href="rdl-components.css">
 <style>
   h1, h2, h3, p { margin: 0; }
-  body { background: radial-gradient(60% 50% at 88% 0%, rgba(242,201,92,0.35), transparent 70%), var(--rdl-aura-fog); min-height: 100vh; }
-  [data-theme="dark"] body { background: radial-gradient(60% 50% at 88% 0%, rgba(242,201,92,0.18), transparent 70%), var(--rdl-bg-canvas); }
-  .page { padding: 22px 28px 28px; display: grid; gap: 22px; }
-  .row { display: flex; align-items: center; gap: 10px; }
-  .between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .muted { color: var(--rdl-text-secondary); }
-  .ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .nav a { font-size: 14px; font-weight: 500; color: var(--rdl-text-secondary); text-decoration: none; padding: 9px 16px; border-radius: 999px; }
-  .nav a[aria-current="page"] { background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); }
-  .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
-  .logo i { width: 30px; height: 30px; border-radius: 50%; background: var(--rdl-aura-gold); box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
-  .kpis { display: flex; gap: 44px; }
-  .kpi { display: grid; gap: 8px; }
-  .bento { display: grid; grid-template-columns: 1.25fr 1fr 1fr 1fr; grid-template-rows: 340px 330px; gap: 14px; }
-  .span-2 { grid-column: span 2; }
-  .card-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { text-align: left; font-weight: 400; font-size: 12px; color: var(--rdl-text-tertiary); padding: 0 0 10px; }
-  td { padding: 11px 0; border-top: 1px solid var(--rdl-border-subtle); font-weight: 500; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  body { background: radial-gradient(60% 50% at 88% 0%, rgba(236,188,68,0.32), transparent 70%), var(--rdl-aura-fog); min-height: 100vh; }
+  [data-theme="dark"] body { background: radial-gradient(60% 50% at 88% 0%, rgba(236,188,68,0.16), transparent 70%), var(--rdl-bg-canvas); }
+  .page { padding: var(--rdl-web-gutter); }
+  .bento-rows { grid-template-rows: 320px 320px; }
+  .ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .ico--sm { width: 16px; height: 16px; }
+  .field-search { width: 280px; }
+  .seg-range { width: 240px; }
 </style>
 </head>
 <body>
@@ -41,109 +32,121 @@
   <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
 </svg>
 
-<div class="page">
-  <header class="between">
-    <div class="logo"><i></i>Aurum Ops</div>
-    <nav class="nav row" style="gap:2px">
+<div class="page rdl-stack rdl-stack--section" data-audit-scope aria-label="Dashboard">
+  <!-- Header 48 row: logo · nav · search + orbs (one control height) -->
+  <header class="rdl-inline rdl-inline--between">
+    <div class="rdl-logo"><i></i>Aurum Ops</div>
+    <nav class="rdl-nav" aria-label="Sections">
       <a href="#" aria-current="page">Overview</a><a href="#">Vaults</a><a href="#">Orders</a><a href="#">SIP</a><a href="#">Customers</a><a href="#">Reports</a>
     </nav>
-    <div class="row">
-      <label class="rdl-chip rdl-chip--glass" style="height:44px;width:240px;color:var(--rdl-text-secondary)"><svg class="ico" style="width:16px"><use href="#i-search"/></svg>Search orders, vaults</label>
-      <span class="rdl-orb"><svg class="ico"><use href="#i-bell"/></svg></span>
-      <span class="rdl-avatar">NS</span>
+    <div class="rdl-inline">
+      <label class="rdl-field rdl-field--glass field-search"><svg class="ico ico--sm"><use href="#i-search"/></svg><span class="rdl-field__placeholder">Search orders, vaults</span></label>
+      <button class="rdl-orb" aria-label="Alerts"><svg class="ico"><use href="#i-bell"/></svg></button>
+      <button class="rdl-orb rdl-orb--solid rdl-label" aria-label="Account">NS</button>
     </div>
   </header>
 
-  <section class="between" style="align-items:flex-end;padding:10px 4px 0">
-    <div>
-      <p class="rdl-caption muted">Updated 2 min ago · Mumbai, Delhi, Zurich</p>
-      <h1 class="rdl-h1" style="font-size:48px;line-height:52px;font-weight:300;margin-top:8px">Treasury overview</h1>
+  <!-- Title block left · KPI row right, aligned on the bottom edge -->
+  <section class="rdl-inline rdl-inline--between" style="align-items:flex-end">
+    <div class="rdl-stack rdl-stack--tight">
+      <p class="rdl-caption rdl-muted">Updated 2 min ago · Mumbai, Delhi, Zurich</p>
+      <h1 class="rdl-figure rdl-display">Treasury overview</h1>
     </div>
-    <div class="kpis">
-      <div class="kpi"><span class="rdl-tag rdl-tag--dark" style="justify-self:start">Vault</span><p class="rdl-figure" style="font-size:32px">1,284.6<span class="rdl-unit">kg</span></p><p class="rdl-caption muted">Physical gold held</p></div>
-      <div class="kpi"><span class="rdl-tag" style="justify-self:start">AUM</span><p class="rdl-figure" style="font-size:32px"><span class="rdl-cur">₹</span>912.4<span class="rdl-unit">Cr</span></p><p class="rdl-caption muted">+4.2% this month</p></div>
-      <div class="kpi"><span class="rdl-tag" style="justify-self:start;background:var(--rdl-stone-200);color:var(--rdl-stone-950)">SIP</span><p class="rdl-figure" style="font-size:32px">48,210</p><p class="rdl-caption muted">Active plans</p></div>
+    <div class="rdl-inline" style="gap:var(--rdl-space-10)">
+      <div class="rdl-stack rdl-stack--tight"><span class="rdl-tag rdl-tag--dark" style="align-self:flex-start">Vault</span><p class="rdl-figure rdl-h1">1,284.6<span class="rdl-unit">kg</span></p><p class="rdl-caption rdl-muted">Physical gold held</p></div>
+      <div class="rdl-stack rdl-stack--tight"><span class="rdl-tag" style="align-self:flex-start">AUM</span><p class="rdl-figure rdl-h1"><span class="rdl-cur">₹</span>912.4<span class="rdl-unit">Cr</span></p><p class="rdl-caption rdl-muted">+4.2% this month</p></div>
+      <div class="rdl-stack rdl-stack--tight"><span class="rdl-tag rdl-tag--white" style="align-self:flex-start">SIP</span><p class="rdl-figure rdl-h1">48,210</p><p class="rdl-caption rdl-muted">Active plans</p></div>
     </div>
   </section>
 
-  <section class="bento">
-    <!-- Price: glass, wave with window + beads -->
-    <article class="rdl-glass span-2" style="padding:22px 24px">
-      <div class="card-h">
-        <div><p class="rdl-label">Gold · 24K per gram</p><p class="rdl-figure" style="font-size:44px;margin-top:10px"><span class="rdl-cur">₹</span>7,284<span class="rdl-unit">.20</span></p></div>
-        <div class="rdl-seg rdl-seg--glass" role="tablist" style="width:230px"><button role="tab">1D</button><button role="tab" aria-selected="true">1W</button><button role="tab">1M</button><button role="tab">1Y</button></div>
+  <section class="rdl-bento bento-rows">
+    <!-- Price: corner-anchored metric with a window curve -->
+    <article class="rdl-glass rdl-metric rdl-span-6">
+      <p class="rdl-metric__label">Gold · 24K per gram</p>
+      <div class="rdl-seg rdl-seg--glass seg-range rdl-metric__action" role="tablist" aria-label="Range"><button role="tab">1D</button><button role="tab" aria-selected="true">1W</button><button role="tab">1M</button><button role="tab">1Y</button></div>
+      <div class="rdl-metric__viz">
+        <svg viewBox="0 0 640 128" width="100%" height="128" aria-label="Gold price this week" style="display:block;overflow:visible">
+          <defs><clipPath id="win"><rect x="228" y="0" width="276" height="128"/></clipPath></defs>
+          <g stroke="var(--rdl-border-subtle)" stroke-dasharray="2 6"><path d="M0 24H640M0 68H640M0 112H640"/></g>
+          <path d="M0 104 C46 98 74 76 120 82 S192 110 238 88 S320 30 376 44 S440 84 486 58 S566 22 640 26" fill="none" stroke="var(--rdl-tick-strong)" stroke-width="1.5" stroke-dasharray="1.5 6" stroke-linecap="round"/>
+          <path clip-path="url(#win)" d="M0 104 C46 98 74 76 120 82 S192 110 238 88 S320 30 376 44 S440 84 486 58 S566 22 640 26" fill="none" stroke="var(--rdl-text-primary)" stroke-width="2.2"/>
+          <circle cx="238" cy="88" r="8" fill="rgba(255,255,255,.65)" stroke="#fff"/>
+          <circle cx="504" cy="50" r="8" fill="rgba(255,255,255,.65)" stroke="#fff"/>
+          <line x1="376" x2="376" y1="44" y2="128" stroke="var(--rdl-text-primary)" stroke-dasharray="2 5"/>
+          <circle cx="376" cy="44" r="6" fill="var(--rdl-text-primary)" stroke="var(--rdl-accent)" stroke-width="3"/>
+        </svg>
+        <div class="rdl-ticks__labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span></div>
       </div>
-      <svg viewBox="0 0 700 150" width="100%" height="150" aria-label="Gold price this week" style="display:block;overflow:visible">
-        <defs><clipPath id="win"><rect x="250" y="0" width="300" height="150"/></clipPath></defs>
-        <g stroke="var(--rdl-border-subtle)" stroke-dasharray="2 6"><path d="M0 30H700M0 80H700M0 130H700"/></g>
-        <path d="M0 118 C50 112 80 88 130 94 S210 124 260 100 S350 36 410 52 S480 96 530 66 S620 26 700 30" fill="none" stroke="var(--rdl-tick)" stroke-width="1.5" stroke-dasharray="1.5 6" stroke-linecap="round"/>
-        <path clip-path="url(#win)" d="M0 118 C50 112 80 88 130 94 S210 124 260 100 S350 36 410 52 S480 96 530 66 S620 26 700 30" fill="none" stroke="var(--rdl-text-primary)" stroke-width="2.2"/>
-        <circle cx="260" cy="100" r="9" fill="rgba(255,255,255,.65)" stroke="#fff"/>
-        <circle cx="550" cy="60" r="9" fill="rgba(255,255,255,.65)" stroke="#fff"/>
-        <line x1="410" x2="410" y1="52" y2="150" stroke="var(--rdl-text-primary)" stroke-dasharray="2 5"/>
-        <circle cx="410" cy="52" r="6" fill="var(--rdl-text-primary)" stroke="var(--rdl-accent)" stroke-width="3"/>
-      </svg>
-      <div class="rdl-ticks__labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Today</span></div>
+      <p class="rdl-figure rdl-numeral rdl-metric__figure"><span class="rdl-cur">₹</span>7,284<span class="rdl-unit">.20</span></p>
+      <span class="rdl-status rdl-metric__context">+1.8% this week</span>
     </article>
 
-    <!-- Vault utilisation: aura + dot numerals + tick ruler -->
-    <article class="rdl-widget rdl-aura--gold rdl-grain" style="display:grid;align-content:space-between">
-      <div class="between"><p class="rdl-label">Vault utilisation</p><span class="rdl-orb rdl-orb--white" style="width:38px;height:38px"><svg class="ico" style="width:16px"><use href="#i-arrow"/></svg></span></div>
-      <p class="rdl-figure rdl-figure--dot" style="font-size:84px">84<span class="rdl-unit" style="font-family:var(--rdl-font-sans)">%</span></p>
-      <div><div class="rdl-ticks" style="--at:84%;--tick:rgba(10,11,12,.35)"><span class="rdl-ticks__needle" style="background:#0A0B0C;box-shadow:none"></span></div>
-      <div class="rdl-ticks__labels" style="color:rgba(10,11,12,.5)"><span>0</span><span>50</span><span>100 t</span></div></div>
+    <!-- Vault utilisation: aura + dot-matrix figure (the page's one dot figure) + tick ruler -->
+    <article class="rdl-widget rdl-aura--gold rdl-grain rdl-stack rdl-spread rdl-span-3">
+      <div class="rdl-inline rdl-inline--between"><p class="rdl-label">Vault utilisation</p><button class="rdl-orb rdl-orb--white" aria-label="Open"><svg class="ico"><use href="#i-arrow"/></svg></button></div>
+      <p class="rdl-figure rdl-figure--dot rdl-hero">84<span class="rdl-unit">%</span></p>
+      <div>
+        <div class="rdl-ticks" style="--at:84%;--tick:rgba(10,11,12,.35)"><span class="rdl-ticks__needle" style="background:#0A0B0C;box-shadow:none"></span></div>
+        <div class="rdl-ticks__labels"><span>0</span><span>50</span><span>100 t</span></div>
+      </div>
     </article>
 
     <!-- Blueprint vault card -->
-    <article class="rdl-blueprint" style="display:grid;align-content:space-between">
-      <div class="between"><div><p class="rdl-label">Vault V-07</p><p class="rdl-caption rdl-muted" style="margin-top:2px">Mumbai · Tier IV</p></div><span class="rdl-status" style="--rdl-status:#fff">Sealed</span></div>
-      <svg viewBox="0 0 220 120" width="100%" height="118" fill="none" stroke-width="1" aria-hidden="true">
+    <article class="rdl-blueprint rdl-stack rdl-spread rdl-span-3">
+      <div class="rdl-inline rdl-inline--between">
+        <div class="rdl-stack rdl-stack--tight"><p class="rdl-label">Vault V-07</p><p class="rdl-caption rdl-muted">Mumbai · Tier IV</p></div>
+        <span class="rdl-status" style="--rdl-status:#fff">Sealed</span>
+      </div>
+      <svg viewBox="0 0 220 120" width="100%" height="112" fill="none" stroke-width="1" aria-hidden="true">
         <path d="M40 40 L110 12 L180 40 L110 68 Z"/><path d="M40 40 V92 L110 120 V68"/><path d="M180 40 V92 L110 120"/>
         <path d="M58 47 V85 M76 54 V92 M94 61 V99" opacity=".6"/><circle cx="148" cy="80" r="14"/><circle cx="148" cy="80" r="4"/><path d="M148 66 V70 M148 90 V94 M134 80 H138 M158 80 H162"/>
-        <path d="M110 12 V2 M180 40 H214 M40 40 H6" stroke-dasharray="2 3" opacity=".7"/><text x="186" y="36" font-size="8" fill="#fff" stroke="none">4.2 m</text>
+        <path d="M110 12 V2 M180 40 H214 M40 40 H6" stroke-dasharray="2 3" opacity=".7"/>
       </svg>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-        <div class="rdl-kv"><span class="k" style="color:rgba(255,255,255,.7)">Temp</span><span class="v">21 °C</span></div>
-        <div class="rdl-kv"><span class="k" style="color:rgba(255,255,255,.7)">Humidity</span><span class="v">38%</span></div>
-        <div class="rdl-kv"><span class="k" style="color:rgba(255,255,255,.7)">Audit</span><span class="v">Sep 22</span></div>
+      <div class="rdl-grid-3">
+        <div class="rdl-kv"><span class="k rdl-muted">Temp</span><span class="v">21 °C</span></div>
+        <div class="rdl-kv"><span class="k rdl-muted">Humidity</span><span class="v">38%</span></div>
+        <div class="rdl-kv"><span class="k rdl-muted">Audit</span><span class="v">Sep 22</span></div>
       </div>
     </article>
 
-    <!-- Risk index: dark glass + dotted/solid arc with beads -->
-    <article class="rdl-glass rdl-glass--dark rdl-glass--iridescent" style="background:#131416;display:grid;align-content:space-between">
-      <div class="between"><p class="rdl-label">Hedge exposure</p><svg class="ico" style="opacity:.6"><use href="#i-more"/></svg></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
-        <div class="rdl-kv"><span class="k">Hedged</span><span class="v">82% <small style="opacity:.55">of AUM</small></span></div>
+    <!-- Hedge exposure: ink surface (dark glass needs a dark backdrop) + iridescent rim + beaded arc + glass verdict -->
+    <article class="rdl-widget rdl-widget--ink rdl-glass--iridescent rdl-stack rdl-spread rdl-span-3">
+      <div class="rdl-inline rdl-inline--between"><p class="rdl-label">Hedge exposure</p><button class="rdl-orb" aria-label="More"><svg class="ico"><use href="#i-more"/></svg></button></div>
+      <div class="rdl-grid-3">
+        <div class="rdl-kv"><span class="k">Hedged</span><span class="v">82%</span></div>
         <div class="rdl-kv"><span class="k">Basis</span><span class="v">0.42%</span></div>
         <div class="rdl-kv"><span class="k">VaR 1d</span><span class="v">₹3.1 Cr</span></div>
       </div>
-      <svg viewBox="0 0 260 110" width="100%" height="104" aria-hidden="true">
-        <path d="M20 104 A110 110 0 0 1 240 104" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
-        <path d="M58 40 A110 110 0 0 1 202 40" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
-        <circle cx="58" cy="40" r="7" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.8)"/><circle cx="202" cy="40" r="7" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.8)"/>
-        <foreignObject x="70" y="62" width="120" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="rdl-chip rdl-chip--glass" style="height:32px;font-size:12px;color:#fff;justify-content:center;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)">Within limits</div></foreignObject>
-      </svg>
-      <div class="between rdl-caption" style="opacity:.55"><span>Low</span><span>Balanced</span><span>High</span></div>
+      <div class="rdl-stack rdl-center">
+        <svg viewBox="0 0 260 72" width="100%" height="72" aria-hidden="true">
+          <path d="M20 70 A110 110 0 0 1 240 70" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round"/>
+          <path d="M58 26 A110 110 0 0 1 202 26" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" transform="translate(0 6)"/>
+          <circle cx="58" cy="32" r="7" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.8)"/><circle cx="202" cy="32" r="7" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.8)"/>
+        </svg>
+        <span class="rdl-chip rdl-chip--glass rdl-chip--xs">Within limits</span>
+      </div>
+      <div class="rdl-inline rdl-inline--between rdl-caption"><span class="rdl-muted">Low</span><span>Balanced</span><span class="rdl-muted">High</span></div>
     </article>
 
     <!-- Settlements table -->
-    <article class="rdl-glass rdl-glass--strong span-2" style="padding:20px 24px">
-      <div class="card-h"><p class="rdl-label">Settlements today</p><span class="rdl-chip rdl-chip--outline" style="height:32px;font-size:12px">View all</span></div>
-      <table>
+    <article class="rdl-glass rdl-glass--strong rdl-stack rdl-stack--loose rdl-span-6">
+      <div class="rdl-inline rdl-inline--between"><p class="rdl-label">Settlements today</p><button class="rdl-chip rdl-chip--outline rdl-chip--xs">View all</button></div>
+      <table class="rdl-table">
         <thead><tr><th>Batch</th><th>Counterparty</th><th>Status</th><th class="num">Grams</th><th class="num">Value</th></tr></thead>
         <tbody>
-          <tr><td>ST-2041</td><td class="muted">MMTC-PAMP</td><td><span class="rdl-status">Settled</span></td><td class="num">12,400.0</td><td class="num">₹9.03 Cr</td></tr>
-          <tr><td>ST-2040</td><td class="muted">Brinks Zurich</td><td><span class="rdl-status rdl-status--warn">In transit</span></td><td class="num">8,125.5</td><td class="num">₹5.92 Cr</td></tr>
-          <tr><td>ST-2039</td><td class="muted">Sequel Logistics</td><td><span class="rdl-status rdl-status--crit">Delayed · 2h</span></td><td class="num">3,980.0</td><td class="num">₹2.90 Cr</td></tr>
+          <tr><td>ST-2041</td><td class="rdl-muted">MMTC-PAMP</td><td><span class="rdl-status">Settled</span></td><td class="num">12,400.0</td><td class="num">₹9.03 Cr</td></tr>
+          <tr><td>ST-2040</td><td class="rdl-muted">Brinks Zurich</td><td><span class="rdl-status rdl-status--warn">In transit</span></td><td class="num">8,125.5</td><td class="num">₹5.92 Cr</td></tr>
+          <tr><td>ST-2039</td><td class="rdl-muted">Sequel Logistics</td><td><span class="rdl-statuspill rdl-statuspill--crit">Delayed · 2h</span></td><td class="num">3,980.0</td><td class="num">₹2.90 Cr</td></tr>
+          <tr><td>ST-2038</td><td class="rdl-muted">MMTC-PAMP</td><td><span class="rdl-status">Settled</span></td><td class="num">6,200.0</td><td class="num">₹4.51 Cr</td></tr>
         </tbody>
       </table>
     </article>
 
-    <!-- SIP collections: dusk aura + thin line bars -->
-    <article class="rdl-widget rdl-aura--dusk rdl-grain" style="display:grid;align-content:space-between;color:#fff">
-      <div class="between"><p class="rdl-label">SIP collections</p><span class="rdl-tag" style="background:rgba(255,255,255,.22);color:#fff">Oct</span></div>
-      <p class="rdl-figure" style="font-size:52px;color:#fff">96.4<span class="rdl-unit" style="color:rgba(255,255,255,.7)">%</span></p>
-      <div class="rdl-lines" style="--h:78px;color:#fff" id="sipbars"></div>
+    <!-- SIP collections: dusk aura + hairline bars, one lit -->
+    <article class="rdl-widget rdl-aura--dusk rdl-grain rdl-stack rdl-spread rdl-span-3">
+      <div class="rdl-inline rdl-inline--between"><p class="rdl-label">SIP collections</p><span class="rdl-tag rdl-tag--white">Oct</span></div>
+      <p class="rdl-figure rdl-display">96.4<span class="rdl-unit">%</span></p>
+      <div class="rdl-lines" style="--h:72px;color:#fff" id="sipbars"></div>
     </article>
   </section>
 </div>

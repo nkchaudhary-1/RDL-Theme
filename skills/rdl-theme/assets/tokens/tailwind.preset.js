@@ -150,11 +150,20 @@ module.exports = {
           "300": "var(--rdl-stone-300)",
           "400": "var(--rdl-stone-400)",
           "500": "var(--rdl-stone-500)",
+          "550": "var(--rdl-stone-550)",
           "600": "var(--rdl-stone-600)",
           "700": "var(--rdl-stone-700)",
           "800": "var(--rdl-stone-800)",
           "900": "var(--rdl-stone-900)",
           "950": "var(--rdl-stone-950)"
+        },
+        "rose": {
+          "50": "var(--rdl-rose-50)",
+          "100": "var(--rdl-rose-100)",
+          "300": "var(--rdl-rose-300)",
+          "500": "var(--rdl-rose-500)",
+          "600": "var(--rdl-rose-600)",
+          "700": "var(--rdl-rose-700)"
         },
         "bg-canvas": "var(--rdl-bg-canvas)",
         "bg-surface": "var(--rdl-bg-surface)",
@@ -186,6 +195,7 @@ module.exports = {
         "warning-text": "var(--rdl-warning-text)",
         "info": "var(--rdl-info)",
         "info-soft": "var(--rdl-info-soft)",
+        "info-text": "var(--rdl-info-text)",
         "scrim": "var(--rdl-scrim)",
         "glass-fill": "var(--rdl-glass-fill)",
         "glass-fill-strong": "var(--rdl-glass-fill-strong)",
@@ -218,6 +228,14 @@ module.exports = {
         ]
       },
       "fontSize": {
+        "hero": [
+          "96px",
+          {
+            "lineHeight": "92px",
+            "letterSpacing": "-0.04em",
+            "fontWeight": "300"
+          }
+        ],
         "display-xl": [
           "72px",
           {
@@ -298,6 +316,14 @@ module.exports = {
             "fontWeight": "500"
           }
         ],
+        "meta": [
+          "13px",
+          {
+            "lineHeight": "18px",
+            "letterSpacing": "0em",
+            "fontWeight": "500"
+          }
+        ],
         "caption": [
           "12px",
           {
@@ -318,21 +344,33 @@ module.exports = {
       "spacing": {
         "mobile-gutter": "20px",
         "card-padding": "20px",
+        "card-padding-sm": "16px",
         "card-gap": "12px",
-        "section-gap": "28px",
+        "section-gap": "32px",
+        "stack-tight": "4px",
+        "stack": "8px",
+        "stack-loose": "16px",
+        "header-height": "48px",
+        "header-top": "8px",
+        "title-gap": "24px",
+        "bottom-zone": "120px",
+        "pin-bottom": "34px",
         "web-sidebar": "248px",
         "web-gutter": "32px",
-        "web-grid-gap": "16px"
+        "web-grid-gap": "16px",
+        "web-bento-gap": "12px",
+        "web-header-height": "64px"
       },
       "borderRadius": {
         "rdl-xs": "6px",
-        "rdl-sm": "10px",
-        "rdl-md": "14px",
+        "rdl-sm": "8px",
+        "rdl-md": "12px",
+        "rdl-tile": "14px",
         "rdl-lg": "20px",
         "rdl-xl": "28px",
         "rdl-2xl": "32px",
         "rdl-3xl": "40px",
-        "rdl-tile": "14px",
+        "rdl-sheet": "48px",
         "pill": "999px",
         "card": "var(--rdl-radius-card)",
         "widget": "var(--rdl-radius-widget)"
@@ -355,7 +393,8 @@ module.exports = {
         "aura-orchid": "var(--rdl-aura-orchid)",
         "aura-ocean": "var(--rdl-aura-ocean)",
         "aura-ember": "var(--rdl-aura-ember)",
-        "aura-fog": "var(--rdl-aura-fog)"
+        "aura-fog": "var(--rdl-aura-fog)",
+        "aura-rose": "var(--rdl-aura-rose)"
       },
       "backdropBlur": {
         "glass": "var(--rdl-glass-blur)"

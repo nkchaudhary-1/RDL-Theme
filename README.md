@@ -1,8 +1,9 @@
-# RDL Theme · v2
+# RDL Theme · v3
 
 A Claude Code skill and design system for building apps in the visual language of
-[RonDesignLab](https://dribbble.com/RonDesignLab). v2 is based on a frame-by-frame study of
-**220 RDL shots**:
+[RonDesignLab](https://dribbble.com/RonDesignLab). It's based on **two passes over 220 RDL
+shots**: one for style and one for structure (spacing, grids, anatomy), plus pixel calibration of
+the colors. The style is:
 - frosted glass over photos, 3D renders and soft gradient auras
 - huge light-weight numerals with small muted units, plus dot-matrix figures
 - orbs, pills and circle–pill–circle action rows
@@ -12,18 +13,24 @@ A Claude Code skill and design system for building apps in the visual language o
 
 The original flat fintech look (v1) ships as an option.
 
+**New in v3:** a measured layout system (spacing ladder, screen skeleton, 12-column bento,
+control-height ladder, nested radius), exact component anatomy, a usage rulebook (hierarchy,
+color budget, app-wide consistency) and **`audit_ui.mjs`**. The audit renders a page and fails
+on off-scale type, off-ladder spacing, wrong radii, mixed control heights, crowded pinned zones
+and text contrast measured on the real pixels. Both reference templates pass with 0 errors.
+
 Ask Claude something like *"build the SIP screen of my gold app in RDL theme, SwiftUI, gold
 accent"*. It follows the rules, tokens, components and QA checklist in this repo.
 
-![Glass · gold](docs/v2-mobile-gold.png)
+![Glass · gold](docs/v3-mobile-gold.png)
 
 | Glass dashboard · light | Glass dashboard · dark |
 |---|---|
-| ![](docs/v2-dashboard-light.png) | ![](docs/v2-dashboard-dark.png) |
+| ![](docs/v3-dashboard-light.png) | ![](docs/v3-dashboard-dark.png) |
 
 | Glass · volt accent | Flat (v1) option |
 |---|---|
-| ![](docs/v2-mobile-volt.png) | ![](docs/v1-flat-mobile.png) |
+| ![](docs/v3-mobile-volt.png) | ![](docs/v1-flat-mobile.png) |
 
 ## Install
 
@@ -51,8 +58,8 @@ cp -r RDL-Theme/skills/rdl-theme ~/.claude/skills/            # all projects
 ```
 **Tailwind:** import `tokens.css`, then `presets: [require('./tailwind.preset.js')]`.
 
-**SwiftUI (iOS 17+):** add `RDLTokens.swift`, `RDLComponents.swift` and
-`RDLGlassComponents.swift`, then at the root:
+**SwiftUI (iOS 17+):** add `RDLTokens.swift`, `RDLComponents.swift`,
+`RDLGlassComponents.swift` and `RDLLayout.swift`, then at the root:
 ```swift
 ContentView().rdlAccent(.gold).rdlSurfaceStyle(.glass)
 ```
@@ -60,7 +67,7 @@ ContentView().rdlAccent(.gold).rdlSurfaceStyle(.glass)
 | Switch | Values |
 |---|---|
 | Style | `glass` (default) · `flat` (v1) |
-| Accent | `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `lime` · `violet` · `orange` · `ocean` |
+| Accent | `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `rose` · `lime` · `violet` · `orange` · `ocean` |
 | Theme | `light` · `dark` · system |
 
 ## What's inside
@@ -69,7 +76,10 @@ ContentView().rdlAccent(.gold).rdlSurfaceStyle(.glass)
 skills/rdl-theme/
 ├── SKILL.md                     RDL DNA, workflow, quick reference, anti-patterns
 ├── references/
-│   ├── design-study.md          220-frame analysis: pattern frequencies, variants, finance frames, v1→v2
+│   ├── layout.md                Spacing ladder, screen skeleton, grids, alignment, control heights, radius
+│   ├── anatomy.md               Exact specs for every component and layout primitive
+│   ├── guidelines.md            Rulebook: hierarchy, type, color budget, consistency, minimalism
+│   ├── design-study.md          220-frame analysis: frequencies, 20 structural rules, v1→v3
 │   ├── foundations.md           Modes, color, accents, auras, glass, type and numerals, radius, imagery, motion
 │   ├── components.md            Glass + base components, SVG patterns, domain compositions
 │   ├── screen-patterns.md       Glass G1–G8 / W5–W7, flat M1–M7 / W1–W4
@@ -78,12 +88,17 @@ skills/rdl-theme/
 │   └── qa-checklist.md
 ├── assets/
 │   ├── tokens/                  tokens.json (source) → tokens.css, tailwind.preset.js
-│   ├── ios/                     RDLTokens.swift (generated), RDLComponents.swift, RDLGlassComponents.swift
+│   ├── ios/                     RDLTokens.swift (generated), RDLComponents.swift, RDLGlassComponents.swift, RDLLayout.swift
 │   └── templates/               rdl-components.css, glass + flat mobile and dashboard references
 └── scripts/
     ├── build_tokens.mjs         tokens.json → CSS / Tailwind / Swift
+    ├── audit_ui.mjs             Layout, consistency and contrast audit for any HTML build
     └── extract_palette.py       Pixel-calibrate tokens against exported shots
-research/moodboard-notes.md      Per-frame notes from the 220-shot scan
+research/
+├── moodboard-notes.md           Pass 1: per-frame style notes (220 frames)
+├── deep-scan.md                 Pass 2: per-frame structure, radius, type and composition notes
+├── calibration.md               Pixel-sampled colors and measured layout values
+└── frames.tsv                   Frame index used for calibration
 ```
 
 Single-file style guide: [`DESIGN-STYLE.md`](DESIGN-STYLE.md).
@@ -94,14 +109,24 @@ node skills/rdl-theme/scripts/build_tokens.mjs
 node scripts/render-previews.mjs     # refresh docs/ screenshots (needs Playwright)
 ```
 
+Auditing a page (0 errors before shipping):
+```bash
+node skills/rdl-theme/scripts/audit_ui.mjs my-screen.html                 # phone shot, 44pt targets
+node skills/rdl-theme/scripts/audit_ui.mjs dashboard.html --w 1440 --h 960 # desktop, pointer targets
+```
+Put `data-audit-scope` on the product UI root and `data-audit-ignore` on presentation chrome.
+
 ## Status
 
-- **Evidence:** every frame on the board was viewed and annotated. Colors are judged by eye from
-  the rendered screenshots, because the image host was blocked in the build environment. For
-  pixel-exact values, export shots to `research/shots/` (git-ignored) and run
-  `python3 skills/rdl-theme/scripts/extract_palette.py research/shots`.
+- **Evidence:** every frame on the board was viewed twice (style, then structure) and annotated.
+  Colors are pixel-sampled from the board renders (`research/calibration.md`). Layout values are
+  measured from mostly angled or depth-of-field shots, so treat them as ±2pt, snapped to the 4pt
+  grid. To re-run calibration on your own exports, put them in `research/shots/` (git-ignored)
+  and run `python3 skills/rdl-theme/scripts/extract_palette.py research/shots`.
 - **SwiftUI** was written without a compiler in the build environment. Build it once in Xcode
-  and report any fixes.
+  and report any fixes. The audit covers HTML builds; apply the QA checklist by hand for SwiftUI.
+- **Flat (v1) templates** keep their original inline values and aren't audit-clean; the glass
+  templates are the v3 reference.
 
 ## Note
 

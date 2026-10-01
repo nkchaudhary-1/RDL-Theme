@@ -106,7 +106,7 @@ const auraCSS = (a) => {
   L.push("");
   L.push("/* Type roles — use on any element: <p class=\"rdl-h1\">. Display roles follow --rdl-num-weight (300 glass / 500 flat). */");
   for (const [k, s] of entries(t.type.scale)) {
-    const weight = ["display-xl", "display", "numeral"].includes(k) ? "var(--rdl-num-weight)" : s.weight;
+    const weight = ["hero", "display-xl", "display", "numeral"].includes(k) ? "var(--rdl-num-weight)" : s.weight;
     L.push(`.rdl-${k} { font-family: var(--rdl-font-sans); font-size: ${px(s.size)}; line-height: ${px(s.line)}; font-weight: ${weight}; letter-spacing: ${s.tracking}em; }`);
   }
   L.push(".rdl-num { font-variant-numeric: tabular-nums; font-feature-settings: \"tnum\" 1; }");

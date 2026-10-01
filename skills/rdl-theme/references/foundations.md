@@ -1,7 +1,9 @@
 # Foundations
 
 All values live in `assets/tokens/tokens.json`. This file explains the intent behind them, so you
-can make the right call when a case isn't covered. The glass style is the default; notes marked
+can make the right call when a case isn't covered. Spacing, grids and radius rules are in
+`layout.md`; component dimensions are in `anatomy.md`; usage budgets are in `guidelines.md`.
+v3 colors are pixel-calibrated against the board (`research/calibration.md`). The glass style is the default; notes marked
 **Flat** apply to `data-style="flat"` (v1).
 
 ## Modes and attributes
@@ -12,7 +14,7 @@ Put these on `<html>` (web), or inject them at the SwiftUI root:
 |---|---|---|
 | `data-theme` | `light` · `dark` (or follow the system) | `.preferredColorScheme` |
 | `data-style` | `glass` (default) · `flat` | `.rdlSurfaceStyle(.glass/.flat)` |
-| `data-accent` | `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `lime` · `violet` · `orange` · `ocean` | `.rdlAccent(.gold)` |
+| `data-accent` | `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `rose` · `lime` · `violet` · `orange` · `ocean` | `.rdlAccent(.gold)` |
 
 A single screen may switch theme locally. Put `data-theme="dark"` on a dark hero screen inside a
 light app, which is common on the board.
@@ -22,19 +24,23 @@ light app, which is common on the board.
 ### Neutrals: stone
 A cool, very slightly warm gray ramp (`stone.0` to `stone.950`). The light canvas is `stone.100`
 `#EFEFF1`, cards are white, and ink is `stone.950` `#0A0B0C`. The dark canvas is `stone.950`,
-with surfaces at `stone.900` and `stone.800`.
+with surfaces at `stone.900` and `stone.800`. Board neutrals match these within ΔE 3.
+
+Text has three tiers only: primary (ink), secondary (`stone.550` `#5C5C64`, ≥ 4.5:1 on canvas
+and fog) and tertiary (`stone.400`, only for ≥ 24px text, disabled states and decoration).
 
 ### Accent packs
 Use one pack per product, and spend the accent 1–3 times per screen.
 
 | Pack | Accent | On-accent | Seen on the board | Use for |
 |---|---|---|---|---|
-| **volt** | `#DDF23A` | ink | QuickBooks tags, TD Bank checks, "Best Seller", e-bike | Default. Fintech, AI, productivity |
-| **gold** | `#EBC45C` | ink | Solar (mustard), Credit 832 aura | Precious metals, wealth, energy |
+| **volt** | `#DFFA32` | ink | QuickBooks tags, TD Bank checks, "Best Seller", e-bike | Default. Fintech, AI, productivity |
+| **gold** | `#ECBC44` | ink | Solar (mustard), Credit 832 aura | Precious metals, wealth, energy |
 | **signal** | `#4BE06E` | ink | Compliance folders, fuel card, lawn, HRV | Health, ops "all good", sustainability |
-| **electric** | `#2233F0` | white | Blueprint cards, fleet AI, containers | Automotive, industrial, insurance |
-| **ember** | `#FF5A1F` | ink | Robot arm, oil field, traffic, stress relief | Logistics, alerts-heavy ops, fitness |
-| **orchid** | `#A548EE` | white | Weight management, e-bike widgets | Wellness, consumer health |
+| **electric** | `#0832D8` | white | Blueprint cards, fleet AI, containers | Automotive, industrial, insurance |
+| **ember** | `#FC5A10` | ink | Robot arm, oil field, traffic, stress relief | Logistics, alerts-heavy ops, fitness |
+| **orchid** | `#C16CF7` | ink | Weight management, e-bike widgets | Wellness, consumer health |
+| **rose** | `#F0548A` | ink | Health trackers, pink aura tiles | Women's health, wellness, social |
 | lime / violet / orange / ocean | v1 packs | | | Flat-style products |
 
 **Where the accent goes:** the active orb or dock item, a needle or selected tick, the selected
@@ -56,9 +62,12 @@ blueprint card.
 | `ocean` | navy → teal | Night/analytics widgets |
 | `ember` | amber → sand | Energy, warm cards |
 | `fog` | pale blue-gray → white | Desktop backdrops |
+| `rose` | pink → blush → lilac-white (radial) | Health trackers, wellness widgets (ink text) |
 
-Rules: use at most two auras per screen. Text on an aura is ink or white, never gray-on-color
-(check contrast). Keep auras soft, never neon rainbow.
+Rules: use at most two auras per screen. Text on an aura is ink or white, never gray-on-color.
+Each aura class redefines the text tiers (ink 68% on light auras, white 86% on dark ones) so
+units, currency and captions stay ≥ 4.5:1. Keep auras soft, never neon rainbow. `dusk` was
+darkened in v3 so white text passes on every stop.
 
 ### Glass
 | Token | Light | Dark |
@@ -89,6 +98,7 @@ for ok, amber for warn, red for critical, electric for info, stone for idle.
 
 | Role | Size/Line | Weight | Use |
 |---|---|---|---|
+| hero | 96/92 | 300 | Single-metric screens (credit score, readiness), dot-matrix widgets |
 | display-xl | 72/72 | 300 | Amount-entry screens, single-metric heroes |
 | display | 56/58 | 300 | Hero figure on home and detail screens |
 | numeral | 40/44 | 300 | Card figures, KPI tiles |
@@ -99,6 +109,7 @@ for ok, amber for warn, red for critical, electric for info, stone for idle.
 | body | 15/22 | 400 | Paragraphs |
 | body-strong | 15/22 | 600 | Emphasis inside body; list titles |
 | label | 14/18 | 500 | Buttons, chips, segmented |
+| meta | 13/18 | 500 | Status labels, card labels, list subtitles, KV labels |
 | caption | 12/16 | 400 | Labels above values, axis |
 | micro | 11/14 | 500, +4% | Eyebrows (uppercase optional, used sparingly) |
 
@@ -112,20 +123,29 @@ for ok, amber for warn, red for critical, electric for info, stone for idle.
 
 ## Spacing, layout, radius
 
-The spacing scale is unchanged from v1 (4pt base; 20 mobile gutter; 20 card padding; 12 card gap).
+See `layout.md` for the full system. In short:
+
+- **Spacing ladder (4pt):** 2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64 · 80, chosen by
+  relationship: label→value 4, items in a group 8, inside a card 12–16, card padding 20, card gap
+  12, header→title 24, section gap 32, margins 20.
+- **Control ladder:** tag 24 · xs 32 · sm 40 · md 48 (header items, orbs, tiles) · lg 56 (primary
+  pill, action-row orbs) · xl 64 (slide, dock, prompt input). One height per row.
 
 | Radius token | px | Use |
 |---|---|---|
-| tile / md | 14 | Square-rounded tool tiles, month cells, small cards |
-| lg | 20 | Blueprint cards, web tables |
+| sm | 8 | Inner tiles, ops-console cards, tooltips |
+| md | 12 | Small cards, dense inputs |
+| tile | 14 | Square-rounded tool tiles, month cells |
+| lg | 20 | Web cards, blueprint cards, panes nested in widgets |
 | xl = **card** | 28 | Cards, glass panes |
-| 2xl | 32 | Sheets, large panes |
-| 3xl = **widget** | 40 | Aura widgets, product cards, squircles |
-| pill | 999 | Buttons, chips, segmented, dock, slide |
-| circle | 50% | Orbs, knobs, beads |
+| 2xl | 32 | Large panes, hero cards |
+| 3xl = **widget** | 40 | Aura widgets, product squircles |
+| sheet | 48 | Bottom-sheet top corners |
+| pill / circle | — | Buttons, chips, segmented, dock, slide, orbs, knobs, beads |
 
-The Swiss variant uses radius 0–4 on blocks and buttons. Use it only when the whole product
-takes that tone, and don't mix it with rounded glass on the same screen.
+Nested radius = outer − padding (minimum 8). The Swiss variant uses radius 0–4 on blocks and
+buttons. Use it only when the whole product takes that tone, and don't mix it with rounded glass
+on the same screen.
 
 ## Textures and lines
 

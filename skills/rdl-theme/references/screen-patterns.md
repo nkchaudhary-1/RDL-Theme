@@ -5,6 +5,20 @@ flat (v1) archetypes and still valid with `data-style="flat"`. Working examples:
 `assets/templates/mobile-app.html` (G1, G4, G6) and `web-dashboard.html` (W5) for glass;
 `mobile-app-flat.html` (M1–M3) and `web-dashboard-flat.html` (W1) for flat.
 
+## Every screen: the skeleton
+
+All archetypes sit on the same skeleton (`layout.md` §2): status bar → 8 → **header row (48)** →
+24 → title block → 32 → content (cards 12 apart, sections 32 apart) → ≥ 120 clear → **pinned zone**
+34 above the home indicator. Pick the pinned zone by role and keep it the same across the app:
+
+| Screen role | Pinned zone |
+|---|---|
+| Home / tab root | Dock (or action row when the home has one primary verb) |
+| Detail | Action row (orb · verb · orb) |
+| Flow step (amount, form) | Action row, primary = "Continue" |
+| Irreversible money movement | Slide-to-confirm |
+| Result / success | Single full-width pill ("Done") |
+
 ## Glass · mobile
 
 ### G1 · Home over aura
@@ -13,7 +27,7 @@ flat (v1) archetypes and still valid with `data-style="flat"`. Working examples:
 │ (◯)   [ 24K · 99.9% pure ]  (◯)│  orb · glass chip · orb
 │ Good morning, **Aarav**       │  mixed-weight h2
 │ Portfolio value               │  caption
-│ ₹4,82,190.36                  │  display 52–56 / 300, small ₹ and .36
+│ ₹4,82,190.36                  │  display 56 / 300, small ₹ and .36
 │ ● Live  +₹12,408 · 30 days    │  status dot + caption
 │ ┌ glass ───────────────────┐ │
 │ │ Gold · per gram   [+1.8%]│ │  label + tag
@@ -23,8 +37,8 @@ flat (v1) archetypes and still valid with `data-style="flat"`. Working examples:
 │ ┌ ink widget ┐ ┌ glass ────┐ │  dot-matrix holdings · next SIP
 │ │ 66.2 g ⠿   │ │ Oct 05  ↗ │ │
 │ └────────────┘ └───────────┘ │
-│ ┌ glass list: last activity ┐│
-│ (⇄)  [   Buy gold   ]  (↓)   │  action row pinned 36pt above home indicator
+│                              │  ≥ 120 clear (activity list lives below the fold)
+│ (⇄)  [   Buy gold   ]  (↓)   │  action row pinned 34 above home indicator
 └──────────────────────────────┘
 ```
 Backdrop: `aura--gold` (or photo/3D). Accent: live dot, cursor ring, dot figure. States: market
@@ -72,11 +86,12 @@ bottom: outline back orb + slide-to-next pill.
 ## Glass · web
 
 ### W5 · Bento over fog (overview)
-Top: logo, text nav with black pill active, glass search pill, bell orb, avatar. Header: caption
-("Updated 2 min ago"), 44–48/300 title; KPI row to the right (tag + figure + caption). Bento
-(4 cols, 2 rows): wide glass chart card with window curve + segmented; aura widget with dot
-figure + tick ruler; blueprint asset card; dark iridescent glass gauge card; strong-glass table
-with status dots; aura widget with hairline bars.
+Top (48 row): logo, glass nav track with the active pill in ink, glass search field, bell orb,
+account orb. Title block: caption ("Updated 2 min ago") → display 56/300 title; KPI row on the
+right, bottom-aligned (tag → h1 figure → caption). Bento on 12 columns, rows 320, gap 12: price
+metric (span 6) with window curve + segmented; gold aura with the page's one dot figure + tick
+ruler (3); blueprint asset card (3); ink hedge card with iridescent rim + beaded arc (3);
+strong-glass table with status dots and one escalation pill (6); dusk aura with hairline bars (3).
 
 ### W6 · 3D scene console
 Full-bleed 3D scene (port, factory, city, body) with selective accent highlighting; glass panels
