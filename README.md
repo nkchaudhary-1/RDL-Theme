@@ -47,6 +47,16 @@ cp -r RDL-Theme/skills/rdl-theme ~/.claude/skills/            # all projects
 # or: cp -r RDL-Theme/skills/rdl-theme <project>/.claude/skills/  # one project
 ```
 
+**As a single file (RDL)**
+[`RDL/SKILL.md`](RDL/SKILL.md) is the whole skill in one file: the full guide (§1–§12) plus every
+source file as appendices. Each appendix heading names the path to save it at, so you can rebuild
+the full skill from it.
+```bash
+cp -r RDL-Theme/RDL ~/.claude/skills/        # or upload RDL/SKILL.md as a custom skill on claude.ai
+```
+It's large (~330 KB) because it embeds all code. Use the folder skill above when you want the lean
+version. Regenerate it after any change: `node scripts/build-rdl-single.mjs`.
+
 ## Use it in code
 
 **Web**

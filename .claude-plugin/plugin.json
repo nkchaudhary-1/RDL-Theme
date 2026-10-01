@@ -1,6 +1,6 @@
 {
   "name": "rdl-theme",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "RDL Theme v3 — build consistent, minimal apps in the RonDesignLab style (glass default, flat v1 option): calibrated tokens for CSS, Tailwind and SwiftUI, a measured layout system, component anatomy, usage guidelines, screen archetypes, domain playbooks and an automated UI audit, derived from a two-pass study of 220 shots.",
   "author": {
     "name": "Neelesh"

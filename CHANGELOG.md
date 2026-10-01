@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.0 — RDL single-file skill
+- **New `RDL/SKILL.md`:** the complete skill as one file.
+  - Part 1 is the full guide: overview plus all 11 references as §1–§12, with cross-references rewritten to section numbers.
+  - Part 2 holds the code as appendices A–L: tokens.json, tokens.css, build_tokens.mjs, the Tailwind preset, the four SwiftUI files, rdl-components.css, audit_ui.mjs, extract_palette.py and the radius demo. Each is headed with the path to save it at.
+  - Verified: extracting the appendices into an empty folder and running `build_tokens.mjs` reproduces byte-identical outputs, and `audit_ui.mjs` runs from the extracted copy.
+- **New `scripts/build-rdl-single.mjs`:** regenerates the file from `skills/rdl-theme/`.
+- `RDL/` sits outside `skills/`, so the plugin still loads one skill only.
+
 ## 3.2.0 — Corner radius in the skill
 Everything from the corner-radius work now ships inside `skills/rdl-theme/`.
 
