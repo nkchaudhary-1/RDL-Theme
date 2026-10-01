@@ -282,8 +282,10 @@ public extension RDLRadius {
     /// Padding for a surface that hosts nested panes: the card gap (20) halved and snapped to the ladder.
     static let hostPadding: CGFloat = RDLSpace.s3
 
-    /// Radii for a chain of nested containers, halving the gap at each level (article method):
-    /// `chain(outer: 24, gap: 8, levels: 4)` → [24, 16, 12, 8]. Gaps never go below 4.
+    /// Radii for a chain of nested containers that never runs out of radius:
+    /// `chain(outer: 24, gap: 8, levels: 4)` → [24, 16, 12, 8].
+    /// Method A (strict): use the returned step as the real padding of each level (8, 4, 4).
+    /// Method B (soft, the article's): keep the padding at `gap` and just use these radii.
     static func chain(outer: CGFloat, gap: CGFloat, levels: Int) -> [CGFloat] {
         var radii = [outer], g = gap
         for _ in 1..<max(levels, 1) {

@@ -11,8 +11,9 @@
 //                   control ladder · mixed control heights in one row · text contrast < 4.5:1
 //                   (3:1 for ≥ 24px, or ≥ 19px at 600+), measured on the rendered pixels behind the text ·
 //                   content running into the pinned bottom zone (needs 12 clear).
-// Warnings:         font weight outside 300–600 · non-concentric nested radius (inner ≠ outer − gap, where
-//                   gap = padding + border + offsets, measured per corner) · accent used more
+// Warnings:         font weight outside 300–600 · nested radius that is neither concentric (outer − gap) nor
+//                   soft (outer − gap/2, the deep-nesting compromise); gap = padding + border + offsets,
+//                   measured per corner · accent used more
 //                   than 3 times in one scope · interactive target < 44 (touch) or < 24 (viewport ≥ 1024,
 //                   pointer; override with --min-target N).
 // --strict turns warnings into errors.
@@ -87,7 +88,8 @@ function collect(rules) {
       for (const [x, y] of [[g.l, g.t], [g.rt, g.t], [g.l, g.b], [g.rt, g.b]]) {
         if (x >= 0 && y >= 0 && Math.abs(x - y) <= 2 && Math.max(x, y) < outer) {
           const gap = Math.round((x + y) / 2);
-          return { outer, gap, expected: Math.max(0, outer - gap) };
+          // soft = the article's deep-nesting method: keep the padding, subtract half of it from the radius
+          return { outer, gap, expected: Math.max(0, outer - gap), soft: Math.max(0, outer - gap / 2) };
         }
       }
       return null; // nearest surface found but element doesn't hug a corner — any radius on the scale is fine
@@ -121,10 +123,10 @@ function collect(rules) {
       const isPill = rad >= Math.min(r.width, r.height) / 2 - 1 || cs.borderTopLeftRadius.includes("%");
       if (rad && !isPill) {
         const nest = concentric(el, r);
-        if (nest && Math.abs(nest.expected - rad) > 1.5) {
+        if (nest && Math.abs(nest.expected - rad) > 1.5 && Math.abs(nest.soft - rad) > 1.5) {
           const fix = nest.expected < 8
             ? `gap ${nest.gap}px eats the ${nest.outer}px outer radius — halve the gap (host padding 12) rather than keeping ${rad}px`
-            : `should be ${nest.expected}px (outer ${nest.outer} − gap ${nest.gap})`;
+            : `should be ${nest.expected}px concentric (outer ${nest.outer} − gap ${nest.gap}) or ${nest.soft}px soft (outer − gap/2)`;
           add("warn", "nested-radius", el, `${rad}px — ${fix}`, scope);
         } else if (!nest && !near(rad, rules.radii)) add("error", "radius", el, `${rad}px`, scope);
       }

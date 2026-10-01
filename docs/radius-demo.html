@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concentric Corners</title>
+<!-- RDL Theme · radius demo. Self-contained (inlines the few tokens it needs) so it opens anywhere.
+     Rule: outer = inner + gap (gap = padding + border). Deeper levels: A strict (halve padding) or B soft (radius − padding/2). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #EFEFF1; --surface: #FFFFFF; --ink: #0A0B0C; --text-2: #5C5C64; --text-3: #9B9BA3;
+    --hair: #DCDCE0; --accent: #ECBC44; --accent-soft: #FDF8EA; --ok: #22C552; --crit: #F0453E;
+    --l1: #0A0B0C; --l2: #3A3B40; --l3: #9B9BA3; --l4: #ECBC44;
+    --fs-h1: 56px; --gap: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --canvas: #0A0B0C; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
+      --l1: #F4F4F5; --l2: #A1A1AA; --l3: #4E4E56; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--canvas); color: var(--ink); font-family: Urbanist, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p { margin: 0; }
+  .page { max-width: 1440px; margin: 0 auto; padding: 48px 64px 64px; display: flex; flex-direction: column; gap: 32px; }
+  .muted { color: var(--text-2); }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .eyebrow { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--text-2); }
+  h1 { font-size: var(--fs-h1); line-height: 58px; font-weight: 300; letter-spacing: -0.03em; }
+  h1 b { font-weight: 600; }
+  .formula { display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 24px; border-radius: 999px; background: var(--ink); color: var(--canvas); font-size: 17px; font-weight: 500; }
+  .formula i { font-style: normal; color: var(--accent); }
+  .grid { display: grid; gap: var(--gap); }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); }
+  .card { background: var(--surface); border-radius: 28px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .card-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .title { font-size: 17px; line-height: 22px; font-weight: 500; }
+  .meta { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--text-2); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .bad { background: #FFF0F0; color: #CC2F29; } .good { background: #EAFCEF; color: #0E6E2C; } .info { background: var(--accent-soft); color: #6E500E; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bad { background: rgba(240,69,62,.16); color: #FF9A9A; } :root:not([data-theme="light"]) .good { background: rgba(34,197,82,.16); color: #7BEB97; } :root:not([data-theme="light"]) .info { color: #F4DA8E; } }
+  .stage { background: var(--canvas); border-radius: 12px; display: grid; place-items: center; padding: 16px; } /* 28 − 16 = 12: the demo follows its own rule */
+  svg { display: block; width: 100%; height: auto; overflow: hidden; border-radius: 4px; }
+  .stage { overflow: hidden; }
+  .legend { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(0,0,0,.2); }
+  svg text { font-family: Urbanist, sans-serif; }
+  .chain { font-size: 15px; line-height: 22px; font-variant-numeric: tabular-nums; }
+  .chain b { font-weight: 600; }
+  /* Playground */
+  .play { display: grid; grid-template-columns: 360px 1fr; gap: var(--gap); }
+  .controls { display: flex; flex-direction: column; gap: 20px; }
+  .ctl { display: flex; flex-direction: column; gap: 8px; }
+  .ctl .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .ctl output { font-size: 20px; font-weight: 300; font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--ink); height: 24px; }
+  .seg { display: flex; height: 48px; padding: 4px; gap: 4px; border-radius: 999px; background: var(--canvas); }
+  .seg button { flex: 1; border: 0; border-radius: 999px; background: none; font: 500 14px/1 Urbanist, sans-serif; color: var(--text-2); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .readout { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 12px; background: var(--canvas); }
+  .readout .big { font-size: 40px; line-height: 44px; font-weight: 300; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .readout .big small { font-size: 15px; color: var(--text-2); font-weight: 400; }
+  /* Product example: sheet 48 → card 28 → host pane 16 → chip pane */
+  .product { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); align-items: stretch; }
+  .phone-sheet { background: #EFEFF1; border-radius: 48px 48px 0 0; padding: 20px; padding-top: 24px; position: relative; color: #0A0B0C; display: flex; flex-direction: column; gap: 12px; }
+  .phone-sheet::before { content: ""; position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: #C3C3C9; }
+  .sheet-card { background: linear-gradient(165deg, #5E5A26 0%, #8A5646 55%, #9A5A6A 100%); color: #fff; border-radius: 28px; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+  .sheet-card .hd { padding: 8px 8px 0; display: flex; flex-direction: column; gap: 4px; }
+  .sheet-card .fig { font-size: 40px; line-height: 44px; font-weight: 300; letter-spacing: -0.02em; }
+  .sheet-card .fig small { font-size: 15px; opacity: .86; vertical-align: top; margin-right: 2px; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pane { background: rgba(10,11,12,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.28); border-radius: 16px; padding: 8px; display: flex; flex-direction: column; gap: 8px; } /* 28 − 12 */
+  .pane .lbl { padding: 4px 4px 0; font-size: 12px; color: rgba(255,255,255,.86); }
+  .chip-pane { background: rgba(255,255,255,.9); color: #0A0B0C; border-radius: 8px; padding: 8px; font-size: 15px; font-weight: 500; } /* 16 − 8 */
+  .spec { display: flex; flex-direction: column; gap: 12px; }
+  .spec-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; font-size: 15px; }
+  .spec-row .dots { border-bottom: 1px dotted var(--text-3); transform: translateY(-4px); }
+  .spec-row b { font-weight: 500; font-variant-numeric: tabular-nums; }
+  @media (max-width: 1100px) { .g3, .g2, .play, .product { grid-template-columns: 1fr; } .page { padding: 32px 16px; } :root { --fs-h1: 40px; } h1 { line-height: 44px; } }
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="head">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <p class="eyebrow">RDL Theme · v3.1 · corner radius</p>
+      <h1>Concentric <b>corners</b></h1>
+    </div>
+    <div class="formula">Outer R <i>=</i> Inner R <i>+</i> Gap <span class="muted" style="color:inherit;opacity:.6;font-weight:400">(padding + border)</span></div>
+  </header>
+
+  <!-- 1 · Wrong vs right -->
+  <section class="grid g2">
+    <article class="card">
+      <div class="card-h"><p class="title">Same radius inside</p><span class="badge bad">Outer R = Inner R</span></div>
+      <div class="stage"><svg id="wrong" viewBox="0 0 520 300" width="520"></svg></div>
+      <p class="meta">40 outside, 40 inside, 20 gap. Two different arc centres (dots): the gap swells at the 45° point and the inner corner looks bloated.</p>
+    </article>
+    <article class="card">
+      <div class="card-h"><p class="title">Concentric</p><span class="badge good">Inner = 40 − 20 = 20</span></div>
+      <div class="stage"><svg id="right" viewBox="0 0 520 300" width="520"></svg></div>
+      <p class="meta">Both arcs share one centre (the dots coincide), so the gap stays the same width all the way around the curve.</p>
+    </article>
+  </section>
+
+  <!-- 2 · Going deeper -->
+  <section class="grid g3">
+    <article class="card">
+      <div class="card-h"><p class="title">Fixed gap</p><span class="badge bad">Runs out</span></div>
+      <div class="stage"><svg id="fixed" viewBox="0 0 400 300" width="400"></svg></div>
+      <p class="chain">24 <span class="muted">−8 →</span> 16 <span class="muted">−8 →</span> 8 <span class="muted">−8 →</span> <b style="color:var(--crit)">0</b></p>
+      <p class="meta">Subtracting the full padding every level gives a sharp innermost corner.</p>
+    </article>
+    <article class="card">
+      <div class="card-h"><p class="title">A · Strict</p><span class="badge good">RDL default</span></div>
+      <div class="stage"><svg id="strict" viewBox="0 0 400 300" width="400"></svg></div>
+      <p class="chain">24 <span class="muted">−8 →</span> 16 <span class="muted">−4 →</span> 12 <span class="muted">−4 →</span> <b>8</b></p>
+      <p class="meta">Halve the real padding (8 → 4). Every level stays perfectly concentric; the bands get thinner.</p>
+    </article>
+    <article class="card">
+      <div class="card-h"><p class="title">B · Soft</p><span class="badge info">Article method</span></div>
+      <div class="stage"><svg id="soft" viewBox="0 0 400 300" width="400"></svg></div>
+      <p class="chain">24 <span class="muted">−8 →</span> 16 <span class="muted">−8/2 →</span> 12 <span class="muted">−8/2 →</span> <b>8</b></p>
+      <p class="meta">Keep the padding at 8 and subtract half of it from the radius. The bands stay even and the curves read soft.</p>
+    </article>
+  </section>
+
+  <p class="meta legend" style="margin-top:-16px"><span><i style="background:#ECBC44"></i>level 1</span><span><i style="background:#22C552"></i>level 2</span><span><i style="background:#2F66F6"></i>level 3</span><span><i style="background:#F0453E"></i>level 4</span><span>Dots mark each corner arc's centre. One stacked dot = concentric; a spread = the curves drift apart.</span></p>
+
+  <!-- 3 · Playground -->
+  <section class="card">
+    <div class="card-h"><p class="title">Playground</p><span class="meta">Drag to see the rule hold, or break</span></div>
+    <div class="play">
+      <div class="controls">
+        <div class="ctl"><div class="row"><span class="meta">Outer radius</span><output id="oR">40</output></div><input id="iR" type="range" min="8" max="64" step="4" value="40"></div>
+        <div class="ctl"><div class="row"><span class="meta">Padding (gap)</span><output id="oP">12</output></div><input id="iP" type="range" min="0" max="32" step="2" value="12"></div>
+        <div class="ctl"><div class="row"><span class="meta">Border</span><output id="oB">0</output></div><input id="iB" type="range" min="0" max="4" step="1" value="0"></div>
+        <div class="ctl"><div class="row"><span class="meta">Levels</span><output id="oL">4</output></div><input id="iL" type="range" min="1" max="5" step="1" value="4"></div>
+        <div class="seg" role="group" aria-label="Method">
+          <button data-m="same">Same</button><button data-m="fixed">Fixed</button><button data-m="strict" aria-pressed="true">A · Strict</button><button data-m="soft">B · Soft</button>
+        </div>
+        <div class="readout"><span class="meta">Radii, outside → in</span><p class="big" id="radii">40 <small>→</small> 28</p><span class="meta" id="verdict"></span></div>
+      </div>
+      <div class="stage"><svg id="play" viewBox="0 0 760 420" width="760"></svg></div>
+    </div>
+  </section>
+
+  <!-- 4 · In the product -->
+  <section class="product">
+    <article class="card">
+      <div class="card-h"><p class="title">In the product · Gold SIP sheet</p><span class="badge good">Audit clean</span></div>
+      <div class="stage" style="padding:16px 16px 0;place-items:end stretch;flex:1">
+        <div class="phone-sheet">
+          <div class="sheet-card">
+            <div class="hd"><span style="font-size:12px;opacity:.86">Paid amount · 24 m</span><p class="fig"><small>₹</small>60,000</p></div>
+            <div class="panes">
+              <div class="pane"><span class="lbl">Accumulated</span><div class="chip-pane">8.24 g</div></div>
+              <div class="pane"><span class="lbl">Left to pay</span><div class="chip-pane">₹60,000</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <article class="card">
+      <p class="title">Four levels, one centre</p>
+      <div class="spec">
+        <div class="spec-row"><span>Sheet</span><span class="dots"></span><b>48</b></div>
+        <div class="spec-row"><span class="muted">gap 20</span><span class="dots"></span><b class="muted">−20</b></div>
+        <div class="spec-row"><span>Aura card</span><span class="dots"></span><b>28</b></div>
+        <div class="spec-row"><span class="muted">host padding 12 (gap halved)</span><span class="dots"></span><b class="muted">−12</b></div>
+        <div class="spec-row"><span>Glass pane</span><span class="dots"></span><b>16</b></div>
+        <div class="spec-row"><span class="muted">padding 8</span><span class="dots"></span><b class="muted">−8</b></div>
+        <div class="spec-row"><span>Value chip</span><span class="dots"></span><b>8</b></div>
+      </div>
+      <p class="meta">With the default 20 padding the pane would get 28 − 20 = 8, and the chip would hit 0. Halving the host padding to 12 keeps real curves at every level.</p>
+      <p class="meta">Code: <b style="font-weight:600;color:var(--ink)">.rdl-nest</b> + <b style="font-weight:600;color:var(--ink)">.rdl-card--host</b> on web · <b style="font-weight:600;color:var(--ink)">RDLRadius.nested(outer:padding:border:)</b> in SwiftUI.</p>
+    </article>
+  </section>
+</main>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; };
+
+// Radii and insets for each method. Returns [{inset, r}] from the outside in.
+function chain({ outer, pad, border = 0, levels, method }) {
+  const out = [{ inset: 0, r: outer }];
+  let inset = 0, r = outer, gap = pad + border;
+  for (let i = 1; i < levels; i++) {
+    let step = gap, sub;
+    if (method === "strict" && i > 1) step = Math.max(4, Math.round(gap / 4) * 2); // halve once, snap to even, floor 4
+    if (method === "strict") sub = step;
+    else if (method === "soft") sub = i === 1 ? gap : gap / 2;
+    else if (method === "same") sub = 0;
+    else sub = gap;
+    inset += step; r = Math.max(0, r - sub);
+    out.push({ inset, r });
+  }
+  return out;
+}
+
+// Draw nested rounded rects (top-left anchored, cropped to show the corners) with radius labels.
+function draw(svg, opts) {
+  svg.innerHTML = "";
+  const [vw, vh] = svg.getAttribute("viewBox").split(" ").slice(2).map(Number);
+  const s = opts.scale, layers = chain(opts);
+  const fills = [css("--l1"), css("--l2"), css("--l3"), css("--l4"), css("--surface")];
+  const x0 = 16, y0 = 16, W = vw * 1.6, H = vh * 1.6;
+  layers.forEach((L, i) => {
+    const x = x0 + L.inset * s, y = y0 + L.inset * s;
+    el("rect", { x, y, width: W - 2 * L.inset * s, height: H - 2 * L.inset * s, rx: L.r * s, fill: fills[i % fills.length] }, svg);
+  });
+  // Arc centres: one dot per level. If every dot lands on the same point, the corners are concentric.
+  const dotColors = ["#ECBC44", "#22C552", "#2F66F6", "#F0453E", "#A548EE"];
+  layers.forEach((L, i) => {
+    const x = x0 + L.inset * s, y = y0 + L.inset * s, r = L.r * s;
+    if (opts.labels) {
+      const t = el("text", { x: x + Math.max(r, 12) + 10, y: y + 22, "font-size": 15, "font-weight": 600, fill: i < 2 ? css("--canvas") : "#0A0B0C" }, svg);
+      t.textContent = L.r;
+    }
+    if (L.r === 0 && i > 0) { const w = el("text", { x: x + 12, y: y + 28, "font-size": 15, "font-weight": 600, fill: "#CC2F29" }, svg); w.textContent = "← sharp corner"; }
+  });
+  layers.slice().reverse().forEach((L, j) => {
+    const i = layers.length - 1 - j, x = x0 + L.inset * s, y = y0 + L.inset * s, r = L.r * s;
+    if (L.r > 0) el("circle", { cx: x + r, cy: y + r, r: 6 - j * 0.0, fill: dotColors[i], stroke: "#fff", "stroke-width": 2 }, svg);
+  });
+}
+
+// 1 · wrong vs right (40 / gap 20, scale 2.4)
+draw(document.getElementById("wrong"), { outer: 40, pad: 20, levels: 2, method: "same", scale: 2.4, labels: true });
+draw(document.getElementById("right"), { outer: 40, pad: 20, levels: 2, method: "fixed", scale: 2.4, labels: true });
+// 2 · deeper chains (24 / 8, scale 3.4)
+draw(document.getElementById("fixed"),  { outer: 24, pad: 8, levels: 4, method: "fixed",  scale: 3.4 });
+draw(document.getElementById("strict"), { outer: 24, pad: 8, levels: 4, method: "strict", scale: 3.4 });
+draw(document.getElementById("soft"),   { outer: 24, pad: 8, levels: 4, method: "soft",   scale: 3.4 });
+
+// 3 · playground
+const ui = { R: iR, P: iP, B: iB, L: iL };
+let method = "strict";
+function update() {
+  const o = { outer: +iR.value, pad: +iP.value, border: +iB.value, levels: +iL.value, method, scale: 3 };
+  oR.value = o.outer; oP.value = o.pad; oB.value = o.border; oL.value = o.levels;
+  draw(play, o);
+  const L = chain(o);
+  radii.innerHTML = L.map((l) => l.r).join(" <small>→</small> ");
+  const flat = L.slice(1).some((l) => l.r === 0);
+  verdict.textContent = method === "same" ? "Not concentric: the gap bulges at every corner."
+    : flat ? "A level hit 0, so its corner is sharp. Halve the gap (A) or use B."
+    : method === "soft" ? "Soft: even bands, curves slightly rounder than concentric."
+    : "Concentric: one centre per corner, an even gap all the way round.";
+}
+for (const k in ui) ui[k].addEventListener("input", update);
+document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => {
+  document.querySelectorAll(".seg button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  method = b.dataset.m; update();
+}));
+update();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => location.reload());
+</script>
+</body>
+</html>

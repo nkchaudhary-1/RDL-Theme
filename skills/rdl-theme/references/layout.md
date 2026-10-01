@@ -154,21 +154,29 @@ box) to the edge of the nested surface.
 | Pill track 48 | 4 | item 40 → 20 = its own pill radius ✓ |
 | Dock / slide 64 | 6 | item 52 → 26 ✓ |
 
-**Going deeper: halve the gap, don't clamp the radius.** Each level subtracts the gap again, so a
-fixed gap runs out of radius after two levels and the innermost corners go flat. Instead, halve
-the gap at each level (snapping to the ladder, never below 4), so every layer keeps a visible
-curve:
+**Going deeper: don't let the radius run out.** A fixed gap subtracted at every level runs out
+after a few steps. With 24 / 8: 24 → 16 → 8 → **0**, and the innermost corner is sharp. There are two
+fixes, and both give the same radii:
+
+| Method | How | Radii (24, gap 8) | Bands | Use when |
+|---|---|---|---|---|
+| **A · Strict** (default) | Halve the **padding** at each level (8 → 4 → 4), radius = outer − gap | 24 → 16 → 12 → 8 | Get thinner | Most UI. Perfectly concentric |
+| **B · Soft** (the article's method) | Keep the padding; from the 2nd level, radius = outer − **gap/2** | 24 → 16 → 12 → 8 | Stay equal | Even, decorative bands (stacked cards, frames, onboarding art) |
+
+Method B is slightly non-concentric (the inner curve is a touch rounder), which reads as "soft"
+rather than wrong. Pick one method per component and don't mix them inside one stack. Never
+clamp the radius upward to an arbitrary minimum; that's the version that looks pinched.
 
 ```
-24 ─gap 8→ 16 ─gap 4→ 12 ─gap 4→ 8        (article chain)
-48 ─20→ 28 ─12→ 16 ─8→ 8                  (sheet → card → pane → chip-pane)
-40 ─12→ 28 ─8→ 20 ─4→ 16                  (widget hosting cards)
+A  24 ─pad 8→ 16 ─pad 4→ 12 ─pad 4→ 8       B  24 ─pad 8→ 16 ─pad 8 (−4)→ 12 ─pad 8 (−4)→ 8
+   48 ─20→ 28 ─12→ 16 ─8→ 8                     (sheet → card → pane → chip-pane)
+   40 ─12→ 28 ─8→ 20 ─4→ 16                     (widget hosting cards)
 ```
 
 Rules:
 1. Compute the inner radius from the real gap; never copy the outer radius inward.
-2. If `outer − gap` drops below 8, **reduce the gap** (use the host padding of 12, then 8 → 4) or
-   raise the outer radius. Don't bump the inner radius back up; that breaks concentricity. If
+2. If `outer − gap` drops below 8, **reduce the gap** (method A: host padding 12, then 8 → 4),
+   use method B, or raise the outer radius. Don't bump the inner radius back up; that breaks concentricity. If
    neither is possible (padding ≥ radius), the inner corner is square (0), as in the Swiss variant.
 3. Count borders. A 1px glass rim makes a 28 card with padding 12 hold a 15 pane. Exact derived
    values are allowed even when they're off the token scale.
@@ -187,10 +195,10 @@ Rules:
   or `.rdlConcentricContainer(radius:)` with `ContainerRelativeShape()` on the children for
   automatic concentric corners.
 - **Audit:** `audit_ui.mjs` measures the gap at each hugged corner and warns on any inner radius
-  that isn't outer − gap.
+  that is neither outer − gap (A) nor outer − gap/2 (B).
 
 Sources: [Getting your border radius right](https://medium.com/design-bootcamp/getting-your-border-radius-right-a-simple-trick-for-smooth-nested-containers-f6e0025e8c53)
-(Design Bootcamp: outer = inner + gap, halve the gap per level),
+(Design Bootcamp: outer = inner + padding; at deeper levels subtract padding/2),
 [CSS-Tricks: nested border-radii](https://css-tricks.com/public-service-announcement-careful-with-your-nested-border-radii/),
 [30 seconds of code: nested border radius](https://www.30secondsofcode.org/css/s/nested-border-radius/)
 (borders count as gap; padding ≥ radius → 0).

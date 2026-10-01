@@ -103,6 +103,11 @@ research/
 
 Single-file style guide: [`DESIGN-STYLE.md`](DESIGN-STYLE.md).
 
+Corner-radius demo (concentric nesting, strict vs soft, interactive playground):
+[`docs/radius-demo.html`](docs/radius-demo.html)
+
+![Concentric corners](docs/radius-demo.png)
+
 Changing tokens:
 ```bash
 node skills/rdl-theme/scripts/build_tokens.mjs

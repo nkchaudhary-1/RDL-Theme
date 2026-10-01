@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.1 — Soft nesting (article method B)
+Verified against the article's own figures: at deeper levels it keeps the padding and subtracts **half** of it from the radius (24 → 16 → 12 → 8, bands stay equal). 3.1.0 halved the real padding instead (same radii, thinner bands, perfectly concentric).
+
+- `layout.md` §6 now documents both: **A, strict** (default: halve the padding, concentric) and **B, soft** (keep the padding, radius − padding/2).
+- The audit accepts either value at a hugged corner.
+- New `docs/radius-demo.html` + `docs/radius-demo.png`.
+
 ## 3.1.0 — Concentric corner radius
 Applies the nested-radius method from [Getting your border radius right](https://medium.com/design-bootcamp/getting-your-border-radius-right-a-simple-trick-for-smooth-nested-containers-f6e0025e8c53): outer = inner + gap, and halve the gap at each deeper level.
 
