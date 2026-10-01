@@ -27,7 +27,7 @@ There are two styles:
 8. **Status is a dot.** A small colored dot plus a word.
 9. **Technical illustration.** Line-art, blueprints, 3D renders, selective color.
 10. **Measured space.** Spacing on a 4pt ladder chosen by relationship, one control height per
-    row, corner-anchored cards, nested radius = outer − padding.
+    row, corner-anchored cards, concentric nested corners (inner = outer − gap).
 
 ---
 
@@ -196,17 +196,23 @@ bottom-left and the context bottom-right. An optional instrument sits between th
 
 | Radius | px | Use |
 |---|---|---|
-| SM / MD | 8 / 12 | Inner tiles, dense cards, inputs |
+| SM / MD | 8 / 12 | Deepest nested panes, dense cards, inputs |
 | Tile | 14 | Square tool tiles, month cells |
+| Base | 16 | Panes in a hosting card (28 − 12) |
 | LG | 20 | Web cards, blueprint cards, panes inside widgets |
+| Panel | 24 | Dense web cards, panes in large panes |
 | **Card** | **28** | Cards, glass panes |
 | 2XL | 32 | Large panes, hero cards |
 | **Widget** | **40** | Aura widgets, product cards |
 | Sheet | 48 | Bottom-sheet top corners |
 | Pill / circle | — | Buttons, chips, segmented, dock, slide, orbs, beads |
 
-Nested radius = outer − padding (minimum 8). Use continuous (squircle) corners on iOS. Use one
-radius family per product.
+**Concentric nesting.** inner radius = outer radius − gap, where gap = padding + border. Examples:
+sheet 48 / 20 → card 28 · widget 40 / 20 → pane 20 · card 28 / 12 → pane 16. To nest deeper,
+**halve the gap** at each level (24 ─8→ 16 ─4→ 12 ─4→ 8) instead of clamping the inner radius;
+clamping is what makes inner corners look pinched or flat. If padding ≥ radius, the inner corner is
+square. Pills inside pills are already concentric when inner height = outer height − 2 × gap. Use at
+most three levels, continuous (squircle) corners on iOS, and one radius family per product.
 
 **Control ladder** (use one height per row):
 

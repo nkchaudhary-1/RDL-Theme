@@ -105,6 +105,15 @@ caption 12 gray          ← label (stack-tight 4)
 Padding 20, radius 28 (40 for widget squircles), minimum height 160 on mobile two-up.
 Web: `.rdl-metric`. SwiftUI: `RDLMetricTile`.
 
+## Nested pane
+A surface inside a surface (a sub-pane in a widget, a card in a sheet, a field block in a card).
+Its radius is **outer − gap** (gap = padding + border); see `layout.md` §6.
+- Cards in a sheet: 28 (48 − 20). Panes in a widget: 20 (40 − 20), or 28 with a host widget (pad 12).
+- Panes in a card: 8 at the default 20 padding, so prefer a host card (pad 12) → 16.
+- The next level halves the gap again (8 → 4). Max three levels.
+- Web: `.rdl-nest` (+ `--host` on the container). SwiftUI: `RDLRadius.nested(outer:padding:border:)`
+  or `ContainerRelativeShape()` inside `.rdlConcentricContainer(radius:)`.
+
 ## Key / value
 | Layout | Use | Spec |
 |---|---|---|
@@ -131,7 +140,7 @@ below. On web or large sections, use h2 26/400 with a one-line description in 13
 - States: focus ring 2px accent, error = crit dot + caption with the fix, disabled at 40%.
 
 ## Bottom sheet
-Full width, top radius 48, grabber 36×4 (8 from the top), padding 20. The header row inside uses
+Full width, top radius 48, grabber 36×4 (8 from the top), padding 20; cards inside it take 28 (48 − 20). The header row inside uses
 the same 48 control height. It sits over a dimmed (ink 24%) or blurred backdrop.
 
 ## Instruments

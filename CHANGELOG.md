@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.1.0 — Concentric corner radius
+Applies the nested-radius method from [Getting your border radius right](https://medium.com/design-bootcamp/getting-your-border-radius-right-a-simple-trick-for-smooth-nested-containers-f6e0025e8c53): outer = inner + gap, and halve the gap at each deeper level.
+
+- **Rule change:**
+  - inner radius = outer − gap, where gap = padding + border (+ wrapper offsets).
+  - The old "minimum 8" clamp is gone: clamping broke concentricity. When the result gets too small, reduce the gap (host padding 12, then 8 → 4) or raise the outer radius.
+  - Padding ≥ radius gives a square inner corner.
+  - At most three levels.
+  - Pill-in-pill controls (segmented, dock, slide, prompt field) are verified concentric.
+- **Tokens:** new radius steps `base` 16 and `panel` 24, so common chains land on the scale (48→28→16→8, 40→24, 24→16→12→8).
+- **CSS:**
+  - Every surface passes its children the exact concentric radius in `--rdl-nest-r`, with the glass rim counted.
+  - New `.rdl-nest` for nested panes.
+  - New `--host` modifiers (`.rdl-card--host`, `.rdl-glass--host`, `.rdl-widget--host`, `.rdl-blueprint--host`) halve the gap to 12.
+  - Tinted panes are auto-concentric.
+- **SwiftUI:** `RDLRadius.nested(outer:padding:border:)` (no clamp), `RDLRadius.hostPadding`, `RDLRadius.chain(outer:gap:levels:)` (→ [24, 16, 12, 8]), and `.rdlConcentricContainer(radius:)` for `ContainerRelativeShape` children.
+- **Audit:**
+  - The nested-radius check now finds the nearest enclosing surface and measures the real gap at each corner the element hugs.
+  - It warns when the inner radius isn't outer − gap, in either direction, and suggests halving the gap when the gap eats the radius.
+  - Exact derived radii are accepted off-scale.
+- **Docs:** `layout.md` §6 rewritten (nesting table, chains, rules, sources); anatomy, guidelines, foundations, QA, components, SKILL.md and DESIGN-STYLE.md updated.
+
 ## 3.0.0 — Guidelines, layout system and audit
 A second, structural pass over all 220 board frames (`research/deep-scan.md`) plus pixel calibration (`research/calibration.md`). Goal: screens that come out consistent, minimal and well spaced by construction.
 

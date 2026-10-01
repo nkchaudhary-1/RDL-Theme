@@ -117,22 +117,83 @@ inset).
 
 | Token | px | Used by |
 |---|---|---|
-| `sm` | 8 | Inner tiles inside cards, ops-console cards, tooltips |
-| `md` | 12 | Small cards, month cells (dense), inputs in dense UIs |
+| `sm` | 8 | Deepest nested panes, ops-console cards, tooltips |
+| `md` | 12 | Small cards, dense inputs, panes in a card with 16 padding |
 | `tile` | 14 | Industrial tool tiles, month-grid cells |
-| `lg` | 20 | Web cards, blueprint cards, nested panes inside widgets |
-| `xl` (**card**) | 28 | Mobile glass cards |
+| `base` | 16 | Panes in a hosting card (28 − 12), second nesting level |
+| `lg` | 20 | Web cards, blueprint cards, panes inside widgets (40 − 20) |
+| `panel` | 24 | Dense web cards, panes in a large pane (32 − 8 / 40 − 16) |
+| `xl` (**card**) | 28 | Mobile glass cards, cards inside sheets (48 − 20) |
 | `2xl` | 32 | Large panes, hero cards |
 | `3xl` (**widget**) | 40 | Aura widgets, product squircles |
 | `sheet` | 48 | Bottom-sheet top corners |
 | `pill` / 50% | — | Buttons, chips, segmented, dock, slide, orbs |
 
-**Nested radius = outer − padding** (minimum 8). For example, a widget (40) with padding 20 holds
-glass sub-panes of radius 20, and a card (28) with padding 16 holds inner panes of 12. Pills and
-circles are exempt.
-
-Radius is a **family decision per product**: rounded glass (24–48) or Swiss (0–4). Never both on
+Radius is a **family decision per product**: rounded glass (8–48) or Swiss (0–4). Never both on
 one screen.
+
+### Concentric nesting
+
+When one rounded container sits inside another, their corners must share a centre, or the gap
+swells at the 45° point and the inner corner looks too round or "pinched".
+
+**inner radius = outer radius − gap**, where **gap = padding + border** (plus any wrapper offset).
+Equivalently: outer = inner + gap. Measure the gap from the outer edge of the container (border
+box) to the edge of the nested surface.
+
+| Container | Gap | Nested radius |
+|---|---|---|
+| Sheet 48 | 20 | **28** (a card) |
+| Widget 40 | 20 | **20** (`lg`) |
+| Widget 40 | 12 (host) | **28** (a card) |
+| Widget 40 | 16 | **24** (`panel`) |
+| Card 28 | 20 | **8** (`sm`) |
+| Card 28 | 16 | **12** (`md`) |
+| Card 28 | 12 (host) | **16** (`base`) |
+| Glass card 28 (1px rim) | 12 + 1 | **15** (derived) |
+| Pill track 48 | 4 | item 40 → 20 = its own pill radius ✓ |
+| Dock / slide 64 | 6 | item 52 → 26 ✓ |
+
+**Going deeper: halve the gap, don't clamp the radius.** Each level subtracts the gap again, so a
+fixed gap runs out of radius after two levels and the innermost corners go flat. Instead, halve
+the gap at each level (snapping to the ladder, never below 4), so every layer keeps a visible
+curve:
+
+```
+24 ─gap 8→ 16 ─gap 4→ 12 ─gap 4→ 8        (article chain)
+48 ─20→ 28 ─12→ 16 ─8→ 8                  (sheet → card → pane → chip-pane)
+40 ─12→ 28 ─8→ 20 ─4→ 16                  (widget hosting cards)
+```
+
+Rules:
+1. Compute the inner radius from the real gap; never copy the outer radius inward.
+2. If `outer − gap` drops below 8, **reduce the gap** (use the host padding of 12, then 8 → 4) or
+   raise the outer radius. Don't bump the inner radius back up; that breaks concentricity. If
+   neither is possible (padding ≥ radius), the inner corner is square (0), as in the Swiss variant.
+3. Count borders. A 1px glass rim makes a 28 card with padding 12 hold a 15 pane. Exact derived
+   values are allowed even when they're off the token scale.
+4. Max three nesting levels. Beyond that, flatten the hierarchy instead.
+5. Pills and circles are exempt. A pill inside a pill is already concentric when
+   inner height = outer height − 2 × gap.
+6. Only corners that **hug** the container need to match, meaning the nested surface is inset
+   equally on both axes and closer than the outer radius. Elements floating in the middle of a
+   card just use a scale radius.
+
+**In code:**
+- **Web:** give the nested surface `.rdl-nest`. Every surface passes its children the exact value
+  in `--rdl-nest-r` (border included). Use `.rdl-card--host` / `.rdl-glass--host` /
+  `.rdl-widget--host` for surfaces that hold panes (padding 12).
+- **SwiftUI:** `RDLRadius.nested(outer:padding:border:)`, `RDLRadius.chain(outer:gap:levels:)`,
+  or `.rdlConcentricContainer(radius:)` with `ContainerRelativeShape()` on the children for
+  automatic concentric corners.
+- **Audit:** `audit_ui.mjs` measures the gap at each hugged corner and warns on any inner radius
+  that isn't outer − gap.
+
+Sources: [Getting your border radius right](https://medium.com/design-bootcamp/getting-your-border-radius-right-a-simple-trick-for-smooth-nested-containers-f6e0025e8c53)
+(Design Bootcamp: outer = inner + gap, halve the gap per level),
+[CSS-Tricks: nested border-radii](https://css-tricks.com/public-service-announcement-careful-with-your-nested-border-radii/),
+[30 seconds of code: nested border radius](https://www.30secondsofcode.org/css/s/nested-border-radius/)
+(borders count as gap; padding ≥ radius → 0).
 
 ## 7. Density and whitespace
 

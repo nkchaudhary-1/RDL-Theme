@@ -11,7 +11,8 @@
 //                   control ladder · mixed control heights in one row · text contrast < 4.5:1
 //                   (3:1 for ≥ 24px, or ≥ 19px at 600+), measured on the rendered pixels behind the text ·
 //                   content running into the pinned bottom zone (needs 12 clear).
-// Warnings:         font weight outside 300–600 · nested radius > outer − padding · accent used more
+// Warnings:         font weight outside 300–600 · non-concentric nested radius (inner ≠ outer − gap, where
+//                   gap = padding + border + offsets, measured per corner) · accent used more
 //                   than 3 times in one scope · interactive target < 44 (touch) or < 24 (viewport ≥ 1024,
 //                   pointer; override with --min-target N).
 // --strict turns warnings into errors.
@@ -71,6 +72,28 @@ function collect(rules) {
   const visible = (el, cs) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && cs.visibility !== "hidden" && cs.display !== "none"; };
   const parseColor = (c) => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const p = m[1].split(/[ ,/]+/).filter(Boolean).map(Number); return [p[0], p[1], p[2], p[3] ?? 1]; };
 
+  const surfaceLike = (cs) => {
+    const bg = parseColor(cs.backgroundColor);
+    return (bg && bg[3] > 0.02) || cs.backgroundImage !== "none" || px(cs.borderTopWidth) > 0 || /inset/.test(cs.boxShadow) || (cs.backdropFilter && cs.backdropFilter !== "none");
+  };
+  // Concentric check: nearest rounded ancestor surface; for each corner the element hugs (equal x/y inset,
+  // inset smaller than the outer radius) the inner radius should equal outer − gap (gap = padding + border + offsets).
+  const concentric = (el, r) => {
+    if (!surfaceLike(getComputedStyle(el)) && el.tagName !== "IMG") return null;
+    for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      const acs = getComputedStyle(a), outer = px(acs.borderTopLeftRadius), ar = a.getBoundingClientRect();
+      if (!outer || !surfaceLike(acs) || outer >= Math.min(ar.width, ar.height) / 2 - 1) continue;
+      const g = { l: r.left - ar.left, t: r.top - ar.top, rt: ar.right - r.right, b: ar.bottom - r.bottom };
+      for (const [x, y] of [[g.l, g.t], [g.rt, g.t], [g.l, g.b], [g.rt, g.b]]) {
+        if (x >= 0 && y >= 0 && Math.abs(x - y) <= 2 && Math.max(x, y) < outer) {
+          const gap = Math.round((x + y) / 2);
+          return { outer, gap, expected: Math.max(0, outer - gap) };
+        }
+      }
+      return null; // nearest surface found but element doesn't hug a corner — any radius on the scale is fine
+    }
+    return null;
+  };
   roots.forEach((root, ri) => {
     const scope = root.getAttribute("aria-label") || root.dataset.auditScope || `scope ${ri + 1}`;
     const accent = parseColor(getComputedStyle(root).getPropertyValue("--rdl-accent").trim().replace(/^#(..)(..)(..)$/, (_, r, g, b) => `rgb(${parseInt(r, 16)},${parseInt(g, 16)},${parseInt(b, 16)})`));
@@ -93,15 +116,17 @@ function collect(rules) {
           const n = px(v); if (n && !near(n, rules.spacing)) add("error", "spacing", el, `${p} ${n}px`, scope);
         }
       }
-      // Radius scale (pill/circle exempt)
+      // Radius: concentric with the enclosing surface, else on the radius scale (pill/circle exempt)
       const rad = px(cs.borderTopLeftRadius);
-      if (rad && !(rad >= Math.min(r.width, r.height) / 2 - 1) && !near(rad, rules.radii) && !cs.borderTopLeftRadius.includes("%"))
-        add("error", "radius", el, `${rad}px`, scope);
-      // Nested radius: inner surface radius should be ≤ outer − padding (min 8)
-      const parent = el.parentElement, pcs = parent && getComputedStyle(parent);
-      if (parent && rad && pcs && !(rad >= Math.min(r.width, r.height) / 2 - 1) && cs.backgroundColor !== "rgba(0, 0, 0, 0)") {
-        const outer = px(pcs.borderTopLeftRadius), pad = px(pcs.paddingLeft);
-        if (outer && pad && rad > Math.max(8, outer - pad) + 2) add("warn", "nested-radius", el, `${rad}px inside ${outer}px with ${pad}px padding (≤ ${Math.max(8, outer - pad)})`, scope);
+      const isPill = rad >= Math.min(r.width, r.height) / 2 - 1 || cs.borderTopLeftRadius.includes("%");
+      if (rad && !isPill) {
+        const nest = concentric(el, r);
+        if (nest && Math.abs(nest.expected - rad) > 1.5) {
+          const fix = nest.expected < 8
+            ? `gap ${nest.gap}px eats the ${nest.outer}px outer radius — halve the gap (host padding 12) rather than keeping ${rad}px`
+            : `should be ${nest.expected}px (outer ${nest.outer} − gap ${nest.gap})`;
+          add("warn", "nested-radius", el, `${rad}px — ${fix}`, scope);
+        } else if (!nest && !near(rad, rules.radii)) add("error", "radius", el, `${rad}px`, scope);
       }
       // Type scale + weight
       const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());

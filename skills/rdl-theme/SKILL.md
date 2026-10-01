@@ -32,7 +32,7 @@ out **consistent, minimal and well spaced** by construction rather than by eye.
 8. **Status is a dot plus a word.** Soft-tint pills are for escalations only. Destructive actions
    use a red-tinted tile, never a red solid.
 9. **Measured space.** Use the 4pt ladder by relationship (4 < 8 < 12 < 20 < 32), one control
-   height per row, and nested radius = outer − padding.
+   height per row, and concentric corners (inner radius = outer − gap; halve the gap to go deeper).
 10. **Technical illustration and photographic presentation.** Blueprints, line-art, selective
     color; hands, angled devices and depth-of-field shots.
 
@@ -51,8 +51,9 @@ status bar
   inside a card 12–16, card padding 20, card gap 12, header→title 24, section 32.
 - **Controls:** tag 24 · 32 · 40 · **48** (header, orbs, fields) · **56** (primary pill) · **64**
   (slide, dock).
-- **Radius:** 8 · 12 · 14 (tile) · 20 · **28 card** · 32 · **40 widget** · 48 sheet · pill. Nested =
-  outer − padding.
+- **Radius:** 8 · 12 · 14 (tile) · 16 · 20 · 24 · **28 card** · 32 · **40 widget** · 48 sheet · pill.
+  Nested: inner = outer − gap (padding + border). Chains: 48→28→16→8, 40→20, 28/12→16. Going
+  deeper? Halve the gap; never clamp. Web `.rdl-nest` + `--host`; SwiftUI `RDLRadius.nested`.
 - **Web:** 12 columns, gutter 32, bento gap 12, equal row heights, every cell at the card radius.
 
 ## Workflow
@@ -114,7 +115,7 @@ status bar
 ## Anti-patterns
 
 - Off-ladder spacing (10, 14, 18…), mixed control heights in a row, an inner radius equal to the
-  outer.
+  outer or clamped up (non-concentric corners).
 - Bold numbers, units at full size, big currency symbols, more than 5 type sizes.
 - Glass on plain gray, dark glass on a light canvas, more than two auras, neon gradients.
 - Rectangular buttons in glass, or Swiss blocks mixed with rounded glass.

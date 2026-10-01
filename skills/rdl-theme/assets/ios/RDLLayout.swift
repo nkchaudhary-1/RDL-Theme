@@ -268,8 +268,42 @@ public extension View {
 }
 
 public extension RDLRadius {
-    /// Nested radius rule: inner radius = outer − padding (minimum 8). Pills and circles are exempt.
-    static func nested(outer: CGFloat, padding: CGFloat) -> CGFloat { max(sm, outer - padding) }
+    /// Concentric nesting: inner radius = outer − gap, where gap = padding + border (+ any extra inset).
+    /// Floors at 0 — never clamp upward: if the result is too small, halve the gap instead
+    /// (`hostPadding`, then 8 → 4). Pills and circles are exempt.
+    ///
+    ///     RDLRadius.nested(outer: RDLRadius.card, padding: RDLSpace.cardPadding)          // 8
+    ///     RDLRadius.nested(outer: RDLRadius.widget, padding: RDLRadius.hostPadding)       // 28
+    ///     RDLRadius.nested(outer: RDLRadius.card, padding: RDLRadius.hostPadding, border: 1) // 15
+    static func nested(outer: CGFloat, padding: CGFloat, border: CGFloat = 0) -> CGFloat {
+        max(0, outer - padding - border)
+    }
+
+    /// Padding for a surface that hosts nested panes: the card gap (20) halved and snapped to the ladder.
+    static let hostPadding: CGFloat = RDLSpace.s3
+
+    /// Radii for a chain of nested containers, halving the gap at each level (article method):
+    /// `chain(outer: 24, gap: 8, levels: 4)` → [24, 16, 12, 8]. Gaps never go below 4.
+    static func chain(outer: CGFloat, gap: CGFloat, levels: Int) -> [CGFloat] {
+        var radii = [outer], g = gap
+        for _ in 1..<max(levels, 1) {
+            radii.append(max(0, radii.last! - g))
+            g = max(4, (g / 2).rounded(.down))
+        }
+        return radii
+    }
+}
+
+public extension View {
+    /// Makes this view a container whose children can use `ContainerRelativeShape()` to get
+    /// concentric corners automatically (SwiftUI insets the shape by the child's distance to the edge).
+    ///
+    ///     VStack { … .background(.white, in: ContainerRelativeShape()) }
+    ///         .padding(RDLRadius.hostPadding)
+    ///         .rdlConcentricContainer(radius: RDLRadius.widget)
+    func rdlConcentricContainer(radius: CGFloat) -> some View {
+        containerShape(.rect(cornerRadius: radius, style: .continuous))
+    }
 }
 
 // MARK: - Skeleton

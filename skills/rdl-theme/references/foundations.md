@@ -133,17 +133,20 @@ See `layout.md` for the full system. In short:
 
 | Radius token | px | Use |
 |---|---|---|
-| sm | 8 | Inner tiles, ops-console cards, tooltips |
+| sm | 8 | Deepest nested panes, ops-console cards, tooltips |
 | md | 12 | Small cards, dense inputs |
 | tile | 14 | Square-rounded tool tiles, month cells |
+| base | 16 | Panes in a hosting card (28 − 12) |
 | lg | 20 | Web cards, blueprint cards, panes nested in widgets |
+| panel | 24 | Dense web cards, panes in large panes |
 | xl = **card** | 28 | Cards, glass panes |
 | 2xl | 32 | Large panes, hero cards |
 | 3xl = **widget** | 40 | Aura widgets, product squircles |
 | sheet | 48 | Bottom-sheet top corners |
 | pill / circle | — | Buttons, chips, segmented, dock, slide, orbs, knobs, beads |
 
-Nested radius = outer − padding (minimum 8). The Swiss variant uses radius 0–4 on blocks and
+Nested radius is concentric: inner = outer − gap, where gap = padding + border. To nest deeper,
+halve the gap (host padding 12, then 8 → 4) instead of clamping the radius (`layout.md` §6). The Swiss variant uses radius 0–4 on blocks and
 buttons. Use it only when the whole product takes that tone, and don't mix it with rounded glass
 on the same screen.
 

@@ -49,7 +49,8 @@ these; don't restyle them per screen. Exact dimensions for every part are in `an
 | Sheet | `.rdl-sheet` | `.rdlSheet()` | Top radius 48, grabber |
 | KV value-first | `.rdl-kv--value-first` | `RDLKeyValue` | ID cards, dashboards |
 | Ink widget | `.rdl-widget--ink` | `.rdlCard` + ink fill | Steps up one layer in dark mode |
-| Tinted pane | `.rdl-glass--tint` | `.rdlGlass(.dark, radius: RDLRadius.nested(…))` | Inside aura widgets |
+| Tinted pane | `.rdl-glass--tint` | `.rdlGlass(.dark, radius: RDLRadius.nested(…))` | Inside aura widgets; radius auto-concentric |
+| Nested pane | `.rdl-nest` + container `--host` | `RDLRadius.nested(outer:padding:border:)`, `ContainerRelativeShape` | Radius = outer − gap, derived per container |
 | Web nav / table | `.rdl-nav`, `.rdl-table`, `.rdl-logo` | — | Nav track 48, items 40 |
 | Skeleton | `.rdl-skeleton` | `RDLSkeleton` | Loading state at final size |
 | Text tiers | `.rdl-on-light-aura`, `.rdl-on-dark`, `.rdl-faint` | `RDLColor.text*` | Keeps text ≥ 4.5:1 on backdrops |

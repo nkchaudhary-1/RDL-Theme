@@ -132,7 +132,7 @@ recurring construction rules, with example frames:
 |---|---|---|
 | 1 | **Corner anchoring**: label TL, action/tag TR, figure BL, context BR | 1:101, 1:116, 1:148, 1:163, 1:182, 1:185 |
 | 2 | **One control height per row**: header items, fields and tiles share one height (usually 48 or 56) | 1:97, 1:186, 1:194 |
-| 3 | **Nested radius = outer − padding** (widget 40 → panes 20; card 32 → 24) | 1:101, 1:146, 1:163 |
+| 3 | **Concentric nesting: inner = outer − gap** (widget 40 → panes 20; card 32 → 24; deeper levels use smaller gaps) | 1:101, 1:146, 1:163 |
 | 4 | **Same-size two-tone headlines**: split by weight or opacity, never by size | 1:98, 1:111, 1:162, 1:180, 1:187 |
 | 5 | **Title tabs**: "Data / Records" at one size, inactive gray | 1:101 |
 | 6 | **Status = dot + word**; soft-tint pills (tint + same-hue dot + text) for escalation only | 1:102, 1:117, 1:120, 1:184 |

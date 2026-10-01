@@ -224,7 +224,9 @@
   --rdl-radius-sm: 8px;
   --rdl-radius-md: 12px;
   --rdl-radius-tile: 14px;
+  --rdl-radius-base: 16px;
   --rdl-radius-lg: 20px;
+  --rdl-radius-panel: 24px;
   --rdl-radius-xl: 28px;
   --rdl-radius-2xl: 32px;
   --rdl-radius-3xl: 40px;
