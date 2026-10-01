@@ -17,12 +17,14 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) { --canvas: #0A0B0C; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
-      --l1: #F4F4F5; --l2: #A1A1AA; --l3: #4E4E56; }
+      --l1: #F4F4F5; --l2: #A1A1AA; --l3: #4E4E56; color-scheme: dark; }
   }
+  :root[data-theme="dark"] { --canvas: #0A0B0C; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
+      --l1: #F4F4F5; --l2: #A1A1AA; --l3: #4E4E56; color-scheme: dark; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--canvas); color: var(--ink); font-family: Urbanist, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
   h1, h2, h3, p { margin: 0; }
-  .page { max-width: 1440px; margin: 0 auto; padding: 48px 64px 64px; display: flex; flex-direction: column; gap: 32px; }
+  .page { max-width: 1440px; margin: 0 auto; padding: 48px clamp(16px, 4vw, 64px) 64px; display: flex; flex-direction: column; gap: 32px; }
   .muted { color: var(--text-2); }
   .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
   .eyebrow { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--text-2); }
@@ -30,6 +32,9 @@
   h1 b { font-weight: 600; }
   .formula { display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 24px; border-radius: 999px; background: var(--ink); color: var(--canvas); font-size: 17px; font-weight: 500; }
   .formula i { font-style: normal; color: var(--accent); }
+  .formula { white-space: nowrap; max-width: 100%; }
+  .formula-note { opacity: .6; font-weight: 400; }
+  @media (max-width: 520px) { .formula { font-size: 15px; gap: 8px; padding: 0 20px; } .formula-note { display: none; } }
   .grid { display: grid; gap: var(--gap); }
   .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); }
   .card { background: var(--surface); border-radius: 28px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -40,6 +45,7 @@
   .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .bad { background: #FFF0F0; color: #CC2F29; } .good { background: #EAFCEF; color: #0E6E2C; } .info { background: var(--accent-soft); color: #6E500E; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bad { background: rgba(240,69,62,.16); color: #FF9A9A; } :root:not([data-theme="light"]) .good { background: rgba(34,197,82,.16); color: #7BEB97; } :root:not([data-theme="light"]) .info { color: #F4DA8E; } }
+  :root[data-theme="dark"] .bad { background: rgba(240,69,62,.16); color: #FF9A9A; } :root[data-theme="dark"] .good { background: rgba(34,197,82,.16); color: #7BEB97; } :root[data-theme="dark"] .info { color: #F4DA8E; }
   .stage { background: var(--canvas); border-radius: 12px; display: grid; place-items: center; padding: 16px; } /* 28 − 16 = 12: the demo follows its own rule */
   svg { display: block; width: 100%; height: auto; overflow: hidden; border-radius: 4px; }
   .stage { overflow: hidden; }
@@ -50,12 +56,13 @@
   .chain { font-size: 15px; line-height: 22px; font-variant-numeric: tabular-nums; }
   .chain b { font-weight: 600; }
   /* Playground */
-  .play { display: grid; grid-template-columns: 360px 1fr; gap: var(--gap); }
+  .play { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: var(--gap); }
   .controls { display: flex; flex-direction: column; gap: 20px; }
   .ctl { display: flex; flex-direction: column; gap: 8px; }
   .ctl .row { display: flex; justify-content: space-between; align-items: baseline; }
   .ctl output { font-size: 20px; font-weight: 300; font-variant-numeric: tabular-nums; }
   input[type=range] { width: 100%; accent-color: var(--ink); height: 24px; }
+  .seg button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .seg { display: flex; height: 48px; padding: 4px; gap: 4px; border-radius: 999px; background: var(--canvas); }
   .seg button { flex: 1; border: 0; border-radius: 999px; background: none; font: 500 14px/1 Urbanist, sans-serif; color: var(--text-2); cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 2px 10px rgba(0,0,0,.08); }
@@ -78,7 +85,7 @@
   .spec-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; font-size: 15px; }
   .spec-row .dots { border-bottom: 1px dotted var(--text-3); transform: translateY(-4px); }
   .spec-row b { font-weight: 500; font-variant-numeric: tabular-nums; }
-  @media (max-width: 1100px) { .g3, .g2, .play, .product { grid-template-columns: 1fr; } .page { padding: 32px 16px; } :root { --fs-h1: 40px; } h1 { line-height: 44px; } }
+  @media (max-width: 1100px) { .g3, .g2, .play, .product { grid-template-columns: 1fr; } .page { padding-block: 32px; } :root { --fs-h1: 40px; } h1 { line-height: 44px; } }
 </style>
 </head>
 <body>
@@ -88,7 +95,7 @@
       <p class="eyebrow">RDL Theme · v3.1 · corner radius</p>
       <h1>Concentric <b>corners</b></h1>
     </div>
-    <div class="formula">Outer R <i>=</i> Inner R <i>+</i> Gap <span class="muted" style="color:inherit;opacity:.6;font-weight:400">(padding + border)</span></div>
+    <div class="formula">Outer R <i>=</i> Inner R <i>+</i> Gap <span class="formula-note">(padding + border)</span></div>
   </header>
 
   <!-- 1 · Wrong vs right -->
@@ -230,12 +237,15 @@ function draw(svg, opts) {
 }
 
 // 1 · wrong vs right (40 / gap 20, scale 2.4)
+function drawAll() {
 draw(document.getElementById("wrong"), { outer: 40, pad: 20, levels: 2, method: "same", scale: 2.4, labels: true });
 draw(document.getElementById("right"), { outer: 40, pad: 20, levels: 2, method: "fixed", scale: 2.4, labels: true });
 // 2 · deeper chains (24 / 8, scale 3.4)
 draw(document.getElementById("fixed"),  { outer: 24, pad: 8, levels: 4, method: "fixed",  scale: 3.4 });
 draw(document.getElementById("strict"), { outer: 24, pad: 8, levels: 4, method: "strict", scale: 3.4 });
 draw(document.getElementById("soft"),   { outer: 24, pad: 8, levels: 4, method: "soft",   scale: 3.4 });
+}
+drawAll();
 
 // 3 · playground
 const ui = { R: iR, P: iP, B: iB, L: iL };
@@ -258,7 +268,9 @@ document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("clic
   method = b.dataset.m; update();
 }));
 update();
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => location.reload());
+const redraw = () => { drawAll(); update(); };
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redraw);
+new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 </script>
 </body>
 </html>
