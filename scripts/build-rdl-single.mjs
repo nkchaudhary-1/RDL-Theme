@@ -1,4 +1,4 @@
-// Builds RDL/SKILL.md: the whole rdl-theme skill (guide + code) in one self-contained skill file.
+// Builds RDL/SKILL.md (and an identical RDL/RDL.md): the whole rdl-theme skill (guide + code) in one self-contained skill file.
 //   node scripts/build-rdl-single.mjs
 // Part 1 (guide) = SKILL.md core + every reference, cross-references rewritten to section numbers.
 // Part 2 (code)  = token source and outputs, web components, SwiftUI files, scripts and the radius demo,
@@ -126,4 +126,5 @@ for (const [l, p, lang, note] of appendices) {
 mkdirSync(join(root, "RDL"), { recursive: true });
 const text = out.join("\n").replace(/\n{3,}/g, "\n\n");
 writeFileSync(join(root, "RDL/SKILL.md"), text);
+writeFileSync(join(root, "RDL/RDL.md"), text); // same content, named for download / upload as a plain .md
 console.log(`Wrote RDL/SKILL.md — ${text.split("\n").length} lines, ${(Buffer.byteLength(text) / 1024).toFixed(0)} KB`);
