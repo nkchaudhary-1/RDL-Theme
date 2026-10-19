@@ -32,6 +32,36 @@ accent"*. It follows the rules, tokens, components and QA checklist in this repo
 |---|---|
 | ![](docs/v3-mobile-volt.png) | ![](docs/v1-flat-mobile.png) |
 
+## Atlas · accessible design system (v1.0)
+
+[`skills/atlas/`](skills/atlas/) is a second, independent skill: a neutral, production-grade design
+system built to **WCAG 2.2 AA by construction**. Where RDL is about a look, Atlas is about proof:
+
+- a **contrast-anchored palette**: every step of every hue is solved so its ratio against white is
+  fixed, so 600-on-white is always 5.4:1 and 300-on-900 always 7.5:1; `check_contrast.mjs` verifies
+  162 light and dark pairings
+- **19 atoms and 23 components** (buttons, inputs, choices, switch, badges, tags, avatars, progress,
+  skeleton, tooltip, field, form, card, alert, banner, toast, dialog, drawer, popover, menu, tabs,
+  accordion, breadcrumb, pagination, stepper, segmented, table, list, stat, empty state, app shell)
+  with WAI-ARIA Authoring Practices keyboard behaviour, one two-tone focus ring, ≥ 24px targets and
+  a non-colour cue for every state
+- **accessibility guidelines** mapped criterion by criterion, a QA checklist, and `audit_a11y.mjs`,
+  which checks structure, names, ARIA state, contrast, focus visibility, reflow, text spacing and
+  reduced motion on a rendered page
+
+| Atlas · light | Atlas · dark |
+|---|---|
+| ![](docs/atlas-light.png) | ![](docs/atlas-dark.png) |
+
+Ask Claude something like *"build the settings page in Atlas"* or *"audit this HTML for WCAG 2.2"*.
+
+```bash
+cp -r RDL-Theme/skills/atlas ~/.claude/skills/
+```
+```html
+<link rel="stylesheet" href="atlas-tokens.css"><link rel="stylesheet" href="atlas.css"><script src="atlas.js" defer></script>
+```
+
 ## Install
 
 **As a Claude Code plugin**

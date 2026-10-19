@@ -1,11 +1,13 @@
 {
   "name": "rdl-theme",
-  "owner": { "name": "Neelesh" },
+  "owner": {
+    "name": "Neelesh"
+  },
   "plugins": [
     {
       "name": "rdl-theme",
       "source": "./",
-      "description": "Design and build apps in the RonDesignLab (RDL) Dribbble style."
+      "description": "Design and build apps in the RonDesignLab (RDL) Dribbble style, or accessible WCAG 2.2 AA product UI with the Atlas design system."
     }
   ]
 }

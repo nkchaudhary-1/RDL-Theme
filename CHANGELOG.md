@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.4.0 — Atlas design system
+A second skill, `skills/atlas/`: an accessibility-first design system built to WCAG 2.2 AA by construction.
+
+- **Tokens:** `tokens.json` → `atlas-tokens.css` (`--at-*`) and `tailwind.preset.js`. The palette is
+  contrast-anchored: `scripts/palette.mjs` solves every step of every hue in OKLCH so its ratio
+  against white is fixed (1.06 → 17.5), which makes every dark-on-light pairing `R(dark) / R(light)`
+  for any hue. Semantic roles for light and dark; `scripts/check_contrast.mjs` proves 162 pairings
+  (4.5:1 text, 3:1 non-text, 7:1 where AAA) and writes `references/contrast-report.md`.
+- **Atoms (19)** and **components (23)** in `assets/css/atlas.css`, with behaviour in
+  `assets/js/atlas.js` (APG tabs, menu button, popover, native modal dialog with focus return,
+  switch, hoverable/dismissible tooltip, disclosure, sortable headers, toasts in a live region,
+  announcements, three-state theme toggle). One two-tone focus ring for everything, ≥ 24px targets,
+  non-colour cues for every state, reduced-motion, high-contrast and forced-colours support.
+- **Showcase:** `assets/templates/atlas-showcase.html` shows every atom and component with its
+  reference markup; it passes the audit with 0 errors in light, dark and at 390px.
+- **Audit:** `scripts/audit_a11y.mjs` (Playwright) checks structure, accessible names, ARIA state,
+  computed contrast, keyboard focus visibility, reflow at 320px, 1.4.12 text spacing, reduced motion
+  and target size.
+- **Docs:** `SKILL.md`, `references/foundations.md`, `atoms.md`, `components.md`,
+  `accessibility.md` (WCAG 2.2 AA criterion by criterion, patterns, testing), `qa-checklist.md`.
+- Plugin manifests now describe both skills; `scripts/render-previews.mjs` renders the Atlas
+  previews in `docs/`.
+
 ## 3.3.0 — RDL single-file skill
 - **New `RDL/SKILL.md`:** the complete skill as one file.
   - Part 1 is the full guide: overview plus all 11 references as §1–§12, with cross-references rewritten to section numbers.

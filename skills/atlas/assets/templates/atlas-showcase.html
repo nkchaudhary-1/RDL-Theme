@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas design system — atoms and components</title>
+<meta name="description" content="Every Atlas atom and component with its accessible markup, in light and dark.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/atlas-tokens.css">
+<link rel="stylesheet" href="../css/atlas.css">
+<script>/* Showcase only: ?theme=dark|light forces a theme before first paint. */ (function(){ var t = new URLSearchParams(location.search).get("theme"); if (t) document.documentElement.dataset.theme = t; })();</script>
+<style>
+  /* Showcase chrome only; product UI uses the Atlas classes unchanged. */
+  .demo-section { padding: var(--at-space-10) 0; border-bottom: 1px solid var(--at-border-subtle); scroll-margin-top: 80px; }
+  .demo-section > h2 { margin-bottom: var(--at-space-2); }
+  .demo-section > .lede { margin: 0 0 var(--at-space-6); color: var(--at-text-secondary); max-width: var(--at-container-prose); }
+  .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--at-space-3); margin-bottom: var(--at-space-4); }
+  .demo-grid { display: grid; gap: var(--at-space-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+  .demo-label { display: block; margin: var(--at-space-5) 0 var(--at-space-2); font-size: var(--at-text-caption-size); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--at-text-tertiary); }
+  .demo-note { display: block; margin-top: var(--at-space-4); padding: var(--at-space-3); border-radius: var(--at-radius-md); background: var(--at-bg-sunken); color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); }
+  .demo-note strong { color: var(--at-text-primary); }
+  .swatches { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 4px; margin-bottom: var(--at-space-3); }
+  .swatch { height: 44px; min-width: 0; overflow: hidden; border-radius: var(--at-radius-sm); display: grid; place-items: end start; padding: 4px; font-size: 12px; font-weight: 600; font-family: var(--at-font-mono); border: 1px solid rgba(var(--at-shadow-color), 0.08); }
+  .swatch-name { font-size: var(--at-text-caption-size); font-weight: 600; color: var(--at-text-secondary); margin: var(--at-space-2) 0 var(--at-space-1); }
+  .type-sample { display: grid; grid-template-columns: 120px 1fr; gap: var(--at-space-4); align-items: baseline; padding: var(--at-space-3) 0; border-bottom: 1px dashed var(--at-border-subtle); }
+  .type-sample code { font-size: var(--at-text-caption-size); color: var(--at-text-tertiary); }
+  .space-row { display: flex; align-items: flex-end; gap: var(--at-space-3); }
+  .space-box { background: var(--at-brand-subtle); border: 1px solid var(--at-brand-border); border-radius: 2px; }
+  .focus-demo { display: flex; gap: var(--at-space-4); padding: var(--at-space-4); border-radius: var(--at-radius-lg); }
+  .focus-demo--brand { background: var(--at-brand); }
+  .focus-demo--ink { background: var(--at-bg-inverse); }
+  .toc { position: sticky; top: 80px; align-self: start; }
+  .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--at-space-10); }
+  .layout > * { min-width: 0; }
+  @media (max-width: 1023px) { .layout { grid-template-columns: minmax(0, 1fr); } .toc { position: static; } }
+  @media (max-width: 639px) { .type-sample { grid-template-columns: 1fr; gap: var(--at-space-1); } .swatches { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<a class="at-skip-link" href="#main">Skip to content</a>
+
+<header class="at-navbar">
+  <a class="at-navbar__brand" href="#" aria-label="Atlas home">
+    <svg class="at-icon at-icon--lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+    Atlas
+  </a>
+  <nav aria-label="Primary">
+    <ul class="at-navbar__links">
+      <li><a href="#foundations" aria-current="page">Foundations</a></li>
+      <li><a href="#atoms">Atoms</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+    </ul>
+  </nav>
+  <span class="at-navbar__spacer"></span>
+  <div class="at-navbar__actions">
+    <button type="button" class="at-btn at-btn--secondary at-btn--sm" data-at-theme>
+      <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span data-at-theme-label>System</span>
+    </button>
+    <button type="button" class="at-btn at-btn--secondary at-btn--sm at-btn--icon" aria-label="Notifications, 3 unread" data-at-tooltip="Notifications">
+      <svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg>
+    </button>
+    <span class="at-avatar at-avatar--sm" role="img" aria-label="Neelesh Chaudhary">NC</span>
+  </div>
+</header>
+
+<main id="main" class="at-main" tabindex="-1">
+<div class="at-container layout">
+  <nav class="toc" aria-label="On this page">
+    <ul class="at-sidenav__group">
+      <li class="at-sidenav__label">Foundations</li>
+      <li><a href="#color">Colour</a></li>
+      <li><a href="#type">Typography</a></li>
+      <li><a href="#space">Space &amp; radius</a></li>
+      <li><a href="#focus">Focus &amp; targets</a></li>
+      <li class="at-sidenav__label">Atoms</li>
+      <li><a href="#buttons">Buttons &amp; links</a></li>
+      <li><a href="#inputs">Inputs</a></li>
+      <li><a href="#choices">Checkbox, radio, switch</a></li>
+      <li><a href="#badges">Badges, tags, avatars</a></li>
+      <li><a href="#feedback">Spinner, progress, skeleton</a></li>
+      <li class="at-sidenav__label">Components</li>
+      <li><a href="#forms">Form &amp; field</a></li>
+      <li><a href="#cards">Cards &amp; stats</a></li>
+      <li><a href="#alerts">Alerts, banners, toasts</a></li>
+      <li><a href="#overlays">Dialog, drawer, menu, popover</a></li>
+      <li><a href="#navigation">Tabs, accordion, breadcrumb, pagination, stepper</a></li>
+      <li><a href="#data">Table, list, empty state</a></li>
+    </ul>
+  </nav>
+
+  <div>
+    <section class="demo-section" id="foundations" style="padding-top:0">
+      <p class="at-caption">Atlas · v1.0 · WCAG 2.2 AA</p>
+      <h1 class="at-h1">Atoms and components, accessible by construction</h1>
+      <p class="at-body-lg at-text-secondary at-prose">Every colour pairing below is proven by <code class="at-code">check_contrast.mjs</code>, every control shows the same two-tone focus ring, every state is carried by more than colour, and every widget follows the WAI-ARIA Authoring Practices keyboard map. Toggle the theme in the header; everything holds in dark mode and under reduced motion, high contrast and forced colours.</p>
+    </section>
+
+    <!-- ============================================================ COLOUR -->
+    <section class="demo-section" id="color">
+      <h2 class="at-h2">Colour</h2>
+      <p class="lede">Each step is solved for a fixed contrast against white (1.06 → 17.5), so step 600 on white is always 5.4:1 and step 300 on 900 is always 7.5:1, in every hue.</p>
+      <div id="swatches"></div>
+      <span class="demo-label">Semantic roles in use</span>
+      <div class="demo-row">
+        <span class="at-badge at-badge--brand"><span class="at-badge__dot" aria-hidden="true"></span>Brand</span>
+        <span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Success</span>
+        <span class="at-badge at-badge--warning"><span class="at-badge__dot" aria-hidden="true"></span>Warning</span>
+        <span class="at-badge at-badge--danger"><span class="at-badge__dot" aria-hidden="true"></span>Danger</span>
+        <span class="at-badge at-badge--info"><span class="at-badge__dot" aria-hidden="true"></span>Info</span>
+        <span class="at-badge"><span class="at-badge__dot" aria-hidden="true"></span>Neutral</span>
+      </div>
+      <div class="demo-note"><strong>Rule.</strong> Text uses the <code class="at-code">*-text</code> token, fills use <code class="at-code">*-bg</code>, icons and borders use the base token. Never put the base colour behind body text.</div>
+    </section>
+
+    <!-- ============================================================ TYPE -->
+    <section class="demo-section" id="type">
+      <h2 class="at-h2">Typography</h2>
+      <p class="lede">Rem-based so browser zoom and font-size settings scale everything (1.4.4). Body line-height is 1.5 and survives the 1.4.12 text-spacing overrides. Nothing is set below 12px.</p>
+      <div class="type-sample"><code>display 48/1.1</code><p class="at-display">Clarity at scale</p></div>
+      <div class="type-sample"><code>h1 36/1.2</code><p class="at-h1">Page title</p></div>
+      <div class="type-sample"><code>h2 28/1.25</code><p class="at-h2">Section heading</p></div>
+      <div class="type-sample"><code>h3 22/1.3</code><p class="at-h3">Card or dialog title</p></div>
+      <div class="type-sample"><code>h4 18/1.4</code><p class="at-h4">Subsection</p></div>
+      <div class="type-sample"><code>body-lg 18/1.6</code><p class="at-body-lg">Lead paragraph for introductions and long reads.</p></div>
+      <div class="type-sample"><code>body 16/1.5</code><p class="at-body">Default body copy. Line length is capped at 68 characters in <code class="at-code">.at-prose</code>.</p></div>
+      <div class="type-sample"><code>body-sm 14/1.5</code><p class="at-body-sm">Secondary copy, table cells, helper text.</p></div>
+      <div class="type-sample"><code>label 14/1.4 500</code><p class="at-label">Form label</p></div>
+      <div class="type-sample"><code>caption 12/1.4</code><p class="at-caption">Caption and metadata. Use sparingly; never for instructions.</p></div>
+      <div class="type-sample"><code>code 14 mono</code><p><code class="at-code">npm run build</code> and <kbd class="at-kbd">⌘</kbd> <kbd class="at-kbd">K</kbd></p></div>
+    </section>
+
+    <!-- ============================================================ SPACE -->
+    <section class="demo-section" id="space">
+      <h2 class="at-h2">Space, radius, elevation</h2>
+      <p class="lede">A 4px ladder (2 · 4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64 · 80 · 96) and six radii (4 · 8 · 12 · 16 · 24 · pill). Shadows are tinted with the surface's ink so they hold in dark mode.</p>
+      <div class="space-row" aria-hidden="true">
+        <div class="space-box" style="width:4px;height:4px"></div><div class="space-box" style="width:8px;height:8px"></div><div class="space-box" style="width:12px;height:12px"></div><div class="space-box" style="width:16px;height:16px"></div><div class="space-box" style="width:24px;height:24px"></div><div class="space-box" style="width:32px;height:32px"></div><div class="space-box" style="width:48px;height:48px"></div><div class="space-box" style="width:64px;height:64px"></div>
+      </div>
+      <span class="demo-label">Surfaces</span>
+      <div class="demo-grid">
+        <div class="at-card"><p class="at-label">Surface</p><p class="at-body-sm at-text-secondary">Default card: 1px subtle border, radius 16.</p></div>
+        <div class="at-card at-card--raised"><p class="at-label">Raised</p><p class="at-body-sm at-text-secondary">Shadow md, used for popovers and menus.</p></div>
+        <div class="at-card at-card--sunken"><p class="at-label">Sunken</p><p class="at-body-sm at-text-secondary">Grouping background, code, table headers.</p></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ FOCUS -->
+    <section class="demo-section" id="focus">
+      <h2 class="at-h2">Focus and targets</h2>
+      <p class="lede">One ring everywhere: 2px brand outline, 2px offset filled with the surface colour. The inner halo keeps the ring at ≥ 3:1 on any background (2.4.7, 2.4.11). Press <kbd class="at-kbd">Tab</kbd> to see it.</p>
+      <div class="demo-row">
+        <div class="focus-demo"><button type="button" class="at-btn">On canvas</button><button type="button" class="at-btn at-btn--secondary">Secondary</button></div>
+        <div class="focus-demo focus-demo--brand"><button type="button" class="at-btn at-btn--secondary">On brand</button></div>
+        <div class="focus-demo focus-demo--ink"><button type="button" class="at-btn">On ink</button></div>
+      </div>
+      <div class="demo-note"><strong>Targets.</strong> Every control is at least 24×24 CSS px (2.5.8); buttons, list rows, choices and nav items are 40–56px tall, and touch-primary actions use <code class="at-code">.at-btn--lg</code> (48). Spacing between adjacent targets is never below 8px.</div>
+    </section>
+
+    <!-- ============================================================ BUTTONS -->
+    <section class="demo-section" id="atoms"><h2 class="at-h2" id="buttons">Buttons and links</h2>
+      <p class="lede">One primary per view. Icon-only buttons carry <code class="at-code">aria-label</code>. Loading keeps the label in the DOM and sets <code class="at-code">aria-busy</code>. Disabled buttons stay in the tab order when the reason is explained nearby; otherwise use <code class="at-code">disabled</code>.</p>
+      <div class="demo-row">
+        <button type="button" class="at-btn">Primary</button>
+        <button type="button" class="at-btn at-btn--secondary">Secondary</button>
+        <button type="button" class="at-btn at-btn--tertiary">Tertiary</button>
+        <button type="button" class="at-btn at-btn--danger">Delete</button>
+        <button type="button" class="at-btn at-btn--danger-secondary">Remove</button>
+        <button type="button" class="at-btn" disabled>Disabled</button>
+        <button type="button" class="at-btn" aria-busy="true">Saving</button>
+      </div>
+      <div class="demo-row">
+        <button type="button" class="at-btn at-btn--sm">Small</button>
+        <button type="button" class="at-btn">Medium</button>
+        <button type="button" class="at-btn at-btn--lg">Large</button>
+        <button type="button" class="at-btn at-btn--pill">Pill</button>
+        <button type="button" class="at-btn at-btn--secondary at-btn--icon" aria-label="Edit"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4l10-10-4-4L4 16v4zM13 7l4 4"/></svg></button>
+        <button type="button" class="at-btn">
+          <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+          With icon
+        </button>
+      </div>
+      <div class="demo-row">
+        <div class="at-btn-group at-btn-group--attached" role="group" aria-label="Text alignment">
+          <button type="button" class="at-btn at-btn--secondary" aria-pressed="true">Left</button>
+          <button type="button" class="at-btn at-btn--secondary" aria-pressed="false">Centre</button>
+          <button type="button" class="at-btn at-btn--secondary" aria-pressed="false">Right</button>
+        </div>
+      </div>
+      <p class="at-body">Links inside text are <a class="at-link" href="#type">underlined</a>, so colour is never the only cue. <a class="at-link at-link--standalone" href="#buttons">Standalone link →</a></p>
+    </section>
+
+    <!-- ============================================================ INPUTS -->
+    <section class="demo-section" id="inputs">
+      <h2 class="at-h2">Inputs, textarea, select</h2>
+      <p class="lede">Borders are 3:1 against the surface (1.4.11). Placeholder is real text at 4.5:1 but never the only label. Invalid fields get a 2px danger border plus an icon and message.</p>
+      <div class="demo-grid">
+        <div class="at-field">
+          <label class="at-field__label" for="in-1">Email <span class="at-field__optional">(optional)</span></label>
+          <input class="at-input" id="in-1" type="email" placeholder="you@example.com" autocomplete="email">
+          <p class="at-field__hint" id="in-1-hint">We only use this for receipts.</p>
+        </div>
+        <div class="at-field">
+          <label class="at-field__label" for="in-2">Amount <span class="at-field__required" aria-hidden="true">*</span><span class="at-sr-only">(required)</span></label>
+          <div class="at-input-group">
+            <span class="at-input-group__addon" id="in-2-cur">₹</span>
+            <input class="at-input" id="in-2" type="text" inputmode="decimal" value="5,000" aria-describedby="in-2-cur in-2-hint" required>
+            <button type="button" class="at-btn at-btn--secondary">Max</button>
+          </div>
+          <p class="at-field__hint" id="in-2-hint">Minimum ₹100.</p>
+        </div>
+        <div class="at-field">
+          <label class="at-field__label" for="in-3">Username</label>
+          <input class="at-input" id="in-3" type="text" value="neelesh" aria-invalid="true" aria-describedby="in-3-err" autocomplete="username">
+          <p class="at-field__error" id="in-3-err"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>That username is already taken. Try neelesh-c.</p>
+        </div>
+        <div class="at-field">
+          <label class="at-field__label" for="in-4">Country</label>
+          <select class="at-select" id="in-4" autocomplete="country-name">
+            <option>India</option><option>Singapore</option><option>United Arab Emirates</option>
+          </select>
+        </div>
+        <div class="at-field">
+          <label class="at-field__label" for="in-5">Notes</label>
+          <textarea class="at-textarea" id="in-5" maxlength="200" aria-describedby="in-5-count"></textarea>
+          <p class="at-field__count" id="in-5-count">0 / 200 characters</p>
+        </div>
+        <div class="at-field">
+          <label class="at-field__label" for="in-6">Read only</label>
+          <input class="at-input" id="in-6" type="text" value="ATL-2049" readonly>
+          <label class="at-field__label" for="in-7" style="margin-top:8px">Disabled</label>
+          <input class="at-input" id="in-7" type="text" value="Not editable" disabled>
+        </div>
+      </div>
+      <span class="demo-label">Range</span>
+      <div class="at-field" style="max-width:420px">
+        <label class="at-field__label" for="in-8">Monthly SIP <output for="in-8" id="in-8-out">₹5,000</output></label>
+        <input class="at-range" id="in-8" type="range" min="500" max="50000" step="500" value="5000" aria-valuetext="5,000 rupees" oninput="document.getElementById('in-8-out').textContent='₹'+Number(this.value).toLocaleString('en-IN'); this.setAttribute('aria-valuetext', Number(this.value).toLocaleString('en-IN')+' rupees')">
+      </div>
+    </section>
+
+    <!-- ============================================================ CHOICES -->
+    <section class="demo-section" id="choices">
+      <h2 class="at-h2">Checkbox, radio, switch, segmented</h2>
+      <p class="lede">Real native inputs drawn with <code class="at-code">appearance: none</code>, so they keep their semantics and keyboard behaviour. The whole label is the hit area (44px). A switch is a <code class="at-code">button[role=switch]</code> for an immediate effect; use a checkbox when the change is submitted later.</p>
+      <div class="demo-grid">
+        <fieldset class="at-fieldset">
+          <legend class="at-fieldset__legend">Notifications</legend>
+          <label class="at-choice"><input class="at-choice__control" type="checkbox" checked><span><span class="at-choice__text">Order updates</span><span class="at-choice__hint">Shipping and delivery</span></span></label>
+          <label class="at-choice"><input class="at-choice__control" type="checkbox"><span class="at-choice__text">Price alerts</span></label>
+          <label class="at-choice"><input class="at-choice__control" type="checkbox" id="indet"><span class="at-choice__text">Select all (indeterminate)</span></label>
+          <label class="at-choice"><input class="at-choice__control" type="checkbox" disabled><span class="at-choice__text">Marketing (disabled)</span></label>
+        </fieldset>
+        <fieldset class="at-fieldset">
+          <legend class="at-fieldset__legend">Investment style</legend>
+          <label class="at-choice at-choice--card"><input class="at-choice__control" type="radio" name="style" checked><span><span class="at-choice__text">One-time</span><span class="at-choice__hint">Buy gold at today's price</span></span></label>
+          <label class="at-choice at-choice--card"><input class="at-choice__control" type="radio" name="style"><span><span class="at-choice__text">Monthly SIP</span><span class="at-choice__hint">Average in over time</span></span></label>
+          <label class="at-choice at-choice--card"><input class="at-choice__control" type="radio" name="style"><span><span class="at-choice__text">Lease</span><span class="at-choice__hint">Earn yield on holdings</span></span></label>
+        </fieldset>
+        <div>
+          <span class="demo-label" style="margin-top:0">Switches</span>
+          <div class="at-stack at-stack--sm">
+            <button type="button" class="at-switch" role="switch" aria-checked="true" data-at-switch><span class="at-switch__track" aria-hidden="true"></span>Biometric unlock</button>
+            <button type="button" class="at-switch" role="switch" aria-checked="false" data-at-switch><span class="at-switch__track" aria-hidden="true"></span>Hide balances</button>
+            <button type="button" class="at-switch" role="switch" aria-checked="false" disabled><span class="at-switch__track" aria-hidden="true"></span>Beta features (disabled)</button>
+          </div>
+          <span class="demo-label">Segmented control</span>
+          <fieldset class="at-fieldset"><legend class="at-sr-only">Period</legend>
+            <div class="at-segmented">
+              <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="period" id="p1" checked><label class="at-segmented__label" for="p1">1M</label></span>
+              <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="period" id="p2"><label class="at-segmented__label" for="p2">6M</label></span>
+              <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="period" id="p3"><label class="at-segmented__label" for="p3">1Y</label></span>
+              <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="period" id="p4"><label class="at-segmented__label" for="p4">All</label></span>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ BADGES -->
+    <section class="demo-section" id="badges">
+      <h2 class="at-h2">Badges, tags, avatars, dividers</h2>
+      <p class="lede">Badges are read-only status. Tags are interactive (selectable or removable). Status badges carry a dot and a word; the removable control has its own accessible name.</p>
+      <div class="demo-row">
+        <span class="at-badge">Draft</span>
+        <span class="at-badge at-badge--brand">New</span>
+        <span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Active</span>
+        <span class="at-badge at-badge--warning"><span class="at-badge__dot" aria-hidden="true"></span>Pending</span>
+        <span class="at-badge at-badge--danger"><span class="at-badge__dot" aria-hidden="true"></span>Failed</span>
+        <span class="at-badge at-badge--info">Beta</span>
+        <span class="at-badge at-badge--solid">Pro</span>
+        <span class="at-badge at-badge--brand at-badge--count" aria-label="12 unread">12</span>
+      </div>
+      <div class="at-tag-group" role="group" aria-label="Filters">
+        <button type="button" class="at-tag" aria-pressed="true">Gold</button>
+        <button type="button" class="at-tag" aria-pressed="false">Silver</button>
+        <button type="button" class="at-tag" aria-pressed="false">Platinum</button>
+        <span class="at-tag">Delhi <button type="button" class="at-tag__remove" aria-label="Remove Delhi"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span>
+        <span class="at-tag">Last 30 days <button type="button" class="at-tag__remove" aria-label="Remove Last 30 days"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></span>
+      </div>
+      <div class="demo-row" style="margin-top:20px">
+        <span class="at-avatar at-avatar--sm" role="img" aria-label="Aarav Shah">AS</span>
+        <span class="at-avatar" role="img" aria-label="Priya Nair">PN</span>
+        <span class="at-avatar at-avatar--lg" role="img" aria-label="Neelesh Chaudhary">NC</span>
+        <span class="at-avatar at-avatar--square" role="img" aria-label="Atlas Labs">AL</span>
+        <span class="at-avatar-group" role="group" aria-label="3 collaborators"><span class="at-avatar at-avatar--sm" aria-hidden="true">AS</span><span class="at-avatar at-avatar--sm" aria-hidden="true">PN</span><span class="at-avatar at-avatar--sm" aria-hidden="true">+1</span></span>
+      </div>
+      <hr class="at-divider">
+      <div class="at-divider at-divider--label" role="separator" aria-label="or">or</div>
+    </section>
+
+    <!-- ============================================================ FEEDBACK ATOMS -->
+    <section class="demo-section" id="feedback">
+      <h2 class="at-h2">Spinner, progress, skeleton, tooltip</h2>
+      <p class="lede">Loading is announced once through <code class="at-code">role="status"</code>; skeletons are <code class="at-code">aria-hidden</code>. Progress bars expose value and label. Tooltips are hoverable, dismissible with Escape and never hold essential content (1.4.13).</p>
+      <div class="demo-row">
+        <span role="status"><span class="at-spinner at-spinner--sm" aria-hidden="true"></span><span class="at-sr-only">Loading</span></span>
+        <span role="status"><span class="at-spinner" aria-hidden="true"></span><span class="at-sr-only">Loading</span></span>
+        <span role="status"><span class="at-spinner at-spinner--lg" aria-hidden="true"></span><span class="at-sr-only">Loading</span></span>
+      </div>
+      <div class="demo-grid">
+        <div>
+          <div class="at-progress-label"><span id="pg-1-label">Uploading statement.pdf</span><span class="at-tabular">64%</span></div>
+          <div class="at-progress" role="progressbar" aria-labelledby="pg-1-label" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"><div class="at-progress__bar" style="--value:64%"></div></div>
+          <div class="at-progress-label" style="margin-top:16px"><span id="pg-2-label">Goal: ₹1,00,000</span><span class="at-tabular">₹82,400</span></div>
+          <div class="at-progress at-progress--success" role="progressbar" aria-labelledby="pg-2-label" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100" aria-valuetext="82,400 of 1,00,000 rupees"><div class="at-progress__bar" style="--value:82%"></div></div>
+          <div class="at-progress-label" style="margin-top:16px"><span id="pg-3-label">Verifying</span></div>
+          <div class="at-progress at-progress--indeterminate" role="progressbar" aria-labelledby="pg-3-label"><div class="at-progress__bar"></div></div>
+        </div>
+        <div class="at-card" aria-busy="true">
+          <div role="status" class="at-sr-only">Loading portfolio</div>
+          <div aria-hidden="true">
+            <div class="demo-row" style="margin-bottom:12px"><span class="at-skeleton at-skeleton--circle" style="width:40px;height:40px"></span><span class="at-skeleton at-skeleton--text" style="width:40%"></span></div>
+            <span class="at-skeleton at-skeleton--text" style="width:90%"></span><span class="at-skeleton at-skeleton--text" style="width:70%"></span><span class="at-skeleton" style="height:120px;margin-top:12px"></span>
+          </div>
+        </div>
+        <div>
+          <span class="demo-label" style="margin-top:0">Tooltip</span>
+          <div class="demo-row">
+            <button type="button" class="at-btn at-btn--secondary" data-at-tooltip="Exports a CSV of the visible rows">Export</button>
+            <button type="button" class="at-btn at-btn--secondary at-btn--icon" aria-label="Help" data-at-tooltip="Opens the help centre in a new tab"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5M12 17h.01"/></svg></button>
+          </div>
+          <span class="demo-label">Keyboard</span>
+          <p class="at-body-sm">Press <kbd class="at-kbd">⌘</kbd> <kbd class="at-kbd">K</kbd> to search, <kbd class="at-kbd">Esc</kbd> to close.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ FORMS -->
+    <section class="demo-section" id="components"><h2 class="at-h2" id="forms">Form and field</h2>
+      <p class="lede">Label above, hint below, error replaces the hint and is linked with <code class="at-code">aria-describedby</code>. On submit, focus moves to an error summary that links to each field (3.3.1, 3.3.3). Autocomplete tokens are set (1.3.5). Nothing re-asks for data already entered (3.3.7).</p>
+      <form class="at-form" novalidate onsubmit="event.preventDefault(); document.getElementById('form-summary').hidden=false; document.getElementById('form-summary').focus();">
+        <div class="at-alert at-alert--danger at-form__summary" id="form-summary" role="alert" tabindex="-1" hidden>
+          <svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          <div class="at-alert__body"><strong class="at-alert__title">2 fields need attention</strong><ul style="margin:4px 0 0 16px;padding:0"><li><a class="at-link" href="#f-name">Full name is required</a></li><li><a class="at-link" href="#f-pan">PAN must be 10 characters</a></li></ul></div>
+        </div>
+        <div class="at-form__row">
+          <div class="at-field">
+            <label class="at-field__label" for="f-name">Full name <span class="at-field__required" aria-hidden="true">*</span><span class="at-sr-only">(required)</span></label>
+            <input class="at-input" id="f-name" type="text" autocomplete="name" required>
+          </div>
+          <div class="at-field">
+            <label class="at-field__label" for="f-pan">PAN <span class="at-field__required" aria-hidden="true">*</span><span class="at-sr-only">(required)</span></label>
+            <input class="at-input" id="f-pan" type="text" autocapitalize="characters" maxlength="10" aria-describedby="f-pan-hint" required>
+            <p class="at-field__hint" id="f-pan-hint">10 characters, as printed on the card.</p>
+          </div>
+        </div>
+        <div class="at-field">
+          <label class="at-field__label" for="f-amt">Monthly amount</label>
+          <div class="at-input-group"><span class="at-input-group__addon" aria-hidden="true">₹</span><input class="at-input" id="f-amt" type="text" inputmode="decimal" value="5,000" aria-describedby="f-amt-hint"></div>
+          <p class="at-field__hint" id="f-amt-hint">Debited on the 5th of every month.</p>
+        </div>
+        <fieldset class="at-fieldset at-fieldset--row">
+          <legend class="at-fieldset__legend">Tenure</legend>
+          <label class="at-choice"><input class="at-choice__control" type="radio" name="tenure" checked><span class="at-choice__text">12 months</span></label>
+          <label class="at-choice"><input class="at-choice__control" type="radio" name="tenure"><span class="at-choice__text">24 months</span></label>
+          <label class="at-choice"><input class="at-choice__control" type="radio" name="tenure"><span class="at-choice__text">36 months</span></label>
+        </fieldset>
+        <label class="at-choice"><input class="at-choice__control" type="checkbox" required><span class="at-choice__text">I agree to the <a class="at-link" href="#forms">terms</a> and <a class="at-link" href="#forms">KYC policy</a></span></label>
+        <div class="at-form__actions">
+          <button type="submit" class="at-btn at-btn--lg">Start SIP</button>
+          <button type="button" class="at-btn at-btn--secondary at-btn--lg">Save draft</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============================================================ CARDS -->
+    <section class="demo-section" id="cards">
+      <h2 class="at-h2">Cards and stats</h2>
+      <p class="lede">A card is a container, not a control. Interactive cards stretch one real link over the surface and keep secondary controls above it. Stat deltas show a sign and arrow, not only colour.</p>
+      <div class="demo-grid">
+        <div class="at-card">
+          <div class="at-stat"><span class="at-stat__label">Gold holdings</span><span class="at-stat__value">42.18<small>g</small></span><span class="at-stat__delta at-stat__delta--up"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span class="at-sr-only">Up</span> +2.4% this month</span></div>
+        </div>
+        <div class="at-card">
+          <div class="at-stat"><span class="at-stat__label">Current value</span><span class="at-stat__value">₹3,24,910</span><span class="at-stat__delta at-stat__delta--down"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12l7 7 7-7"/></svg><span class="at-sr-only">Down</span> −0.8% today</span></div>
+        </div>
+        <article class="at-card at-card--interactive">
+          <div class="at-card__header">
+            <div><h3 class="at-card__title"><a class="at-card__stretch" href="#cards">Lease: 10g at 4.2% p.a.</a></h3><p class="at-card__subtitle">Matures 14 Mar 2027</p></div>
+            <div class="at-card__actions"><button type="button" class="at-btn at-btn--tertiary at-btn--sm at-btn--icon" aria-label="More actions for lease"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button></div>
+          </div>
+          <p class="at-body-sm at-text-secondary">Yield paid monthly in grams. The whole card opens the lease; the menu stays separate.</p>
+          <span class="at-badge at-badge--success" style="margin-top:12px"><span class="at-badge__dot" aria-hidden="true"></span>Active</span>
+        </article>
+        <div class="at-card">
+          <div class="at-card__header"><div><h3 class="at-card__title">Settings</h3><p class="at-card__subtitle">With header and footer slots</p></div></div>
+          <p class="at-body-sm at-text-secondary">Body content.</p>
+          <div class="at-card__footer"><button type="button" class="at-btn at-btn--secondary at-btn--sm">Cancel</button><button type="button" class="at-btn at-btn--sm">Save</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ ALERTS -->
+    <section class="demo-section" id="alerts">
+      <h2 class="at-h2">Alerts, banners, toasts</h2>
+      <p class="lede">Inline alerts persist and sit where the problem is. Toasts live in one polite live region, pause on hover and focus, and errors never auto-dismiss (2.2.1, 4.1.3).</p>
+      <div class="at-stack">
+        <div class="at-alert" role="status"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg><div class="at-alert__body"><strong class="at-alert__title">Prices refresh every 30 seconds</strong>Buy and sell rates include 3% GST.</div></div>
+        <div class="at-alert at-alert--success" role="status"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div class="at-alert__body"><strong class="at-alert__title">KYC verified</strong>You can now invest up to ₹10,00,000 per year.</div><button type="button" class="at-btn at-btn--tertiary at-btn--sm at-btn--icon at-alert__close" aria-label="Dismiss" data-at-dismiss><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+        <div class="at-alert at-alert--warning" role="alert"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 2 20h20L12 3z"/><path d="M12 9v5M12 17h.01"/></svg><div class="at-alert__body"><strong class="at-alert__title">Bank mandate expires in 3 days</strong>Renew it to keep your SIP running.<div class="at-alert__actions"><button type="button" class="at-btn at-btn--sm">Renew mandate</button></div></div></div>
+        <div class="at-alert at-alert--danger" role="alert"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg><div class="at-alert__body"><strong class="at-alert__title">Payment failed</strong>Your bank declined the transaction. No money was taken.</div></div>
+        <div class="at-alert at-alert--neutral" role="status"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg><div class="at-alert__body">Neutral note for low-stakes context.</div></div>
+      </div>
+      <span class="demo-label">Banners</span>
+      <div class="at-stack at-stack--sm">
+        <div class="at-banner" role="status"><span class="at-banner__body">Markets are closed today. Orders queue for 09:00 IST.</span><button type="button" class="at-btn at-btn--sm at-btn--secondary" data-at-dismiss>Got it</button></div>
+        <div class="at-banner at-banner--warning" role="alert"><span class="at-banner__body">Scheduled maintenance tonight 01:00–02:00 IST. <a class="at-link" href="#alerts">Details</a></span></div>
+      </div>
+      <span class="demo-label">Toasts</span>
+      <div class="demo-row">
+        <button type="button" class="at-btn at-btn--secondary" onclick="Atlas.toast({title:'Order placed', body:'2g gold at ₹7,412/g', variant:'success'})">Success toast</button>
+        <button type="button" class="at-btn at-btn--secondary" onclick="Atlas.toast({body:'Prices updated', variant:'info'})">Info toast</button>
+        <button type="button" class="at-btn at-btn--secondary" onclick="Atlas.toast({title:'Could not save', body:'Check your connection and try again.', variant:'danger'})">Error toast (persists)</button>
+      </div>
+    </section>
+
+    <!-- ============================================================ OVERLAYS -->
+    <section class="demo-section" id="overlays">
+      <h2 class="at-h2">Dialog, drawer, menu, popover</h2>
+      <p class="lede">Dialogs use the native element with <code class="at-code">showModal()</code>: focus is trapped, the background is inert, Escape closes, and focus returns to the opener. Menus follow the APG menu-button pattern. Popovers are non-modal and close on Escape, outside click or focus leaving.</p>
+      <div class="demo-row">
+        <button type="button" class="at-btn" aria-controls="dlg-1" data-at-dialog>Open dialog</button>
+        <button type="button" class="at-btn at-btn--secondary" aria-controls="dlg-2" data-at-dialog>Confirm delete</button>
+        <button type="button" class="at-btn at-btn--secondary" aria-controls="drw-1" data-at-dialog>Open drawer</button>
+        <span class="at-anchor">
+          <button type="button" class="at-btn at-btn--secondary" id="menu-btn" aria-controls="menu-1" data-at-menu>Actions <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button>
+          <ul class="at-menu" id="menu-1" role="menu" aria-labelledby="menu-btn" hidden>
+            <li role="none"><button type="button" class="at-menu__item" role="menuitem"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4l10-10-4-4L4 16v4z"/></svg>Rename <kbd class="at-kbd">R</kbd></button></li>
+            <li role="none"><button type="button" class="at-menu__item" role="menuitem"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Duplicate</button></li>
+            <li role="none"><button type="button" class="at-menu__item" role="menuitemcheckbox" aria-checked="true">Pin to top</button></li>
+            <li role="none"><button type="button" class="at-menu__item" role="menuitem" aria-disabled="true">Archive</button></li>
+            <li role="none" class="at-menu__separator"></li>
+            <li role="none"><button type="button" class="at-menu__item at-menu__item--danger" role="menuitem"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Delete</button></li>
+          </ul>
+        </span>
+        <span class="at-anchor">
+          <button type="button" class="at-btn at-btn--tertiary" aria-controls="pop-1" data-at-popover>What is a lease?</button>
+          <div class="at-popover" id="pop-1" role="dialog" aria-labelledby="pop-1-t" hidden>
+            <h3 class="at-h4" id="pop-1-t">Gold lease</h3>
+            <p class="at-body-sm at-text-secondary" style="margin:8px 0 12px">You lend gold to vetted jewellers and earn yield in grams. Capital is insured.</p>
+            <div class="at-inline"><a class="at-link at-link--standalone" href="#overlays">Learn more</a><button type="button" class="at-btn at-btn--sm at-btn--secondary" data-at-close>Close</button></div>
+          </div>
+        </span>
+      </div>
+
+      <dialog class="at-dialog" id="dlg-1" aria-labelledby="dlg-1-t" aria-describedby="dlg-1-d">
+        <div class="at-dialog__header"><h2 class="at-dialog__title" id="dlg-1-t">Set up auto-invest</h2><button type="button" class="at-btn at-btn--tertiary at-btn--sm at-btn--icon" aria-label="Close" data-at-close><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+        <div class="at-dialog__body">
+          <p id="dlg-1-d" style="margin-top:0">Choose how much to invest every month. You can pause anytime.</p>
+          <div class="at-field"><label class="at-field__label" for="dlg-amt">Monthly amount</label><div class="at-input-group"><span class="at-input-group__addon" aria-hidden="true">₹</span><input class="at-input" id="dlg-amt" type="text" inputmode="decimal" value="2,000" autofocus></div></div>
+        </div>
+        <div class="at-dialog__footer"><button type="button" class="at-btn at-btn--secondary" data-at-close>Cancel</button><button type="button" class="at-btn" data-at-close>Save</button></div>
+      </dialog>
+      <dialog class="at-dialog at-dialog--sm" id="dlg-2" role="alertdialog" aria-labelledby="dlg-2-t" aria-describedby="dlg-2-d">
+        <div class="at-dialog__header"><h2 class="at-dialog__title" id="dlg-2-t">Delete this SIP?</h2></div>
+        <div class="at-dialog__body"><p id="dlg-2-d" style="margin:0">Future instalments stop. Gold already bought stays in your vault.</p></div>
+        <div class="at-dialog__footer"><button type="button" class="at-btn at-btn--secondary" data-at-close autofocus>Keep SIP</button><button type="button" class="at-btn at-btn--danger" data-at-close>Delete SIP</button></div>
+      </dialog>
+      <dialog class="at-dialog at-drawer" id="drw-1" aria-labelledby="drw-1-t">
+        <div class="at-dialog__header"><h2 class="at-dialog__title" id="drw-1-t">Filters</h2><button type="button" class="at-btn at-btn--tertiary at-btn--sm at-btn--icon" aria-label="Close filters" data-at-close><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+        <div class="at-dialog__body">
+          <fieldset class="at-fieldset"><legend class="at-fieldset__legend">Type</legend>
+            <label class="at-choice"><input class="at-choice__control" type="checkbox" checked><span class="at-choice__text">Buy</span></label>
+            <label class="at-choice"><input class="at-choice__control" type="checkbox" checked><span class="at-choice__text">Sell</span></label>
+            <label class="at-choice"><input class="at-choice__control" type="checkbox"><span class="at-choice__text">SIP</span></label>
+          </fieldset>
+        </div>
+        <div class="at-dialog__footer"><button type="button" class="at-btn at-btn--secondary" data-at-close>Reset</button><button type="button" class="at-btn" data-at-close>Apply</button></div>
+      </dialog>
+    </section>
+
+    <!-- ============================================================ NAVIGATION -->
+    <section class="demo-section" id="navigation">
+      <h2 class="at-h2">Tabs, accordion, breadcrumb, pagination, stepper</h2>
+      <p class="lede">Tabs use roving tabindex with arrow keys. Accordions are native <code class="at-code">details</code> with the heading inside the summary. Breadcrumb and pagination are <code class="at-code">nav</code> landmarks with <code class="at-code">aria-current</code>.</p>
+      <div class="at-tabs" data-at-tabs>
+        <div class="at-tabs__list" role="tablist" aria-label="Portfolio views">
+          <button type="button" class="at-tabs__tab" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true">Holdings</button>
+          <button type="button" class="at-tabs__tab" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false">Transactions</button>
+          <button type="button" class="at-tabs__tab" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false">Documents</button>
+        </div>
+        <div class="at-tabs__panel" role="tabpanel" id="panel-1" aria-labelledby="tab-1"><p class="at-body-sm at-text-secondary" style="margin:0">42.18g gold · 120g silver · 1 active lease.</p></div>
+        <div class="at-tabs__panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden><p class="at-body-sm at-text-secondary" style="margin:0">14 transactions in the last 90 days.</p></div>
+        <div class="at-tabs__panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden><p class="at-body-sm at-text-secondary" style="margin:0">Invoices and tax statements.</p></div>
+      </div>
+      <div class="at-tabs at-tabs--pills" data-at-tabs style="margin-top:16px">
+        <div class="at-tabs__list" role="tablist" aria-label="Chart range">
+          <button type="button" class="at-tabs__tab" role="tab" id="ptab-1" aria-controls="ppanel-1" aria-selected="true">1W</button>
+          <button type="button" class="at-tabs__tab" role="tab" id="ptab-2" aria-controls="ppanel-2" aria-selected="false">1M</button>
+          <button type="button" class="at-tabs__tab" role="tab" id="ptab-3" aria-controls="ppanel-3" aria-selected="false">1Y</button>
+        </div>
+        <div class="at-tabs__panel" role="tabpanel" id="ppanel-1" aria-labelledby="ptab-1"><p class="at-body-sm at-text-secondary" style="margin:0">+1.2% over the week.</p></div>
+        <div class="at-tabs__panel" role="tabpanel" id="ppanel-2" aria-labelledby="ptab-2" hidden><p class="at-body-sm at-text-secondary" style="margin:0">+2.4% over the month.</p></div>
+        <div class="at-tabs__panel" role="tabpanel" id="ppanel-3" aria-labelledby="ptab-3" hidden><p class="at-body-sm at-text-secondary" style="margin:0">+14.8% over the year.</p></div>
+      </div>
+
+      <span class="demo-label">Accordion</span>
+      <div class="at-accordion">
+        <details class="at-accordion__item" open>
+          <summary class="at-accordion__summary"><h3>How is the gold stored?</h3><svg class="at-icon at-accordion__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="at-accordion__content">In insured vaults operated by a licensed custodian. You can request physical delivery above 1g.</div>
+        </details>
+        <details class="at-accordion__item">
+          <summary class="at-accordion__summary"><h3>Can I pause a SIP?</h3><svg class="at-icon at-accordion__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="at-accordion__content">Yes, from the SIP detail screen, for up to three months at a time.</div>
+        </details>
+        <details class="at-accordion__item">
+          <summary class="at-accordion__summary"><h3>What are the fees?</h3><svg class="at-icon at-accordion__chevron" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></summary>
+          <div class="at-accordion__content">3% GST on purchase and a 0.5% spread on sale. No storage fee.</div>
+        </details>
+      </div>
+      <p style="margin-top:12px"><button type="button" class="at-disclosure__trigger" aria-expanded="false" aria-controls="disc-1" data-at-disclosure>Show advanced options <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button></p>
+      <div id="disc-1" class="at-body-sm at-text-secondary" hidden>Advanced options appear here and are announced through the expanded state.</div>
+
+      <span class="demo-label">Breadcrumb</span>
+      <nav aria-label="Breadcrumb"><ol class="at-breadcrumb"><li><a href="#navigation">Home</a></li><li><a href="#navigation">Portfolio</a></li><li><a href="#navigation">Gold</a></li><li><span aria-current="page">SIP #2049</span></li></ol></nav>
+
+      <span class="demo-label">Pagination</span>
+      <nav aria-label="Transactions pages"><ul class="at-pagination">
+        <li><a href="#navigation" aria-disabled="true" aria-label="Previous page"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 6-6 6 6 6"/></svg></a></li>
+        <li><a href="#navigation" aria-current="page">1</a></li><li><a href="#navigation">2</a></li><li><a href="#navigation">3</a></li><li><span class="at-pagination__ellipsis" aria-hidden="true">…</span></li><li><a href="#navigation">12</a></li>
+        <li><a href="#navigation" aria-label="Next page"><svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"/></svg></a></li>
+      </ul></nav>
+
+      <span class="demo-label">Stepper</span>
+      <ol class="at-stepper" aria-label="Onboarding progress">
+        <li class="at-stepper__item is-complete"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">Account<span class="at-sr-only">, completed</span></span></li>
+        <li class="at-stepper__item is-complete"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">KYC<span class="at-sr-only">, completed</span></span></li>
+        <li class="at-stepper__item" aria-current="step"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">Bank mandate<span class="at-sr-only">, current step</span></span></li>
+        <li class="at-stepper__item"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">First investment</span></li>
+      </ol>
+    </section>
+
+    <!-- ============================================================ DATA -->
+    <section class="demo-section" id="data" style="border-bottom:0">
+      <h2 class="at-h2">Table, list, empty state</h2>
+      <p class="lede">Tables have a caption, header scopes and sortable headers that announce their state. The scroll wrapper is a focusable labelled region. Numbers are right-aligned and tabular.</p>
+      <div class="at-table-wrap" role="region" aria-labelledby="tbl-cap" tabindex="0">
+        <table class="at-table">
+          <caption id="tbl-cap">Recent transactions</caption>
+          <thead><tr>
+            <th scope="col" aria-sort="descending"><button type="button" class="at-table__sort" data-at-sort>Date <svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12l7-7 7 7"/></svg></button></th>
+            <th scope="col">Type</th>
+            <th scope="col"><button type="button" class="at-table__sort" data-at-sort>Asset <svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12l7-7 7 7"/></svg></button></th>
+            <th scope="col" class="is-numeric">Amount</th>
+            <th scope="col">Status</th>
+            <th scope="col"><span class="at-sr-only">Actions</span></th>
+          </tr></thead>
+          <tbody>
+            <tr><td>18 Oct 2026</td><td>Buy</td><td>Gold 24K</td><td class="is-numeric">₹5,000.00</td><td><span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Settled</span></td><td><button type="button" class="at-btn at-btn--tertiary at-btn--sm" aria-label="View transaction from 18 Oct 2026">View</button></td></tr>
+            <tr><td>05 Oct 2026</td><td>SIP</td><td>Gold 24K</td><td class="is-numeric">₹5,000.00</td><td><span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Settled</span></td><td><button type="button" class="at-btn at-btn--tertiary at-btn--sm" aria-label="View transaction from 05 Oct 2026">View</button></td></tr>
+            <tr><td>28 Sep 2026</td><td>Sell</td><td>Silver</td><td class="is-numeric">₹1,240.50</td><td><span class="at-badge at-badge--warning"><span class="at-badge__dot" aria-hidden="true"></span>Processing</span></td><td><button type="button" class="at-btn at-btn--tertiary at-btn--sm" aria-label="View transaction from 28 Sep 2026">View</button></td></tr>
+            <tr><td>12 Sep 2026</td><td>Buy</td><td>Gold 24K</td><td class="is-numeric">₹10,000.00</td><td><span class="at-badge at-badge--danger"><span class="at-badge__dot" aria-hidden="true"></span>Failed</span></td><td><button type="button" class="at-btn at-btn--tertiary at-btn--sm" aria-label="View transaction from 12 Sep 2026">View</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="demo-grid" style="margin-top:24px">
+        <div class="at-card at-card--compact">
+          <h3 class="at-h4" style="margin-bottom:8px">Watchlist</h3>
+          <ul class="at-list">
+            <li><a class="at-list__item" href="#data"><span class="at-avatar at-avatar--sm" aria-hidden="true">Au</span><span class="at-list__body"><span class="at-list__title">Gold 24K</span><span class="at-list__meta">per gram</span></span><span class="at-list__end"><span class="at-tabular">₹7,412</span><br><span class="at-body-sm at-text-success">▲ 0.4%</span></span></a></li>
+            <li><a class="at-list__item" href="#data"><span class="at-avatar at-avatar--sm" aria-hidden="true">Ag</span><span class="at-list__body"><span class="at-list__title">Silver</span><span class="at-list__meta">per gram</span></span><span class="at-list__end"><span class="at-tabular">₹92</span><br><span class="at-body-sm at-text-danger">▼ 1.1%</span></span></a></li>
+            <li><a class="at-list__item" href="#data"><span class="at-avatar at-avatar--sm" aria-hidden="true">Pt</span><span class="at-list__body"><span class="at-list__title">Platinum</span><span class="at-list__meta">per gram</span></span><span class="at-list__end"><span class="at-tabular">₹3,105</span><br><span class="at-body-sm at-text-secondary">— 0.0%</span></span></a></li>
+          </ul>
+        </div>
+        <div class="at-card">
+          <div class="at-empty">
+            <span class="at-empty__icon"><svg class="at-icon at-icon--lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16v12H4zM4 7l2-3h12l2 3M9 11h6"/></svg></span>
+            <h3 class="at-empty__title">No leases yet</h3>
+            <p class="at-body-sm" style="margin:0">Lease your gold to earn up to 4.2% a year, paid in grams.</p>
+            <div class="at-empty__actions"><button type="button" class="at-btn">Start a lease</button><button type="button" class="at-btn at-btn--tertiary">How it works</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</main>
+
+<footer class="at-container" style="padding:32px 20px;color:var(--at-text-secondary);font-size:var(--at-text-body-sm-size)">
+  Atlas v1.0 · Built to WCAG 2.2 AA · <a class="at-link" href="#main">Back to top</a>
+</footer>
+
+<script src="../js/atlas.js"></script>
+<script>
+  // Swatch grid from the live token values (showcase only).
+  (function () {
+    const hues = ["neutral", "brand", "info", "success", "warning", "danger"], steps = [50,100,200,300,400,500,600,700,800,900,950];
+    const cs = getComputedStyle(document.documentElement), host = document.getElementById("swatches");
+    for (const h of hues) {
+      const name = document.createElement("div"); name.className = "swatch-name"; name.textContent = h; host.appendChild(name);
+      const row = document.createElement("div"); row.className = "swatches"; row.setAttribute("role", "list"); row.setAttribute("aria-label", h + " scale");
+      for (const s of steps) {
+        const hex = cs.getPropertyValue(`--at-${h}-${s}`).trim();
+        const el = document.createElement("div"); el.className = "swatch"; el.setAttribute("role", "listitem");
+        el.style.background = hex; el.style.color = s >= 600 ? "#fff" : "#16191F"; // 500 is a UI/large-text step, so its label stays dark el.textContent = s; el.setAttribute("aria-label", `${h} ${s} ${hex}`);
+        row.appendChild(el);
+      }
+      host.appendChild(row);
+    }
+    const indet = document.getElementById("indet"); if (indet) indet.indeterminate = true;
+  })();
+</script>
+</body>
+</html>

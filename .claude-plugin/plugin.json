@@ -1,13 +1,16 @@
 {
   "name": "rdl-theme",
-  "version": "3.3.0",
-  "description": "RDL Theme v3 — build consistent, minimal apps in the RonDesignLab style (glass default, flat v1 option): calibrated tokens for CSS, Tailwind and SwiftUI, a measured layout system, component anatomy, usage guidelines, screen archetypes, domain playbooks and an automated UI audit, derived from a two-pass study of 220 shots.",
+  "version": "3.4.0",
+  "description": "Two design-system skills. RDL Theme v3: build consistent, minimal apps in the RonDesignLab style (glass default, flat v1 option) with calibrated tokens, a measured layout system, component anatomy and an automated UI audit. Atlas v1: an accessibility-first system (WCAG 2.2 AA by construction) with a contrast-anchored palette proven by script, 19 atoms, 23 components with APG keyboard behaviour, accessibility guidelines and an automated a11y audit.",
   "author": {
     "name": "Neelesh"
   },
   "keywords": [
+    "a11y",
     "accessibility",
+    "atlas",
     "audit",
+    "components",
     "dashboard",
     "design-system",
     "dribbble",
@@ -17,6 +20,7 @@
     "spacing",
     "swiftui",
     "tailwind",
-    "ui"
+    "ui",
+    "wcag"
   ]
 }

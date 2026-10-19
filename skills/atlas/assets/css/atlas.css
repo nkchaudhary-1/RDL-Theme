@@ -1,0 +1,597 @@
+/* Atlas — component layer. Requires atlas-tokens.css. Behaviour (tabs, menus, dialogs, toasts,
+   tooltips, switches) is in ../js/atlas.js; everything here degrades to usable native HTML without it.
+
+   Accessibility contract for every class in this file:
+   - Colours come only from semantic tokens whose pairings are proven by scripts/check_contrast.mjs.
+   - Every interactive element shows the two-tone focus ring (:focus-visible), is at least 24×24 CSS px
+     (WCAG 2.2 2.5.8) and 44×44 for primary and touch controls, and keeps its native semantics.
+   - State is never colour alone: icons, text, underlines or borders carry it too (1.4.1).
+   - Motion collapses under prefers-reduced-motion (2.3.3); forced-colors keeps every boundary visible.
+   Section index:
+     0 base   1 typography   2 icon + button + link   3 form atoms   4 badge/tag/avatar/divider
+     5 feedback atoms (spinner, progress, skeleton, kbd, tooltip)   6 field + fieldset + form
+     7 card / alert / banner / toast   8 dialog + drawer + popover + menu   9 tabs / accordion / disclosure
+    10 breadcrumb / pagination / stepper / segmented   11 table / list / stat / empty   12 shell + layout */
+
+/* ================================================================ 0. Base */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  font-size: 100%;                       /* respects the user's browser font size (1.4.4) */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font-family: var(--at-font-sans);
+  font-size: var(--at-text-body-size);
+  line-height: var(--at-text-body-line);
+  font-weight: var(--at-text-body-weight);
+  color: var(--at-text-primary);
+  background: var(--at-bg-canvas);
+  -webkit-font-smoothing: antialiased;
+  accent-color: var(--at-brand);
+}
+::selection { background: var(--at-selection); color: var(--at-text-primary); }
+img, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button { cursor: pointer; }
+:disabled, [aria-disabled="true"] { cursor: not-allowed; }
+[hidden] { display: none !important; }
+
+/* Focus: a 2px ring in the focus colour with a 2px inner halo in the surface colour, so the ring has
+   ≥ 3:1 contrast against any background (2.4.7, 2.4.11, 2.4.13 target). Applies to everything. */
+:focus-visible {
+  outline: var(--at-size-focus-width) solid var(--at-focus-ring);
+  outline-offset: var(--at-size-focus-offset);
+  box-shadow: 0 0 0 var(--at-size-focus-offset) var(--at-focus-ring-inner);
+}
+:focus:not(:focus-visible) { outline: none; }
+/* Inputs show the ring on :focus too (keyboard and pointer), since the caret alone is a weak cue. */
+.at-input:focus, .at-select:focus, .at-textarea:focus, .at-range:focus {
+  outline: var(--at-size-focus-width) solid var(--at-focus-ring);
+  outline-offset: var(--at-size-focus-offset);
+  box-shadow: 0 0 0 var(--at-size-focus-offset) var(--at-focus-ring-inner);
+}
+
+/* Reduced motion: stop everything that moves (2.3.3). Fades are kept at 0.01ms, i.e. instant. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+/* High-contrast preference: promote every subtle boundary one step. */
+@media (prefers-contrast: more) {
+  :root { --at-border-subtle: var(--at-border-default); --at-border-default: var(--at-border-strong); --at-text-tertiary: var(--at-text-secondary); }
+}
+/* Windows High Contrast / forced colours: keep boundaries and states visible with system colours. */
+@media (forced-colors: active) {
+  .at-btn, .at-tag, .at-badge, .at-card, .at-alert, .at-toast, .at-menu, .at-popover, .at-dialog, .at-switch__track { border: 1px solid; }
+  .at-switch[aria-checked="true"] .at-switch__track { background: Highlight; }
+  .at-skeleton { background: GrayText; }
+  .at-progress__bar, .at-tabs__tab[aria-selected="true"] { forced-color-adjust: none; background: Highlight; }
+}
+
+/* Visually hidden but available to assistive tech. Use for icon-only labels and live regions. */
+.at-sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+.at-sr-only--focusable:focus, .at-sr-only--focusable:active { position: static !important; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; clip-path: none; white-space: normal; }
+
+/* Skip link: first focusable element on the page (2.4.1). */
+.at-skip-link { position: absolute; top: var(--at-space-2); left: var(--at-space-2); z-index: var(--at-z-tooltip); padding: var(--at-space-2) var(--at-space-4); background: var(--at-bg-inverse); color: var(--at-text-inverse); border-radius: var(--at-radius-md); font-weight: 600; text-decoration: none; transform: translateY(-200%); }
+.at-skip-link:focus { transform: none; }
+
+/* ================================================================ 1. Typography */
+.at-display, .at-h1, .at-h2, .at-h3, .at-h4 { margin: 0; color: var(--at-text-primary); text-wrap: balance; }
+.at-display { font-size: var(--at-text-display-size); line-height: var(--at-text-display-line); font-weight: var(--at-text-display-weight); letter-spacing: var(--at-text-display-tracking); }
+.at-h1 { font-size: var(--at-text-h1-size); line-height: var(--at-text-h1-line); font-weight: var(--at-text-h1-weight); letter-spacing: var(--at-text-h1-tracking); }
+.at-h2 { font-size: var(--at-text-h2-size); line-height: var(--at-text-h2-line); font-weight: var(--at-text-h2-weight); letter-spacing: var(--at-text-h2-tracking); }
+.at-h3 { font-size: var(--at-text-h3-size); line-height: var(--at-text-h3-line); font-weight: var(--at-text-h3-weight); letter-spacing: var(--at-text-h3-tracking); }
+.at-h4 { font-size: var(--at-text-h4-size); line-height: var(--at-text-h4-line); font-weight: var(--at-text-h4-weight); letter-spacing: var(--at-text-h4-tracking); }
+.at-body-lg { font-size: var(--at-text-body-lg-size); line-height: var(--at-text-body-lg-line); }
+.at-body { font-size: var(--at-text-body-size); line-height: var(--at-text-body-line); }
+.at-body-sm { font-size: var(--at-text-body-sm-size); line-height: var(--at-text-body-sm-line); }
+.at-label { font-size: var(--at-text-label-size); line-height: var(--at-text-label-line); font-weight: var(--at-text-label-weight); }
+.at-caption { font-size: var(--at-text-caption-size); line-height: var(--at-text-caption-line); letter-spacing: var(--at-text-caption-tracking); color: var(--at-text-secondary); }
+.at-code { font-family: var(--at-font-mono); font-size: var(--at-text-code-size); line-height: var(--at-text-code-line); padding: 0.1em 0.35em; border-radius: var(--at-radius-sm); background: var(--at-bg-sunken); border: 1px solid var(--at-border-subtle); }
+.at-text-secondary { color: var(--at-text-secondary); }
+.at-text-tertiary { color: var(--at-text-tertiary); }
+.at-text-brand { color: var(--at-brand-text); }
+.at-text-success { color: var(--at-success-text); }
+.at-text-warning { color: var(--at-warning-text); }
+.at-text-danger { color: var(--at-danger-text); }
+.at-text-info { color: var(--at-info-text); }
+.at-prose { max-width: var(--at-container-prose); }          /* ≤ ~80 characters per line (1.4.8) */
+.at-prose p { margin: 0 0 var(--at-space-4); }
+.at-tabular { font-variant-numeric: tabular-nums; }
+
+/* ================================================================ 2. Icon, button, link */
+/* Icons are decorative by default: add aria-hidden="true" (and focusable="false" for SVG). An icon that
+   carries meaning gets role="img" and <title>, or sits beside text. */
+.at-icon { width: var(--at-size-icon-md); height: var(--at-size-icon-md); flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.at-icon--sm { width: var(--at-size-icon-sm); height: var(--at-size-icon-sm); stroke-width: 2; }
+.at-icon--lg { width: var(--at-size-icon-lg); height: var(--at-size-icon-lg); }
+
+.at-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--at-space-2);
+  min-height: var(--at-size-control-md); min-width: var(--at-size-control-md); padding: 0 var(--at-space-4);
+  border: 1px solid transparent; border-radius: var(--at-radius-md);
+  font-size: var(--at-text-label-size); font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap;
+  background: var(--at-brand); color: var(--at-text-on-brand);
+  transition: background var(--at-duration-fast) var(--at-ease-standard), color var(--at-duration-fast) var(--at-ease-standard), border-color var(--at-duration-fast) var(--at-ease-standard);
+}
+.at-btn:hover { background: var(--at-brand-hover); }
+.at-btn:active { background: var(--at-brand-active); }
+.at-btn--secondary { background: var(--at-bg-surface); color: var(--at-text-primary); border-color: var(--at-border-strong); }
+.at-btn--secondary:hover { background: var(--at-bg-hover); }
+.at-btn--secondary:active { background: var(--at-bg-active); }
+.at-btn--tertiary { background: transparent; color: var(--at-brand-text); }
+.at-btn--tertiary:hover { background: var(--at-brand-subtle); }
+.at-btn--tertiary:active { background: var(--at-brand-subtle-hover); }
+.at-btn--danger { background: var(--at-danger); color: var(--at-text-on-brand); }
+.at-btn--danger:hover { background: var(--at-danger-hover); }
+.at-btn--danger:active { background: var(--at-danger-active); }
+.at-btn--danger-secondary { background: var(--at-bg-surface); color: var(--at-danger-text); border-color: var(--at-danger); }
+.at-btn--danger-secondary:hover { background: var(--at-danger-bg); }
+.at-btn--sm { min-height: var(--at-size-control-sm); min-width: var(--at-size-control-sm); padding: 0 var(--at-space-3); font-size: var(--at-text-body-sm-size); }
+.at-btn--lg { min-height: var(--at-size-control-lg); min-width: var(--at-size-control-lg); padding: 0 var(--at-space-6); font-size: var(--at-text-body-size); }
+.at-btn--block { display: flex; width: 100%; }
+.at-btn--icon { padding: 0; width: var(--at-size-control-md); }         /* needs aria-label or .at-sr-only text */
+.at-btn--icon.at-btn--sm { width: var(--at-size-control-sm); }
+.at-btn--icon.at-btn--lg { width: var(--at-size-control-lg); }
+.at-btn--pill { border-radius: var(--at-radius-full); }
+.at-btn:disabled, .at-btn[aria-disabled="true"] { background: var(--at-bg-disabled); color: var(--at-text-disabled); border-color: transparent; }
+.at-btn--secondary:disabled, .at-btn--secondary[aria-disabled="true"] { border-color: var(--at-border-subtle); }
+/* Loading: keep the label in the DOM (announced), show the spinner, block clicks. */
+.at-btn[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
+.at-btn[aria-busy="true"]::after { content: ""; position: absolute; width: 1.1em; height: 1.1em; border: 2px solid currentColor; border-color: var(--at-text-on-brand) transparent var(--at-text-on-brand) transparent; border-radius: 50%; animation: at-spin 0.8s linear infinite; }
+.at-btn--secondary[aria-busy="true"]::after, .at-btn--tertiary[aria-busy="true"]::after { border-color: var(--at-text-primary) transparent var(--at-text-primary) transparent; }
+.at-btn-group { display: inline-flex; flex-wrap: wrap; gap: var(--at-space-2); }
+.at-btn-group--attached { gap: 0; }
+.at-btn-group--attached .at-btn:not(:first-child) { border-top-left-radius: 0; border-bottom-left-radius: 0; margin-left: -1px; }
+.at-btn-group--attached .at-btn:not(:last-child) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.at-btn-group--attached .at-btn:focus-visible { z-index: 1; position: relative; }
+
+/* Links are underlined inside running text so colour is never the only cue (1.4.1). */
+.at-link { color: var(--at-text-link); text-decoration: underline; text-underline-offset: 0.15em; text-decoration-thickness: 1px; border-radius: var(--at-radius-sm); }
+.at-link:hover { color: var(--at-text-link-hover); text-decoration-thickness: 2px; }
+.at-link--standalone { text-decoration: none; font-weight: 500; }
+.at-link--standalone:hover { text-decoration: underline; }
+.at-link[aria-current="page"] { font-weight: 600; }
+
+/* ================================================================ 3. Form atoms */
+.at-input, .at-select, .at-textarea {
+  display: block; width: 100%; min-height: var(--at-size-control-md); padding: 0 var(--at-space-3);
+  border: 1px solid var(--at-border-strong); border-radius: var(--at-radius-md);
+  background: var(--at-bg-surface); color: var(--at-text-primary);
+  font-size: var(--at-text-body-size); line-height: 1.4;
+  transition: border-color var(--at-duration-fast) var(--at-ease-standard);
+}
+.at-input::placeholder, .at-textarea::placeholder { color: var(--at-text-placeholder); opacity: 1; }
+.at-input:hover, .at-select:hover, .at-textarea:hover { border-color: var(--at-text-secondary); }
+.at-input--sm, .at-select--sm { min-height: var(--at-size-control-sm); font-size: var(--at-text-body-sm-size); }
+.at-input--lg, .at-select--lg { min-height: var(--at-size-control-lg); padding: 0 var(--at-space-4); }
+.at-textarea { padding: var(--at-space-2) var(--at-space-3); min-height: calc(var(--at-size-control-md) * 2.4); line-height: var(--at-text-body-line); resize: vertical; }
+.at-input[aria-invalid="true"], .at-select[aria-invalid="true"], .at-textarea[aria-invalid="true"] { border-color: var(--at-danger); border-width: var(--at-size-border-strong); padding-left: calc(var(--at-space-3) - 1px); }
+.at-input:disabled, .at-select:disabled, .at-textarea:disabled { background: var(--at-bg-disabled); color: var(--at-text-disabled); border-color: var(--at-border-default); }
+.at-input:read-only:not(:disabled) { background: var(--at-bg-sunken); }
+.at-select { appearance: none; padding-right: var(--at-space-10); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23676A71' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right var(--at-space-3) center; }
+:root[data-theme="dark"] .at-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23AAAFB7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .at-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23AAAFB7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); } }
+
+/* Input group: prefix / suffix adornments (currency, units, icon buttons). Adornment text is aria-hidden
+   when the label already says it, or referenced through aria-describedby. */
+.at-input-group { display: flex; align-items: stretch; }
+.at-input-group .at-input { flex: 1; min-width: 0; }
+.at-input-group__addon { display: inline-flex; align-items: center; padding: 0 var(--at-space-3); border: 1px solid var(--at-border-strong); background: var(--at-bg-sunken); color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); white-space: nowrap; }
+.at-input-group__addon:first-child { border-right: 0; border-radius: var(--at-radius-md) 0 0 var(--at-radius-md); }
+.at-input-group__addon:last-child { border-left: 0; border-radius: 0 var(--at-radius-md) var(--at-radius-md) 0; }
+.at-input-group__addon:first-child + .at-input { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.at-input-group .at-input:has(+ .at-input-group__addon), .at-input-group .at-input:has(+ .at-btn) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.at-input-group .at-btn { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.at-input-group .at-input:focus { position: relative; z-index: 1; }
+
+/* Checkbox and radio: native inputs, custom-drawn with appearance:none so they stay real controls.
+   The hit area is the whole .at-choice label (≥ 44px tall). */
+.at-choice { display: flex; align-items: flex-start; gap: var(--at-space-3); min-height: var(--at-size-target-touch); padding: var(--at-space-2) 0; cursor: pointer; font-size: var(--at-text-body-size); line-height: 1.5; }
+.at-choice__control { appearance: none; flex: none; width: 20px; height: 20px; margin: 2px 0 0; border: 2px solid var(--at-border-strong); border-radius: var(--at-radius-sm); background: var(--at-bg-surface); display: grid; place-items: center; cursor: inherit; transition: background var(--at-duration-fast) var(--at-ease-standard), border-color var(--at-duration-fast) var(--at-ease-standard); }
+.at-choice__control[type="radio"] { border-radius: 50%; }
+.at-choice__control::before { content: ""; width: 12px; height: 12px; transform: scale(0); transition: transform var(--at-duration-fast) var(--at-ease-standard); }
+.at-choice__control[type="checkbox"]::before { background: var(--at-text-on-brand); clip-path: polygon(14% 44%, 0 62%, 42% 100%, 100% 20%, 82% 6%, 40% 68%); }
+.at-choice__control[type="radio"]::before { width: 8px; height: 8px; border-radius: 50%; background: var(--at-text-on-brand); }
+.at-choice__control:checked, .at-choice__control:indeterminate { background: var(--at-brand); border-color: var(--at-brand); }
+.at-choice__control:checked::before { transform: scale(1); }
+.at-choice__control:indeterminate::before { transform: scale(1); clip-path: inset(40% 10% 40% 10%); }
+.at-choice__control:hover:not(:disabled) { border-color: var(--at-text-secondary); }
+.at-choice__control:checked:hover:not(:disabled) { background: var(--at-brand-hover); border-color: var(--at-brand-hover); }
+.at-choice__control:disabled { border-color: var(--at-border-default); background: var(--at-bg-disabled); }
+.at-choice__control:disabled:checked { background: var(--at-border-default); }
+.at-choice__control[aria-invalid="true"] { border-color: var(--at-danger); }
+.at-choice:has(.at-choice__control:disabled) { color: var(--at-text-disabled); cursor: not-allowed; }
+.at-choice__text { display: block; }
+.at-choice__hint { display: block; color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); }
+.at-choice--card { border: 1px solid var(--at-border-default); border-radius: var(--at-radius-lg); padding: var(--at-space-3) var(--at-space-4); background: var(--at-bg-surface); }
+.at-choice--card:has(.at-choice__control:checked) { border-color: var(--at-brand); background: var(--at-bg-selected); }
+.at-choice--card:has(.at-choice__control:focus-visible) { outline: var(--at-size-focus-width) solid var(--at-focus-ring); outline-offset: var(--at-size-focus-offset); }
+.at-choice--card .at-choice__control:focus-visible { outline: none; box-shadow: none; }
+
+/* Switch: <button role="switch" aria-checked>. Label sits beside it (aria-labelledby or visible text).
+   Thumb position + check glyph carry the state, not just the colour. */
+.at-switch { display: inline-flex; align-items: center; gap: var(--at-space-3); min-height: var(--at-size-target-touch); padding: 0; border: 0; background: none; color: inherit; font-size: var(--at-text-body-size); text-align: left; cursor: pointer; }
+.at-switch__track { position: relative; flex: none; width: 44px; height: 24px; border-radius: var(--at-radius-full); background: var(--at-border-strong); border: 2px solid transparent; transition: background var(--at-duration-base) var(--at-ease-standard); }
+.at-switch__track::before { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--at-white); transition: transform var(--at-duration-base) var(--at-ease-standard); box-shadow: var(--at-shadow-sm); }
+.at-switch__track::after { content: ""; position: absolute; top: 6px; left: 6px; width: 8px; height: 8px; background: var(--at-brand); clip-path: polygon(14% 44%, 0 62%, 42% 100%, 100% 20%, 82% 6%, 40% 68%); opacity: 0; transition: opacity var(--at-duration-base) var(--at-ease-standard), transform var(--at-duration-base) var(--at-ease-standard); }
+.at-switch[aria-checked="true"] .at-switch__track { background: var(--at-brand); }
+.at-switch[aria-checked="true"] .at-switch__track::before { transform: translateX(20px); }
+.at-switch[aria-checked="true"] .at-switch__track::after { opacity: 1; transform: translateX(20px); }
+.at-switch:disabled .at-switch__track { background: var(--at-border-default); }
+.at-switch:disabled { color: var(--at-text-disabled); }
+.at-switch:focus-visible { outline: none; box-shadow: none; }
+.at-switch:focus-visible .at-switch__track { outline: var(--at-size-focus-width) solid var(--at-focus-ring); outline-offset: var(--at-size-focus-offset); box-shadow: 0 0 0 var(--at-size-focus-offset) var(--at-focus-ring-inner); }
+
+/* Range: native <input type="range">; always pair with a visible value (aria-valuetext when units). */
+.at-range { width: 100%; height: var(--at-size-target-touch); margin: 0; background: transparent; accent-color: var(--at-brand); }
+.at-range:focus { outline-offset: 0; box-shadow: none; }
+
+/* ================================================================ 4. Badge, tag, avatar, divider */
+.at-badge { display: inline-flex; align-items: center; gap: var(--at-space-1); min-height: 24px; padding: 0 var(--at-space-2); border-radius: var(--at-radius-full); border: 1px solid var(--at-border-default); background: var(--at-bg-sunken); color: var(--at-text-secondary); font-size: var(--at-text-caption-size); font-weight: 600; line-height: 1; letter-spacing: 0.01em; white-space: nowrap; }
+.at-badge__dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.at-badge--brand { background: var(--at-brand-subtle); color: var(--at-brand-text); border-color: var(--at-brand-border); }
+.at-badge--success { background: var(--at-success-bg); color: var(--at-success-text); border-color: var(--at-success-border); }
+.at-badge--warning { background: var(--at-warning-bg); color: var(--at-warning-text); border-color: var(--at-warning-border); }
+.at-badge--danger { background: var(--at-danger-bg); color: var(--at-danger-text); border-color: var(--at-danger-border); }
+.at-badge--info { background: var(--at-info-bg); color: var(--at-info-text); border-color: var(--at-info-border); }
+.at-badge--solid { background: var(--at-bg-inverse); color: var(--at-text-inverse); border-color: transparent; }
+.at-badge--count { min-width: 24px; justify-content: center; padding: 0 var(--at-space-1_5); font-variant-numeric: tabular-nums; }
+
+/* Tag / chip: static label, selectable (aria-pressed) or removable (child button with its own name). */
+.at-tag { display: inline-flex; align-items: center; gap: var(--at-space-1); min-height: var(--at-size-control-sm); padding: 0 var(--at-space-3); border-radius: var(--at-radius-full); border: 1px solid var(--at-border-default); background: var(--at-bg-surface); color: var(--at-text-primary); font-size: var(--at-text-body-sm-size); font-weight: 500; line-height: 1; white-space: nowrap; }
+button.at-tag { cursor: pointer; }
+button.at-tag:hover { background: var(--at-bg-hover); }
+.at-tag[aria-pressed="true"] { background: var(--at-brand-subtle); border-color: var(--at-brand); color: var(--at-brand-text); }
+.at-tag[aria-pressed="true"]::before { content: ""; width: 10px; height: 10px; background: currentColor; clip-path: polygon(14% 44%, 0 62%, 42% 100%, 100% 20%, 82% 6%, 40% 68%); }
+.at-tag__remove { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: calc(var(--at-space-2) * -1); border: 0; border-radius: 50%; background: transparent; color: var(--at-text-secondary); }
+.at-tag__remove:hover { background: var(--at-bg-active); color: var(--at-text-primary); }
+.at-tag-group { display: flex; flex-wrap: wrap; gap: var(--at-space-2); }
+
+/* Avatar: <img alt="Full name"> or initials with aria-label; decorative beside a visible name → alt="". */
+.at-avatar { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--at-brand-subtle); color: var(--at-brand-text); font-weight: 600; font-size: var(--at-text-body-sm-size); flex: none; }
+.at-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.at-avatar--sm { width: 32px; height: 32px; font-size: var(--at-text-caption-size); }
+.at-avatar--lg { width: 56px; height: 56px; font-size: var(--at-text-body-lg-size); }
+.at-avatar--square { border-radius: var(--at-radius-md); }
+.at-avatar-group { display: inline-flex; }
+.at-avatar-group .at-avatar { box-shadow: 0 0 0 2px var(--at-bg-surface); }
+.at-avatar-group .at-avatar + .at-avatar { margin-left: -8px; }
+
+.at-divider { border: 0; border-top: 1px solid var(--at-border-subtle); margin: var(--at-space-4) 0; }
+.at-divider--strong { border-color: var(--at-border-default); }
+.at-divider--vertical { display: inline-block; width: 1px; min-height: 1em; align-self: stretch; border: 0; border-left: 1px solid var(--at-border-subtle); margin: 0 var(--at-space-2); }
+.at-divider--label { display: flex; align-items: center; gap: var(--at-space-3); border: 0; color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); }
+.at-divider--label::before, .at-divider--label::after { content: ""; flex: 1; border-top: 1px solid var(--at-border-subtle); }
+
+/* ================================================================ 5. Feedback atoms */
+/* Spinner: wrap in role="status" with visually hidden text ("Loading") so it is announced once. */
+.at-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--at-border-default); border-top-color: var(--at-brand); border-radius: 50%; animation: at-spin 0.8s linear infinite; }
+.at-spinner--sm { width: 16px; height: 16px; }
+.at-spinner--lg { width: 32px; height: 32px; border-width: 3px; }
+@keyframes at-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .at-spinner { animation: at-pulse 1.5s ease-in-out infinite; } .at-btn[aria-busy="true"]::after { animation: at-pulse 1.5s ease-in-out infinite; } }
+@keyframes at-pulse { 50% { opacity: 0.4; } }
+
+/* Progress: <progress> or <div role="progressbar" aria-valuenow aria-valuemin aria-valuemax aria-label>. */
+.at-progress { position: relative; height: 8px; border-radius: var(--at-radius-full); background: var(--at-bg-sunken); border: 1px solid var(--at-border-subtle); overflow: hidden; }
+.at-progress__bar { height: 100%; width: var(--value, 0%); background: var(--at-brand); border-radius: inherit; transition: width var(--at-duration-slow) var(--at-ease-standard); }
+.at-progress--success .at-progress__bar { background: var(--at-success); }
+.at-progress--danger .at-progress__bar { background: var(--at-danger); }
+.at-progress--indeterminate .at-progress__bar { width: 40%; animation: at-indeterminate 1.4s var(--at-ease-standard) infinite; }
+@keyframes at-indeterminate { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.at-progress-label { display: flex; justify-content: space-between; gap: var(--at-space-3); margin-bottom: var(--at-space-1); font-size: var(--at-text-body-sm-size); }
+progress.at-progress { appearance: none; width: 100%; display: block; }
+progress.at-progress::-webkit-progress-bar { background: transparent; }
+progress.at-progress::-webkit-progress-value { background: var(--at-brand); border-radius: inherit; }
+progress.at-progress::-moz-progress-bar { background: var(--at-brand); border-radius: inherit; }
+
+/* Skeleton: aria-hidden; announce loading separately with role="status". Final-size placeholders. */
+.at-skeleton { display: block; border-radius: var(--at-radius-md); background: linear-gradient(90deg, var(--at-skeleton) 0%, var(--at-skeleton-shine) 50%, var(--at-skeleton) 100%); background-size: 200% 100%; animation: at-shimmer 1.6s linear infinite; min-height: 1em; }
+.at-skeleton--text { height: 0.9em; margin: 0.3em 0; }
+.at-skeleton--circle { border-radius: 50%; }
+@keyframes at-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .at-skeleton { animation: none; background: var(--at-skeleton); } }
+
+.at-kbd { display: inline-block; min-width: 1.6em; padding: 0.1em 0.4em; border: 1px solid var(--at-border-default); border-bottom-width: 2px; border-radius: var(--at-radius-sm); background: var(--at-bg-sunken); font-family: var(--at-font-mono); font-size: var(--at-text-caption-size); line-height: 1.4; text-align: center; color: var(--at-text-secondary); }
+
+/* Tooltip: role="tooltip", linked by aria-describedby; opens on hover AND focus, closes on Escape,
+   stays open while hovered (1.4.13). Never put essential content or controls in a tooltip. */
+.at-tooltip { position: absolute; z-index: var(--at-z-tooltip); max-width: 280px; padding: var(--at-space-2) var(--at-space-3); border-radius: var(--at-radius-md); background: var(--at-bg-inverse); color: var(--at-text-inverse); font-size: var(--at-text-body-sm-size); line-height: 1.4; box-shadow: var(--at-shadow-md); pointer-events: auto; }
+.at-tooltip[hidden] { display: none; }
+.at-has-tooltip { position: relative; }
+
+/* ================================================================ 6. Field, fieldset, form */
+.at-field { display: flex; flex-direction: column; gap: var(--at-space-1_5); }
+.at-field__label { display: flex; align-items: baseline; gap: var(--at-space-1); font-size: var(--at-text-label-size); font-weight: var(--at-text-label-weight); line-height: var(--at-text-label-line); color: var(--at-text-primary); }
+.at-field__required { color: var(--at-danger-text); font-weight: 600; }     /* paired with "(required)" sr text or the word */
+.at-field__optional { color: var(--at-text-tertiary); font-weight: 400; }
+.at-field__hint { font-size: var(--at-text-body-sm-size); color: var(--at-text-secondary); }
+.at-field__error { display: flex; gap: var(--at-space-1); align-items: flex-start; font-size: var(--at-text-body-sm-size); color: var(--at-danger-text); font-weight: 500; }
+.at-field__error .at-icon { width: 16px; height: 16px; margin-top: 2px; }
+.at-field__error:empty { display: none; }
+.at-field__count { font-size: var(--at-text-caption-size); color: var(--at-text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+.at-field--inline { flex-direction: row; align-items: center; gap: var(--at-space-3); }
+
+.at-fieldset { border: 0; padding: 0; margin: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--at-space-1); }
+.at-fieldset__legend { padding: 0; margin-bottom: var(--at-space-1); font-size: var(--at-text-label-size); font-weight: var(--at-text-label-weight); }
+.at-fieldset--row { flex-direction: row; flex-wrap: wrap; gap: var(--at-space-2) var(--at-space-6); }
+.at-fieldset--row .at-fieldset__legend { flex-basis: 100%; }
+
+.at-form { display: flex; flex-direction: column; gap: var(--at-space-5); max-width: 560px; }
+.at-form__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--at-space-4); }
+.at-form__actions { display: flex; flex-wrap: wrap; gap: var(--at-space-3); padding-top: var(--at-space-2); }
+.at-form__actions--end { justify-content: flex-end; }
+/* Form-level error summary: role="alert", focused on submit, links to each invalid field (3.3.1). */
+.at-form__summary { border-left: 4px solid var(--at-danger); }
+
+/* ================================================================ 7. Card, alert, banner, toast */
+.at-card { background: var(--at-bg-surface); border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-xl); padding: var(--at-space-5); }
+.at-card--raised { border-color: transparent; box-shadow: var(--at-shadow-md); background: var(--at-bg-raised); }
+.at-card--sunken { background: var(--at-bg-sunken); border-color: transparent; }
+.at-card--compact { padding: var(--at-space-4); border-radius: var(--at-radius-lg); }
+.at-card__header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--at-space-3); margin-bottom: var(--at-space-3); }
+.at-card__title { margin: 0; font-size: var(--at-text-h4-size); line-height: var(--at-text-h4-line); font-weight: var(--at-text-h4-weight); }
+.at-card__subtitle { margin: 2px 0 0; color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); }
+.at-card__footer { display: flex; gap: var(--at-space-3); justify-content: flex-end; margin-top: var(--at-space-4); padding-top: var(--at-space-4); border-top: 1px solid var(--at-border-subtle); }
+/* Interactive card: one real link/button inside (the title) stretched over the card; other controls
+   are layered above with position: relative. The card itself is not focusable. */
+.at-card--interactive { position: relative; transition: border-color var(--at-duration-fast) var(--at-ease-standard), box-shadow var(--at-duration-fast) var(--at-ease-standard); }
+.at-card--interactive:hover { border-color: var(--at-border-strong); box-shadow: var(--at-shadow-sm); }
+.at-card__stretch { color: inherit; text-decoration: none; }
+.at-card__stretch::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.at-card--interactive:has(.at-card__stretch:focus-visible) { outline: var(--at-size-focus-width) solid var(--at-focus-ring); outline-offset: var(--at-size-focus-offset); box-shadow: 0 0 0 var(--at-size-focus-offset) var(--at-focus-ring-inner); }
+.at-card--interactive .at-card__stretch:focus-visible { outline: none; box-shadow: none; }
+.at-card--interactive .at-card__actions { position: relative; z-index: 1; }
+
+/* Alert: inline, persistent. role="status" for info/success (polite), role="alert" for danger/warning
+   that needs immediate attention. Always an icon + text, never colour alone. */
+.at-alert { display: flex; gap: var(--at-space-3); padding: var(--at-space-3) var(--at-space-4); border: 1px solid var(--at-info-border); border-left-width: 4px; border-radius: var(--at-radius-lg); background: var(--at-info-bg); color: var(--at-text-primary); }
+.at-alert__icon { flex: none; color: var(--at-info); margin-top: 1px; }
+.at-alert__body { flex: 1; min-width: 0; font-size: var(--at-text-body-sm-size); }
+.at-alert__title { display: block; font-weight: 600; font-size: var(--at-text-body-size); margin-bottom: 2px; }
+.at-alert__actions { display: flex; gap: var(--at-space-2); margin-top: var(--at-space-2); }
+.at-alert__close { flex: none; align-self: flex-start; margin: -4px -8px -4px 0; }
+.at-alert--success { background: var(--at-success-bg); border-color: var(--at-success-border); }
+.at-alert--success .at-alert__icon { color: var(--at-success); }
+.at-alert--warning { background: var(--at-warning-bg); border-color: var(--at-warning-border); }
+.at-alert--warning .at-alert__icon { color: var(--at-warning); }
+.at-alert--danger { background: var(--at-danger-bg); border-color: var(--at-danger-border); }
+.at-alert--danger .at-alert__icon { color: var(--at-danger); }
+.at-alert--neutral { background: var(--at-bg-sunken); border-color: var(--at-border-default); }
+.at-alert--neutral .at-alert__icon { color: var(--at-text-secondary); }
+
+/* Banner: full-width, page level, above the header. Same roles as alert. */
+.at-banner { display: flex; align-items: center; gap: var(--at-space-3); padding: var(--at-space-3) var(--at-space-5); background: var(--at-bg-inverse); color: var(--at-text-inverse); font-size: var(--at-text-body-sm-size); }
+.at-banner .at-link { color: inherit; }
+.at-banner--brand { background: var(--at-brand); color: var(--at-text-on-brand); }
+.at-banner--warning { background: var(--at-warning-bg); color: var(--at-warning-text); border-bottom: 1px solid var(--at-warning-border); }
+.at-banner__body { flex: 1; }
+
+/* Toasts: a single region with aria-live="polite" (aria-live="assertive" + role="alert" only for errors
+   the user must act on). Auto-dismiss ≥ 6s and pause on hover/focus; errors persist until dismissed (2.2.1). */
+.at-toast-region { position: fixed; z-index: var(--at-z-toast); inset-block-end: var(--at-space-4); inset-inline-end: var(--at-space-4); display: flex; flex-direction: column; gap: var(--at-space-2); width: min(380px, calc(100vw - var(--at-space-8))); pointer-events: none; }
+.at-toast { display: flex; gap: var(--at-space-3); align-items: flex-start; padding: var(--at-space-3) var(--at-space-4); border-radius: var(--at-radius-lg); background: var(--at-bg-raised); color: var(--at-text-primary); border: 1px solid var(--at-border-default); border-left: 4px solid var(--at-info); box-shadow: var(--at-shadow-lg); pointer-events: auto; animation: at-toast-in var(--at-duration-slow) var(--at-ease-enter) both; }
+.at-toast--success { border-left-color: var(--at-success); }
+.at-toast--warning { border-left-color: var(--at-warning); }
+.at-toast--danger { border-left-color: var(--at-danger); }
+.at-toast__icon { flex: none; margin-top: 1px; color: var(--at-info); }
+.at-toast--success .at-toast__icon { color: var(--at-success); }
+.at-toast--warning .at-toast__icon { color: var(--at-warning); }
+.at-toast--danger .at-toast__icon { color: var(--at-danger); }
+.at-toast__body { flex: 1; min-width: 0; font-size: var(--at-text-body-sm-size); }
+.at-toast__title { display: block; font-weight: 600; font-size: var(--at-text-body-size); }
+.at-toast__text { display: block; }
+.at-toast__close { flex: none; margin: -4px -8px -4px 0; }
+.at-toast.is-leaving { animation: at-toast-out var(--at-duration-base) var(--at-ease-exit) both; }
+@keyframes at-toast-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes at-toast-out { to { opacity: 0; transform: translateY(8px); } }
+
+/* ================================================================ 8. Dialog, drawer, popover, menu */
+/* Dialog: native <dialog> + showModal() gives focus trapping, Escape and inert background for free.
+   Needs aria-labelledby (title) and usually aria-describedby. Focus goes to the first field, or the
+   least destructive button for confirmations; it returns to the opener on close. */
+.at-dialog { width: min(560px, calc(100vw - var(--at-space-8))); max-height: calc(100dvh - var(--at-space-8)); margin: auto; padding: 0; border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-2xl); background: var(--at-bg-raised); color: var(--at-text-primary); box-shadow: var(--at-shadow-xl); overflow: hidden; display: none; flex-direction: column; }
+.at-dialog[open] { display: flex; animation: at-dialog-in var(--at-duration-base) var(--at-ease-enter) both; }
+.at-dialog::backdrop { background: var(--at-overlay); }
+.at-dialog__header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--at-space-3); padding: var(--at-space-5) var(--at-space-6) 0; }
+.at-dialog__title { margin: 0; font-size: var(--at-text-h3-size); line-height: var(--at-text-h3-line); font-weight: var(--at-text-h3-weight); }
+.at-dialog__body { position: relative; padding: var(--at-space-4) var(--at-space-6); overflow: auto; color: var(--at-text-secondary); }
+.at-dialog__body > :first-child { margin-top: 0; }
+.at-dialog__footer { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--at-space-3); padding: var(--at-space-4) var(--at-space-6) var(--at-space-6); }
+.at-dialog--sm { width: min(420px, calc(100vw - var(--at-space-8))); }
+.at-dialog--lg { width: min(800px, calc(100vw - var(--at-space-8))); }
+@keyframes at-dialog-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+
+/* Drawer: a dialog anchored to an edge. */
+.at-drawer { width: min(420px, 100vw); max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0 0 0 auto; border-radius: 0; border: 0; border-left: 1px solid var(--at-border-subtle); }
+.at-drawer[open] { animation: at-drawer-in var(--at-duration-slow) var(--at-ease-enter) both; }
+.at-drawer--start { margin: 0 auto 0 0; border-left: 0; border-right: 1px solid var(--at-border-subtle); }
+.at-drawer--bottom { width: 100vw; height: auto; max-height: 85dvh; margin: auto 0 0; border: 0; border-top: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-2xl) var(--at-radius-2xl) 0 0; }
+@keyframes at-drawer-in { from { opacity: 0; transform: translateX(16px); } }
+
+/* Popover: non-modal surface. Opens on click, closes on Escape, outside click and focus-out; the
+   trigger has aria-expanded + aria-controls. For hover-only help use a tooltip instead. */
+.at-popover { position: absolute; z-index: var(--at-z-dropdown); min-width: 240px; max-width: 360px; padding: var(--at-space-4); border: 1px solid var(--at-border-default); border-radius: var(--at-radius-lg); background: var(--at-bg-raised); color: var(--at-text-primary); box-shadow: var(--at-shadow-lg); }
+.at-popover[hidden] { display: none; }
+.at-anchor { position: relative; display: inline-block; }
+
+/* Menu: role="menu" with role="menuitem" buttons; trigger has aria-haspopup="menu" + aria-expanded.
+   Keyboard: ↑↓ Home End move, Enter/Space activate, Escape closes and returns focus, typeahead by letter. */
+.at-menu { position: absolute; z-index: var(--at-z-dropdown); min-width: 220px; padding: var(--at-space-1); margin: var(--at-space-1) 0 0; list-style: none; border: 1px solid var(--at-border-default); border-radius: var(--at-radius-lg); background: var(--at-bg-raised); box-shadow: var(--at-shadow-lg); }
+.at-menu[hidden] { display: none; }
+.at-menu--end { right: 0; }
+.at-menu__item { display: flex; align-items: center; gap: var(--at-space-3); width: 100%; min-height: var(--at-size-control-md); padding: 0 var(--at-space-3); border: 0; border-radius: var(--at-radius-md); background: none; color: var(--at-text-primary); text-align: left; font-size: var(--at-text-body-sm-size); text-decoration: none; }
+.at-menu__item:hover, .at-menu__item:focus-visible { background: var(--at-bg-hover); outline-offset: -2px; box-shadow: none; }
+.at-menu__item[aria-disabled="true"] { color: var(--at-text-disabled); }
+.at-menu__item--danger { color: var(--at-danger-text); }
+.at-menu__item--danger:hover { background: var(--at-danger-bg); }
+.at-menu__item .at-kbd { margin-left: auto; }
+.at-menu__item[aria-checked="true"]::before { content: ""; width: 12px; height: 12px; background: currentColor; clip-path: polygon(14% 44%, 0 62%, 42% 100%, 100% 20%, 82% 6%, 40% 68%); }
+.at-menu__separator { height: 1px; margin: var(--at-space-1) 0; background: var(--at-border-subtle); }
+.at-menu__group-label { padding: var(--at-space-2) var(--at-space-3) var(--at-space-1); font-size: var(--at-text-caption-size); font-weight: 600; color: var(--at-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ================================================================ 9. Tabs, accordion, disclosure */
+/* Tabs: role="tablist" > role="tab" (aria-selected, aria-controls) + role="tabpanel" (aria-labelledby).
+   Keyboard: ←→ Home End move and select (automatic activation); Tab leaves the list to the panel.
+   The selected tab has an underline AND bolder text, not only colour. */
+.at-tabs { display: block; }
+.at-tabs__list { position: relative; display: flex; gap: var(--at-space-1); border-bottom: 1px solid var(--at-border-subtle); overflow-x: auto; scrollbar-width: thin; }
+.at-tabs__tab { position: relative; flex: none; min-height: var(--at-size-control-lg); padding: 0 var(--at-space-3); border: 0; background: none; color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); font-weight: 500; white-space: nowrap; border-radius: var(--at-radius-md) var(--at-radius-md) 0 0; }
+.at-tabs__tab:hover { color: var(--at-text-primary); background: var(--at-bg-hover); }
+.at-tabs__tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; border-radius: 2px 2px 0 0; }
+.at-tabs__tab[aria-selected="true"] { color: var(--at-brand-text); font-weight: 600; }
+.at-tabs__tab[aria-selected="true"]::after { background: var(--at-brand); }
+.at-tabs__tab:focus-visible { outline-offset: -2px; box-shadow: none; }
+.at-tabs__panel { padding: var(--at-space-4) 0; }
+.at-tabs__panel:focus-visible { outline-offset: 4px; }
+.at-tabs--pills .at-tabs__list { border: 0; gap: var(--at-space-2); }
+.at-tabs--pills .at-tabs__tab { min-height: var(--at-size-control-md); border-radius: var(--at-radius-full); }
+.at-tabs--pills .at-tabs__tab::after { display: none; }
+.at-tabs--pills .at-tabs__tab[aria-selected="true"] { background: var(--at-bg-inverse); color: var(--at-text-inverse); }
+
+/* Accordion / disclosure: native <details>/<summary>. The summary is a real button in the a11y tree;
+   headings go INSIDE the summary (<summary><h3>…</h3></summary>) so the outline stays navigable. */
+.at-accordion { border-top: 1px solid var(--at-border-subtle); }
+.at-accordion__item { border-bottom: 1px solid var(--at-border-subtle); }
+.at-accordion__summary { display: flex; align-items: center; justify-content: space-between; gap: var(--at-space-3); min-height: var(--at-size-control-lg); padding: var(--at-space-3) var(--at-space-1); cursor: pointer; list-style: none; font-weight: 600; border-radius: var(--at-radius-md); }
+.at-accordion__summary::-webkit-details-marker { display: none; }
+.at-accordion__summary:hover { background: var(--at-bg-hover); }
+.at-accordion__summary > * { margin: 0; font-size: var(--at-text-body-size); font-weight: 600; }
+.at-accordion__chevron { flex: none; transition: transform var(--at-duration-base) var(--at-ease-standard); }
+.at-accordion__item[open] > .at-accordion__summary .at-accordion__chevron { transform: rotate(180deg); }
+.at-accordion__content { padding: 0 var(--at-space-1) var(--at-space-4); color: var(--at-text-secondary); }
+.at-disclosure__trigger { display: inline-flex; align-items: center; gap: var(--at-space-1); min-height: var(--at-size-target-min); padding: var(--at-space-1) var(--at-space-2); margin-left: calc(var(--at-space-2) * -1); border: 0; background: none; color: var(--at-brand-text); font-weight: 500; border-radius: var(--at-radius-md); }
+.at-disclosure__trigger:hover { background: var(--at-brand-subtle); }
+.at-disclosure__trigger[aria-expanded="true"] .at-icon { transform: rotate(180deg); }
+
+/* ================================================================ 10. Breadcrumb, pagination, stepper, segmented */
+.at-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: var(--at-space-1); margin: 0; padding: 0; list-style: none; font-size: var(--at-text-body-sm-size); }
+.at-breadcrumb li { display: flex; align-items: center; gap: var(--at-space-1); }
+.at-breadcrumb li + li::before { content: "/"; color: var(--at-text-tertiary); padding: 0 var(--at-space-1); }
+.at-breadcrumb a { color: var(--at-text-secondary); text-decoration: none; padding: var(--at-space-1) var(--at-space-1); margin: 0 calc(var(--at-space-1) * -1); border-radius: var(--at-radius-sm); min-height: var(--at-size-target-min); display: inline-flex; align-items: center; }
+.at-breadcrumb a:hover { color: var(--at-text-primary); text-decoration: underline; }
+.at-breadcrumb [aria-current="page"] { color: var(--at-text-primary); font-weight: 500; }
+
+.at-pagination { display: flex; align-items: center; gap: var(--at-space-1); margin: 0; padding: 0; list-style: none; }
+.at-pagination a, .at-pagination button { display: inline-flex; align-items: center; justify-content: center; min-width: var(--at-size-control-md); min-height: var(--at-size-control-md); padding: 0 var(--at-space-2); border: 1px solid transparent; border-radius: var(--at-radius-md); background: none; color: var(--at-text-secondary); text-decoration: none; font-size: var(--at-text-body-sm-size); font-weight: 500; font-variant-numeric: tabular-nums; }
+.at-pagination a:hover, .at-pagination button:hover { background: var(--at-bg-hover); color: var(--at-text-primary); }
+.at-pagination [aria-current="page"] { background: var(--at-bg-inverse); color: var(--at-text-inverse); border-color: var(--at-bg-inverse); }
+.at-pagination [aria-disabled="true"], .at-pagination :disabled { color: var(--at-text-disabled); pointer-events: none; }
+.at-pagination__ellipsis { padding: 0 var(--at-space-2); color: var(--at-text-tertiary); }
+
+/* Stepper: <ol> with aria-current="step" on the active item; status words are in sr text. */
+.at-stepper { display: flex; gap: var(--at-space-2); margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.at-stepper__item { flex: 1; display: flex; flex-direction: column; gap: var(--at-space-2); min-width: 0; counter-increment: step; }
+.at-stepper__bar { height: 4px; border-radius: var(--at-radius-full); background: var(--at-border-default); }
+.at-stepper__item.is-complete .at-stepper__bar, .at-stepper__item[aria-current="step"] .at-stepper__bar { background: var(--at-brand); }
+.at-stepper__label { display: flex; align-items: center; gap: var(--at-space-2); font-size: var(--at-text-body-sm-size); color: var(--at-text-secondary); }
+.at-stepper__label::before { content: counter(step); display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--at-border-strong); font-size: var(--at-text-caption-size); font-weight: 600; flex: none; }
+.at-stepper__item[aria-current="step"] .at-stepper__label { color: var(--at-text-primary); font-weight: 600; }
+.at-stepper__item[aria-current="step"] .at-stepper__label::before { background: var(--at-brand); border-color: var(--at-brand); color: var(--at-text-on-brand); }
+.at-stepper__item.is-complete .at-stepper__label::before { content: ""; background: var(--at-brand); border-color: var(--at-brand); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center/14px no-repeat, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center/14px no-repeat, linear-gradient(#000 0 0); mask-composite: exclude; }
+
+/* Segmented control: a radio group in disguise (fieldset + radios) so it is keyboard-native. */
+.at-segmented { display: inline-flex; padding: var(--at-space-0_5); border: 1px solid var(--at-border-default); border-radius: var(--at-radius-md); background: var(--at-bg-sunken); gap: 2px; }
+.at-segmented__option { position: relative; }
+.at-segmented__input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.at-segmented__label { display: inline-flex; align-items: center; justify-content: center; min-height: calc(var(--at-size-control-md) - 6px); padding: 0 var(--at-space-3); border-radius: calc(var(--at-radius-md) - 2px); font-size: var(--at-text-body-sm-size); font-weight: 500; color: var(--at-text-secondary); white-space: nowrap; transition: background var(--at-duration-fast) var(--at-ease-standard), color var(--at-duration-fast) var(--at-ease-standard); }
+.at-segmented__input:checked + .at-segmented__label { background: var(--at-bg-raised); color: var(--at-text-primary); font-weight: 600; box-shadow: var(--at-shadow-sm); }
+.at-segmented__input:focus-visible + .at-segmented__label { outline: var(--at-size-focus-width) solid var(--at-focus-ring); outline-offset: 1px; box-shadow: 0 0 0 1px var(--at-focus-ring-inner); }
+.at-segmented__input:hover:not(:checked) + .at-segmented__label { color: var(--at-text-primary); }
+
+/* ================================================================ 11. Table, list, stat, empty */
+/* Table: <caption> (visible or sr-only), <th scope>, sortable headers are <button>s inside <th aria-sort>.
+   The scroll wrapper is a labelled region with tabindex="0" so keyboard users can scroll it (2.1.1). */
+.at-table-wrap { position: relative; overflow-x: auto; border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-lg); background: var(--at-bg-surface); }   /* positioned so sr-only text inside stays clipped */
+.at-table { width: 100%; border-collapse: collapse; font-size: var(--at-text-body-sm-size); }
+.at-table caption { text-align: left; padding: var(--at-space-3) var(--at-space-4); font-weight: 600; color: var(--at-text-primary); }
+.at-table th, .at-table td { padding: var(--at-space-3) var(--at-space-4); text-align: left; vertical-align: middle; border-bottom: 1px solid var(--at-border-subtle); }
+.at-table th { font-size: var(--at-text-caption-size); font-weight: 600; letter-spacing: 0.02em; color: var(--at-text-secondary); background: var(--at-bg-sunken); white-space: nowrap; }
+.at-table tbody tr:last-child td { border-bottom: 0; }
+.at-table tbody tr:hover { background: var(--at-bg-hover); }
+.at-table .is-numeric { text-align: right; font-variant-numeric: tabular-nums; }
+.at-table__sort { display: inline-flex; align-items: center; gap: var(--at-space-1); min-height: var(--at-size-target-min); margin: calc(var(--at-space-1) * -1); padding: var(--at-space-1); border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; border-radius: var(--at-radius-sm); }
+.at-table__sort:hover { color: var(--at-text-primary); }
+.at-table__sort .at-icon { width: 14px; height: 14px; opacity: 0.5; }
+th[aria-sort="ascending"] .at-table__sort .at-icon, th[aria-sort="descending"] .at-table__sort .at-icon { opacity: 1; color: var(--at-brand-text); }
+th[aria-sort="descending"] .at-table__sort .at-icon { transform: rotate(180deg); }
+.at-table tr[aria-selected="true"] { background: var(--at-bg-selected); }
+.at-table--dense th, .at-table--dense td { padding: var(--at-space-2) var(--at-space-3); }
+
+.at-list { margin: 0; padding: 0; list-style: none; }
+.at-list__item { display: flex; align-items: center; gap: var(--at-space-3); min-height: 56px; padding: var(--at-space-3) var(--at-space-1); border-bottom: 1px solid var(--at-border-subtle); }
+.at-list__item:last-child { border-bottom: 0; }
+.at-list__body { flex: 1; min-width: 0; }
+.at-list__title { font-weight: 500; }
+.at-list__meta { font-size: var(--at-text-body-sm-size); color: var(--at-text-secondary); }
+.at-list__end { flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+a.at-list__item, button.at-list__item { width: 100%; text-decoration: none; color: inherit; background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; border-radius: var(--at-radius-md); }
+a.at-list__item:hover, button.at-list__item:hover { background: var(--at-bg-hover); }
+
+/* Stat: label + value + delta. The delta has a sign/arrow and text, not only colour (1.4.1). */
+.at-stat { display: flex; flex-direction: column; gap: var(--at-space-1); }
+.at-stat__label { font-size: var(--at-text-body-sm-size); color: var(--at-text-secondary); font-weight: 500; }
+.at-stat__value { font-size: var(--at-text-h2-size); line-height: var(--at-text-h2-line); font-weight: 600; letter-spacing: var(--at-text-h2-tracking); font-variant-numeric: tabular-nums; }
+.at-stat__value small { font-size: 0.6em; font-weight: 500; color: var(--at-text-secondary); margin-left: 0.15em; }
+.at-stat__delta { display: inline-flex; align-items: center; gap: var(--at-space-1); font-size: var(--at-text-body-sm-size); font-weight: 600; color: var(--at-text-secondary); }
+.at-stat__delta--up { color: var(--at-success-text); }
+.at-stat__delta--down { color: var(--at-danger-text); }
+.at-stat__delta .at-icon { width: 16px; height: 16px; }
+
+.at-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--at-space-2); padding: var(--at-space-10) var(--at-space-5); color: var(--at-text-secondary); }
+.at-empty__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--at-bg-sunken); color: var(--at-text-tertiary); margin-bottom: var(--at-space-2); }
+.at-empty__title { margin: 0; font-size: var(--at-text-h4-size); font-weight: 600; color: var(--at-text-primary); }
+.at-empty__actions { display: flex; gap: var(--at-space-3); margin-top: var(--at-space-3); }
+
+/* ================================================================ 12. Shell and layout */
+/* Landmarks: <header> (banner), <nav aria-label>, <main id="main">, <aside>, <footer> (contentinfo). */
+.at-shell { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+.at-shell--sidebar { grid-template-columns: 260px 1fr; grid-template-areas: "nav header" "nav main" "nav footer"; }
+.at-shell--sidebar > .at-sidenav { grid-area: nav; }
+.at-shell--sidebar > .at-navbar { grid-area: header; }
+.at-shell--sidebar > main { grid-area: main; }
+.at-navbar { position: sticky; top: 0; z-index: var(--at-z-sticky); display: flex; align-items: center; gap: var(--at-space-4); min-height: 64px; padding: 0 var(--at-space-5); background: var(--at-bg-surface); border-bottom: 1px solid var(--at-border-subtle); }
+.at-navbar__brand { display: inline-flex; align-items: center; gap: var(--at-space-2); font-weight: 700; color: inherit; text-decoration: none; min-height: var(--at-size-target-touch); }
+.at-navbar__links { display: flex; gap: var(--at-space-1); margin: 0; padding: 0; list-style: none; }
+.at-navbar__links a { display: inline-flex; align-items: center; min-height: var(--at-size-control-md); padding: 0 var(--at-space-3); border-radius: var(--at-radius-md); color: var(--at-text-secondary); text-decoration: none; font-weight: 500; font-size: var(--at-text-body-sm-size); }
+.at-navbar__links a:hover { background: var(--at-bg-hover); color: var(--at-text-primary); }
+.at-navbar__links a[aria-current="page"] { color: var(--at-text-primary); background: var(--at-bg-sunken); font-weight: 600; box-shadow: inset 0 -2px 0 var(--at-brand); }
+.at-navbar__spacer { flex: 1; }
+.at-navbar__actions { display: flex; align-items: center; gap: var(--at-space-2); }
+.at-sidenav { padding: var(--at-space-4); background: var(--at-bg-surface); border-right: 1px solid var(--at-border-subtle); }
+.at-sidenav__group { margin: 0 0 var(--at-space-4); padding: 0; list-style: none; }
+.at-sidenav__label { padding: var(--at-space-2) var(--at-space-3); font-size: var(--at-text-caption-size); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--at-text-tertiary); }
+.at-sidenav a { display: flex; align-items: center; gap: var(--at-space-3); min-height: var(--at-size-control-md); padding: 0 var(--at-space-3); border-radius: var(--at-radius-md); color: var(--at-text-secondary); text-decoration: none; font-weight: 500; font-size: var(--at-text-body-sm-size); }
+.at-sidenav a:hover { background: var(--at-bg-hover); color: var(--at-text-primary); }
+.at-sidenav a[aria-current="page"] { background: var(--at-brand-subtle); color: var(--at-brand-text); font-weight: 600; box-shadow: inset 3px 0 0 var(--at-brand); }
+.at-search { display: flex; align-items: center; gap: var(--at-space-2); }
+.at-container { width: 100%; max-width: var(--at-container-content); margin: 0 auto; padding: 0 var(--at-space-5); }
+.at-stack { display: flex; flex-direction: column; gap: var(--at-space-4); }
+.at-stack--sm { gap: var(--at-space-2); }
+.at-stack--lg { gap: var(--at-space-8); }
+.at-inline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--at-space-3); }
+.at-inline--between { justify-content: space-between; }
+.at-grid { display: grid; gap: var(--at-space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.at-grid > *, .at-stack > *, .at-shell > * { min-width: 0; }   /* lets scroll containers (tables) shrink instead of forcing page overflow (1.4.10) */
+main.at-main { padding: var(--at-space-8) 0; }
+@media (max-width: 1023px) {
+  .at-shell--sidebar { grid-template-columns: 1fr; grid-template-areas: "header" "main" "footer"; }
+  .at-shell--sidebar > .at-sidenav { display: none; }
+}
+@media (max-width: 639px) {
+  /* Stepper: keep the bars, show only the current label ("Step 3 of 4" comes from the sr text). */
+  .at-stepper__item { position: relative; }
+  .at-stepper__item[aria-current="step"] { flex: 3; }
+  .at-stepper__item:not([aria-current="step"]) .at-stepper__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .at-navbar { min-height: 56px; padding: 0 var(--at-space-4); }
+  .at-navbar__links { display: none; }
+  .at-dialog { width: calc(100vw - var(--at-space-6)); border-radius: var(--at-radius-xl); }
+  .at-container { padding: 0 var(--at-space-4); }
+  .at-form__actions .at-btn { flex: 1; }
+}
+/* Reflow (1.4.10): nothing here sets a fixed width above 320px; the table wrapper scrolls in one axis. */
