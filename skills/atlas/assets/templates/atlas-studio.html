@@ -276,19 +276,19 @@
             <button type="button" class="at-tabs__tab" role="tab" id="x-figma-t" aria-controls="x-figma" aria-selected="false">Figma</button>
           </div>
           <div class="at-tabs__panel" role="tabpanel" id="x-css" aria-labelledby="x-css-t">
-            <div class="export-head"><p class="at-body-sm at-text-secondary">Drop-in override. Load after <code class="at-code">atlas-tokens.css</code> and before <code class="at-code">atlas.css</code>; every component picks it up.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="css">Copy CSS</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="css">Download .css</button></div></div>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">Drop-in override. Load after <code class="at-code">atlas-tokens.css</code> and before <code class="at-code">atlas.css</code>; every component picks it up. The pack zips all four formats.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="css">Copy CSS</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="pack">Download pack (.zip)</button></div></div>
             <pre class="studio-code" id="out-css" tabindex="0" aria-label="Generated CSS"></pre>
           </div>
           <div class="at-tabs__panel" role="tabpanel" id="x-json" aria-labelledby="x-json-t" hidden>
-            <div class="export-head"><p class="at-body-sm at-text-secondary">W3C Design Tokens (DTCG) format with light and dark semantic sets. Also the file to re-import into Studio later.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="json">Copy JSON</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="json">Download .json</button></div></div>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">W3C Design Tokens (DTCG) format with light and dark semantic sets. Also the file to re-import into Studio later.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="json">Copy JSON</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="pack">Download pack (.zip)</button></div></div>
             <pre class="studio-code" id="out-json" tabindex="0" aria-label="Generated tokens JSON"></pre>
           </div>
           <div class="at-tabs__panel" role="tabpanel" id="x-tw" aria-labelledby="x-tw-t" hidden>
-            <div class="export-head"><p class="at-body-sm at-text-secondary">Tailwind preset: scales as hex, roles as the CSS variables so dark mode keeps working.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="tw">Copy preset</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="tw">Download .js</button></div></div>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">Tailwind preset: scales as hex, roles as the CSS variables so dark mode keeps working.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="tw">Copy preset</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="pack">Download pack (.zip)</button></div></div>
             <pre class="studio-code" id="out-tw" tabindex="0" aria-label="Generated Tailwind preset"></pre>
           </div>
           <div class="at-tabs__panel" role="tabpanel" id="x-figma" aria-labelledby="x-figma-t" hidden>
-            <div class="export-head"><p class="at-body-sm at-text-secondary">Tokens Studio format (free Figma plugin). It creates Figma variables with Light and Dark modes from the sets below.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="figma">Copy for Figma</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="figma">Download .json</button></div></div>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">Tokens Studio format (free Figma plugin). It creates Figma variables with Light and Dark modes from the sets below.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="figma">Copy for Figma</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="pack">Download pack (.zip)</button></div></div>
             <ol class="steps"><li>In Figma, open the Tokens Studio plugin and choose Tools → Load from file / JSON.</li><li>Paste this JSON. Enable the <code class="at-code">global</code> set plus either <code class="at-code">light</code> or <code class="at-code">dark</code>.</li><li>Use Styles &amp; Variables → Export to create Figma variables with both modes.</li></ol>
             <pre class="studio-code" id="out-figma" tabindex="0" aria-label="Generated Tokens Studio JSON" style="margin-top:12px"></pre>
           </div>
@@ -554,16 +554,48 @@
     writeSettings({ ...settings, primary: rgbToHex(toRgb(0.35 + Math.random() * 0.4, 0.14 + Math.random() * 0.06, h)), secondary: rgbToHex(toRgb(0.45 + Math.random() * 0.3, 0.12 + Math.random() * 0.06, h2)) }); render();
   });
   const outputs = { css: () => cssFor(theme, true), json: () => dtcgFor(theme), tw: () => tailwindFor(theme), figma: () => figmaFor(theme) };
-  const names = { css: `atlas-theme-${slug(settings.name)}.css`, json: `atlas-theme-${slug(settings.name)}.tokens.json`, tw: `atlas-theme-${slug(settings.name)}.tailwind.js`, figma: `atlas-theme-${slug(settings.name)}.tokens-studio.json` };
   $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
     const text = outputs[b.dataset.copy]();
     try { await navigator.clipboard.writeText(text); Atlas.toast({ title: "Copied", body: `${b.dataset.copy.toUpperCase()} is on your clipboard`, variant: "success" }); }
     catch (_) { const pre = $(`#out-${b.dataset.copy}`); const range = document.createRange(); range.selectNodeContents(pre); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); Atlas.toast({ title: "Select and copy", body: "Clipboard access was refused, so the code is selected for you.", variant: "warning" }); }
   }));
-  $$("[data-download]").forEach((b) => b.addEventListener("click", () => {
-    const k = b.dataset.download, blob = new Blob([outputs[k]()], { type: k === "css" ? "text/css" : k === "tw" ? "text/javascript" : "application/json" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = names[k].replace(slug(DEFAULTS.name), slug(settings.name)); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    Atlas.toast({ body: "If the download did not start (some embedded previews block it), use Copy instead.", variant: "info", timeout: 6000 });
+  /* Theme pack: a store-only zip written here (no library), saved through the viewer's downloads
+     capability when the page runs inside claude.ai, otherwise through a plain blob download. */
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc32 = (u8) => { let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  function zip(files) {
+    const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+    const u16 = (n) => [n & 255, (n >> 8) & 255], u32 = (n) => [n & 255, (n >> 8) & 255, (n >> 16) & 255, (n >>> 24) & 255];
+    for (const [name, text] of files) {
+      const nm = enc.encode(name), data = enc.encode(text), crc = crc32(data);
+      const head = new Uint8Array([0x50, 0x4b, 3, 4, ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nm.length), ...u16(0)]);
+      parts.push(head, nm, data);
+      central.push(new Uint8Array([0x50, 0x4b, 1, 2, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nm.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)]), nm);
+      offset += head.length + nm.length + data.length;
+    }
+    const cdSize = central.reduce((n, p) => n + p.length, 0);
+    parts.push(...central, new Uint8Array([0x50, 0x4b, 5, 6, ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(cdSize), ...u32(offset), ...u16(0)]));
+    return new Blob(parts, { type: "application/zip" });
+  }
+  async function saveFile(filename, data) {
+    let dl = null; try { dl = window.claude?.use ? await window.claude.use("downloads") : null; } catch (_) { dl = null; }
+    if (dl) {
+      try { await dl.save({ filename, data }); return "saved"; }
+      catch (e) { if (e && e.code === "declined") return "declined"; if (e && e.code === "rate_limited") return "busy"; return "unavailable"; }
+    }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(data instanceof Blob ? data : new Blob([data])); a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    return "saved";
+  }
+  $$("[data-download]").forEach((b) => b.addEventListener("click", async () => {
+    const base = `atlas-theme-${slug(settings.name)}`;
+    const pack = zip([[`${base}/${base}.css`, outputs.css()], [`${base}/${base}.tokens.json`, outputs.json()], [`${base}/${base}.tailwind.js`, outputs.tw()], [`${base}/${base}.tokens-studio.json`, outputs.figma()], [`${base}/README.txt`, `${settings.name} theme for the Atlas design system, generated by Atlas Studio.\n\n${base}.css            load after atlas-tokens.css (CSS variables, light + dark)\n${base}.tokens.json    W3C DTCG tokens; re-import into Studio\n${base}.tailwind.js    Tailwind preset (import the CSS first)\n${base}.tokens-studio.json  Figma: Tokens Studio plugin → Tools → Load from JSON\n\nPrimary ${settings.primary} · Secondary ${settings.secondary} · Neutrals ${settings.neutral} · Corners ${settings.corners} · Type ${settings.type}\n`]]);
+    b.setAttribute("aria-busy", "true");
+    const r = await saveFile(`${base}.zip`, pack);
+    b.removeAttribute("aria-busy");
+    if (r === "saved") Atlas.toast({ title: "Theme pack saved", body: `${base}.zip with CSS, tokens JSON, Tailwind and Figma files`, variant: "success" });
+    else if (r === "declined") Atlas.toast({ body: "Download cancelled.", variant: "info" });
+    else if (r === "busy") Atlas.toast({ body: "A download prompt is already open. Answer it, then try again.", variant: "warning" });
+    else Atlas.toast({ title: "Download unavailable here", body: "Use Copy on each tab instead.", variant: "warning" });
   }));
   $("#import-apply").addEventListener("click", () => {
     const err = $("#import-err"); err.textContent = "";
