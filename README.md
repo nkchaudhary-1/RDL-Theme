@@ -53,7 +53,15 @@ system built to **WCAG 2.2 AA by construction**. Where RDL is about a look, Atla
 |---|---|
 | ![](docs/atlas-light.png) | ![](docs/atlas-dark.png) |
 
-Ask Claude something like *"build the settings page in Atlas"* or *"audit this HTML for WCAG 2.2"*.
+**Atlas Studio** turns it into a theme builder: enter your primary and secondary hex, pick neutrals,
+corners and type, watch every component re-skin live with the contrast proof beside it, then export
+the theme as CSS, DTCG tokens JSON, a Tailwind preset or Tokens Studio JSON for Figma variables.
+Brand presets (a Wise-inspired one ships) do the same from `tokens.json`.
+
+![Atlas Studio](docs/atlas-studio.png)
+
+Ask Claude something like *"build the settings page in Atlas"*, *"theme Atlas to #FF5A1F and
+#0B3D91"* or *"audit this HTML for WCAG 2.2"*.
 
 ```bash
 cp -r RDL-Theme/skills/atlas ~/.claude/skills/

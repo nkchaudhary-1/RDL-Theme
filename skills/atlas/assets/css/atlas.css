@@ -81,6 +81,7 @@ button { cursor: pointer; }
 
 /* ================================================================ 1. Typography */
 .at-display, .at-h1, .at-h2, .at-h3, .at-h4 { margin: 0; color: var(--at-text-primary); text-wrap: balance; }
+.at-display, .at-h1, .at-h2 { font-family: var(--at-font-display); }
 .at-display { font-size: var(--at-text-display-size); line-height: var(--at-text-display-line); font-weight: var(--at-text-display-weight); letter-spacing: var(--at-text-display-tracking); }
 .at-h1 { font-size: var(--at-text-h1-size); line-height: var(--at-text-h1-line); font-weight: var(--at-text-h1-weight); letter-spacing: var(--at-text-h1-tracking); }
 .at-h2 { font-size: var(--at-text-h2-size); line-height: var(--at-text-h2-line); font-weight: var(--at-text-h2-weight); letter-spacing: var(--at-text-h2-tracking); }
@@ -113,13 +114,13 @@ button { cursor: pointer; }
 .at-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--at-space-2);
   min-height: var(--at-size-control-md); min-width: var(--at-size-control-md); padding: 0 var(--at-space-4);
-  border: 1px solid transparent; border-radius: var(--at-radius-md);
+  border: 1px solid transparent; border-radius: var(--at-radius-button);
   font-size: var(--at-text-label-size); font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap;
-  background: var(--at-brand); color: var(--at-text-on-brand);
+  background: var(--at-action); color: var(--at-text-on-action);
   transition: background var(--at-duration-fast) var(--at-ease-standard), color var(--at-duration-fast) var(--at-ease-standard), border-color var(--at-duration-fast) var(--at-ease-standard);
 }
-.at-btn:hover { background: var(--at-brand-hover); }
-.at-btn:active { background: var(--at-brand-active); }
+.at-btn:hover { background: var(--at-action-hover); }
+.at-btn:active { background: var(--at-action-active); }
 .at-btn--secondary { background: var(--at-bg-surface); color: var(--at-text-primary); border-color: var(--at-border-strong); }
 .at-btn--secondary:hover { background: var(--at-bg-hover); }
 .at-btn--secondary:active { background: var(--at-bg-active); }
@@ -129,6 +130,8 @@ button { cursor: pointer; }
 .at-btn--danger { background: var(--at-danger); color: var(--at-text-on-brand); }
 .at-btn--danger:hover { background: var(--at-danger-hover); }
 .at-btn--danger:active { background: var(--at-danger-active); }
+.at-btn--accent { background: var(--at-accent); color: var(--at-text-on-accent); }
+.at-btn--accent:hover, .at-btn--accent:active { background: var(--at-accent-hover); }
 .at-btn--danger-secondary { background: var(--at-bg-surface); color: var(--at-danger-text); border-color: var(--at-danger); }
 .at-btn--danger-secondary:hover { background: var(--at-danger-bg); }
 .at-btn--sm { min-height: var(--at-size-control-sm); min-width: var(--at-size-control-sm); padding: 0 var(--at-space-3); font-size: var(--at-text-body-sm-size); }
@@ -142,7 +145,7 @@ button { cursor: pointer; }
 .at-btn--secondary:disabled, .at-btn--secondary[aria-disabled="true"] { border-color: var(--at-border-subtle); }
 /* Loading: keep the label in the DOM (announced), show the spinner, block clicks. */
 .at-btn[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
-.at-btn[aria-busy="true"]::after { content: ""; position: absolute; width: 1.1em; height: 1.1em; border: 2px solid currentColor; border-color: var(--at-text-on-brand) transparent var(--at-text-on-brand) transparent; border-radius: 50%; animation: at-spin 0.8s linear infinite; }
+.at-btn[aria-busy="true"]::after { content: ""; position: absolute; width: 1.1em; height: 1.1em; border: 2px solid currentColor; border-color: var(--at-text-on-action) transparent var(--at-text-on-action) transparent; border-radius: 50%; animation: at-spin 0.8s linear infinite; }
 .at-btn--secondary[aria-busy="true"]::after, .at-btn--tertiary[aria-busy="true"]::after { border-color: var(--at-text-primary) transparent var(--at-text-primary) transparent; }
 .at-btn-group { display: inline-flex; flex-wrap: wrap; gap: var(--at-space-2); }
 .at-btn-group--attached { gap: 0; }
@@ -160,7 +163,7 @@ button { cursor: pointer; }
 /* ================================================================ 3. Form atoms */
 .at-input, .at-select, .at-textarea {
   display: block; width: 100%; min-height: var(--at-size-control-md); padding: 0 var(--at-space-3);
-  border: 1px solid var(--at-border-strong); border-radius: var(--at-radius-md);
+  border: 1px solid var(--at-border-strong); border-radius: var(--at-radius-field);
   background: var(--at-bg-surface); color: var(--at-text-primary);
   font-size: var(--at-text-body-size); line-height: 1.4;
   transition: border-color var(--at-duration-fast) var(--at-ease-standard);
@@ -182,8 +185,8 @@ button { cursor: pointer; }
 .at-input-group { display: flex; align-items: stretch; }
 .at-input-group .at-input { flex: 1; min-width: 0; }
 .at-input-group__addon { display: inline-flex; align-items: center; padding: 0 var(--at-space-3); border: 1px solid var(--at-border-strong); background: var(--at-bg-sunken); color: var(--at-text-secondary); font-size: var(--at-text-body-sm-size); white-space: nowrap; }
-.at-input-group__addon:first-child { border-right: 0; border-radius: var(--at-radius-md) 0 0 var(--at-radius-md); }
-.at-input-group__addon:last-child { border-left: 0; border-radius: 0 var(--at-radius-md) var(--at-radius-md) 0; }
+.at-input-group__addon:first-child { border-right: 0; border-radius: var(--at-radius-field) 0 0 var(--at-radius-field); }
+.at-input-group__addon:last-child { border-left: 0; border-radius: 0 var(--at-radius-field) var(--at-radius-field) 0; }
 .at-input-group__addon:first-child + .at-input { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 .at-input-group .at-input:has(+ .at-input-group__addon), .at-input-group .at-input:has(+ .at-btn) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .at-input-group .at-btn { border-top-left-radius: 0; border-bottom-left-radius: 0; }
@@ -235,6 +238,7 @@ button { cursor: pointer; }
 .at-badge { display: inline-flex; align-items: center; gap: var(--at-space-1); min-height: 24px; padding: 0 var(--at-space-2); border-radius: var(--at-radius-full); border: 1px solid var(--at-border-default); background: var(--at-bg-sunken); color: var(--at-text-secondary); font-size: var(--at-text-caption-size); font-weight: 600; line-height: 1; letter-spacing: 0.01em; white-space: nowrap; }
 .at-badge__dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 .at-badge--brand { background: var(--at-brand-subtle); color: var(--at-brand-text); border-color: var(--at-brand-border); }
+.at-badge--accent { background: var(--at-accent-bg); color: var(--at-accent-text); border-color: var(--at-accent-border); }
 .at-badge--success { background: var(--at-success-bg); color: var(--at-success-text); border-color: var(--at-success-border); }
 .at-badge--warning { background: var(--at-warning-bg); color: var(--at-warning-text); border-color: var(--at-warning-border); }
 .at-badge--danger { background: var(--at-danger-bg); color: var(--at-danger-text); border-color: var(--at-danger-border); }
@@ -253,7 +257,7 @@ button.at-tag:hover { background: var(--at-bg-hover); }
 .at-tag-group { display: flex; flex-wrap: wrap; gap: var(--at-space-2); }
 
 /* Avatar: <img alt="Full name"> or initials with aria-label; decorative beside a visible name → alt="". */
-.at-avatar { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--at-brand-subtle); color: var(--at-brand-text); font-weight: 600; font-size: var(--at-text-body-sm-size); flex: none; }
+.at-avatar { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--at-accent-bg); color: var(--at-accent-text); font-weight: 600; font-size: var(--at-text-body-sm-size); flex: none; }
 .at-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .at-avatar--sm { width: 32px; height: 32px; font-size: var(--at-text-caption-size); }
 .at-avatar--lg { width: 56px; height: 56px; font-size: var(--at-text-body-lg-size); }
@@ -330,7 +334,7 @@ progress.at-progress::-moz-progress-bar { background: var(--at-brand); border-ra
 .at-form__summary { border-left: 4px solid var(--at-danger); }
 
 /* ================================================================ 7. Card, alert, banner, toast */
-.at-card { background: var(--at-bg-surface); border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-xl); padding: var(--at-space-5); }
+.at-card { background: var(--at-bg-surface); border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-card); padding: var(--at-space-5); }
 .at-card--raised { border-color: transparent; box-shadow: var(--at-shadow-md); background: var(--at-bg-raised); }
 .at-card--sunken { background: var(--at-bg-sunken); border-color: transparent; }
 .at-card--compact { padding: var(--at-space-4); border-radius: var(--at-radius-lg); }
@@ -395,7 +399,7 @@ progress.at-progress::-moz-progress-bar { background: var(--at-brand); border-ra
 /* Dialog: native <dialog> + showModal() gives focus trapping, Escape and inert background for free.
    Needs aria-labelledby (title) and usually aria-describedby. Focus goes to the first field, or the
    least destructive button for confirmations; it returns to the opener on close. */
-.at-dialog { width: min(560px, calc(100vw - var(--at-space-8))); max-height: calc(100dvh - var(--at-space-8)); margin: auto; padding: 0; border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-2xl); background: var(--at-bg-raised); color: var(--at-text-primary); box-shadow: var(--at-shadow-xl); overflow: hidden; display: none; flex-direction: column; }
+.at-dialog { width: min(560px, calc(100vw - var(--at-space-8))); max-height: calc(100dvh - var(--at-space-8)); margin: auto; padding: 0; border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-overlay); background: var(--at-bg-raised); color: var(--at-text-primary); box-shadow: var(--at-shadow-xl); overflow: hidden; display: none; flex-direction: column; }
 .at-dialog[open] { display: flex; animation: at-dialog-in var(--at-duration-base) var(--at-ease-enter) both; }
 .at-dialog::backdrop { background: var(--at-overlay); }
 .at-dialog__header { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--at-space-3); padding: var(--at-space-5) var(--at-space-6) 0; }
@@ -411,7 +415,7 @@ progress.at-progress::-moz-progress-bar { background: var(--at-brand); border-ra
 .at-drawer { width: min(420px, 100vw); max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0 0 0 auto; border-radius: 0; border: 0; border-left: 1px solid var(--at-border-subtle); }
 .at-drawer[open] { animation: at-drawer-in var(--at-duration-slow) var(--at-ease-enter) both; }
 .at-drawer--start { margin: 0 auto 0 0; border-left: 0; border-right: 1px solid var(--at-border-subtle); }
-.at-drawer--bottom { width: 100vw; height: auto; max-height: 85dvh; margin: auto 0 0; border: 0; border-top: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-2xl) var(--at-radius-2xl) 0 0; }
+.at-drawer--bottom { width: 100vw; height: auto; max-height: 85dvh; margin: auto 0 0; border: 0; border-top: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-overlay) var(--at-radius-overlay) 0 0; }
 @keyframes at-drawer-in { from { opacity: 0; transform: translateX(16px); } }
 
 /* Popover: non-modal surface. Opens on click, closes on Escape, outside click and focus-out; the

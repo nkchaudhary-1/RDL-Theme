@@ -27,6 +27,7 @@ const shots = [
   { file: "radius-demo.html", out: "radius-demo.png", w: 1440, h: 900, full: true },
   { skill: "atlas", file: "atlas-showcase.html", out: "atlas-light.png", w: 1440, h: 1000 },
   { skill: "atlas", file: "atlas-showcase.html?theme=dark#choices", out: "atlas-dark.png", w: 1440, h: 1000 },
+  { skill: "atlas", file: "atlas-studio.html?primary=FF5A1F&secondary=0B3D91&name=Northwind", out: "atlas-studio.png", w: 1440, h: 1000 },
 ];
 
 const browser = await chromium.launch();

@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas Studio</title>
+<meta name="description" content="Enter your brand colours, see every Atlas component in them with contrast proven, then export the theme as CSS, JSON, Tailwind or Figma tokens.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/atlas-tokens.css">
+<link rel="stylesheet" href="../css/atlas.css">
+<style id="studio-theme"></style>
+<style>
+  /* Studio chrome. The preview and gallery use Atlas classes unchanged; the theme is injected into #studio-theme. */
+  .studio { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: var(--at-space-8); align-items: start; padding: var(--at-space-6) 0 var(--at-space-12); }
+  .studio__panel { position: sticky; top: 80px; display: flex; flex-direction: column; gap: var(--at-space-5); }
+  .studio__stage { min-width: 0; }
+  .color-field { display: grid; grid-template-columns: 44px 1fr; gap: var(--at-space-2); align-items: center; }
+  .color-field input[type="color"] { width: 44px; height: 40px; padding: 2px; border: 1px solid var(--at-border-strong); border-radius: var(--at-radius-field); background: var(--at-bg-surface); cursor: pointer; }
+  .color-field input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-field input[type="color"]::-webkit-color-swatch { border: 0; border-radius: calc(var(--at-radius-field) - 2px); }
+  .check-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--at-space-1); font-size: var(--at-text-body-sm-size); }
+  .check-list li { display: flex; justify-content: space-between; gap: var(--at-space-2); }
+  .check-list .at-tabular { color: var(--at-text-secondary); }
+  #contrast-card summary { display: inline-block; min-height: 24px; padding: 2px 0; }
+  .notes { margin: 0; padding-left: 18px; font-size: var(--at-text-body-sm-size); color: var(--at-text-secondary); display: flex; flex-direction: column; gap: var(--at-space-1); }
+  .stage-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--at-space-3); margin-bottom: var(--at-space-4); }
+  .mock-wrap { display: flex; justify-content: center; background: var(--at-bg-sunken); border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-xl); padding: var(--at-space-5); overflow: hidden; }
+  .mock { width: 100%; max-width: 1100px; background: var(--at-bg-canvas); border: 1px solid var(--at-border-default); border-radius: var(--at-radius-lg); overflow: hidden; box-shadow: var(--at-shadow-lg); transition: max-width var(--at-duration-slow) var(--at-ease-standard); }
+  .mock--phone { max-width: 390px; }
+  .mock .at-navbar { position: static; }
+  .mock--phone .at-navbar__links { display: none; }
+  .mock__hero { padding: var(--at-space-8) var(--at-space-6); background: var(--at-accent-bg); border-bottom: 1px solid var(--at-accent-border); }
+  .mock__hero-inner { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--at-space-5); }
+  .mock__hero .at-h1 { font-size: clamp(1.6rem, 3.2vw, 2.25rem); }
+  .mock__body { padding: var(--at-space-6); display: flex; flex-direction: column; gap: var(--at-space-6); }
+  .mock--phone .mock__hero, .mock--phone .mock__body { padding-left: var(--at-space-4); padding-right: var(--at-space-4); }
+  .mock--phone .mock__hero-actions { width: 100%; }
+  .mock--phone .mock__hero-actions .at-btn { flex: 1; }
+  .mock__logo { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: var(--at-radius-md); background: var(--at-action); color: var(--at-text-on-action); font-weight: 700; font-size: 14px; }
+  .gallery { display: flex; flex-direction: column; gap: var(--at-space-6); }
+  .gallery h3 { margin: 0 0 var(--at-space-3); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--at-space-3); }
+  .scale { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 4px; }
+  .scale__step { min-width: 0; height: 64px; border-radius: var(--at-radius-sm); border: 1px solid rgba(var(--at-shadow-color), 0.08); display: flex; flex-direction: column; justify-content: flex-end; padding: 4px; font-family: var(--at-font-mono); font-size: 11px; line-height: 1.3; overflow: hidden; }
+  .scale__step.is-pinned { outline: 2px solid var(--at-text-primary); outline-offset: 2px; }
+  .scale__step b { font-weight: 600; }
+  .role-table td code { font-family: var(--at-font-mono); font-size: 12px; }
+  .chip { display: inline-block; width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(var(--at-shadow-color), 0.2); vertical-align: -2px; margin-right: 6px; }
+  .studio-code { position: relative; margin: 0; padding: var(--at-space-4); border: 1px solid var(--at-border-subtle); border-radius: var(--at-radius-lg); background: var(--at-bg-sunken); font-family: var(--at-font-mono); font-size: 12px; line-height: 1.5; max-height: 480px; overflow: auto; white-space: pre; color: var(--at-text-primary); }
+  .export-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--at-space-3); margin-bottom: var(--at-space-3); }
+  .export-head p { margin: 0; max-width: 60ch; }
+  .steps { margin: var(--at-space-3) 0 0; padding-left: 18px; font-size: var(--at-text-body-sm-size); color: var(--at-text-secondary); }
+  @media (max-width: 1023px) { .studio { grid-template-columns: minmax(0, 1fr); } .studio__panel { position: static; } }
+  @media (max-width: 639px) { .scale { grid-template-columns: repeat(6, minmax(0, 1fr)); } [data-at-theme-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
+</style>
+</head>
+<body>
+<a class="at-skip-link" href="#main">Skip to content</a>
+<header class="at-navbar">
+  <a class="at-navbar__brand" href="#main" aria-label="Atlas Studio home">
+    <svg class="at-icon at-icon--lg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+    Atlas Studio
+  </a>
+  <span class="at-navbar__spacer"></span>
+  <div class="at-navbar__actions">
+    <button type="button" class="at-btn at-btn--secondary at-btn--sm" id="reset-btn">Reset</button>
+    <button type="button" class="at-btn at-btn--secondary at-btn--sm" data-at-theme>
+      <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span data-at-theme-label>System</span>
+    </button>
+  </div>
+</header>
+
+<main id="main" class="at-container studio" tabindex="-1">
+  <!-- ============================ Settings panel -->
+  <form class="studio__panel" id="settings" aria-label="Brand settings" onsubmit="event.preventDefault()">
+    <div>
+      <p class="at-caption" style="margin:0 0 4px">Theme builder</p>
+      <h1 class="at-h3" style="margin:0">Your brand on Atlas</h1>
+      <p class="at-body-sm at-text-secondary" style="margin:6px 0 0">Enter two colours. Atlas builds the scales, picks text colours that pass WCAG 2.2 AA, and re-skins every component live.</p>
+    </div>
+
+    <div class="at-field">
+      <label class="at-field__label" for="brand-name">Brand name</label>
+      <input class="at-input" id="brand-name" type="text" value="Northwind" autocomplete="organization" maxlength="40">
+    </div>
+
+    <div class="at-field">
+      <label class="at-field__label" for="primary-hex">Primary colour</label>
+      <div class="color-field">
+        <input type="color" id="primary-picker" value="#4362CE" aria-label="Pick primary colour">
+        <input class="at-input" id="primary-hex" type="text" value="#4362CE" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="primary-hint" pattern="^#?[0-9a-fA-F]{6}$">
+      </div>
+      <p class="at-field__hint" id="primary-hint">Buttons, links, focus ring, selected states.</p>
+    </div>
+
+    <div class="at-field">
+      <label class="at-field__label" for="secondary-hex">Secondary colour</label>
+      <div class="color-field">
+        <input type="color" id="secondary-picker" value="#0893C6" aria-label="Pick secondary colour">
+        <input class="at-input" id="secondary-hex" type="text" value="#0893C6" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="secondary-hint" pattern="^#?[0-9a-fA-F]{6}$">
+      </div>
+      <p class="at-field__hint" id="secondary-hint">Accents: hero band, badges, avatars, accent buttons.</p>
+    </div>
+
+    <fieldset class="at-fieldset"><legend class="at-fieldset__legend">Neutrals</legend>
+      <div class="at-segmented" id="neutral-seg">
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="neutral" id="n-tint" value="tinted" checked><label class="at-segmented__label" for="n-tint">Tinted</label></span>
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="neutral" id="n-cool" value="cool"><label class="at-segmented__label" for="n-cool">Cool</label></span>
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="neutral" id="n-warm" value="warm"><label class="at-segmented__label" for="n-warm">Warm</label></span>
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="neutral" id="n-pure" value="pure"><label class="at-segmented__label" for="n-pure">Pure</label></span>
+      </div>
+    </fieldset>
+
+    <fieldset class="at-fieldset"><legend class="at-fieldset__legend">Corners</legend>
+      <div class="at-segmented">
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="corners" id="c-sharp" value="sharp"><label class="at-segmented__label" for="c-sharp">Sharp</label></span>
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="corners" id="c-soft" value="soft" checked><label class="at-segmented__label" for="c-soft">Soft</label></span>
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="corners" id="c-round" value="round"><label class="at-segmented__label" for="c-round">Round</label></span>
+        <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="corners" id="c-pill" value="pill"><label class="at-segmented__label" for="c-pill">Pill</label></span>
+      </div>
+    </fieldset>
+
+    <div class="at-field">
+      <label class="at-field__label" for="type-pair">Type pairing</label>
+      <select class="at-select" id="type-pair">
+        <option value="inter">Inter (default)</option>
+        <option value="jakarta">Plus Jakarta Sans + Inter</option>
+        <option value="manrope">Manrope + Inter</option>
+        <option value="plex">IBM Plex Sans</option>
+        <option value="dm">DM Sans</option>
+        <option value="fraunces">Fraunces + Inter (editorial)</option>
+      </select>
+    </div>
+
+    <div class="at-card at-card--compact" aria-live="polite" id="contrast-card">
+      <div class="at-card__header" style="margin-bottom:8px"><h2 class="at-card__title" style="font-size:var(--at-text-body-size)">Contrast</h2><span class="at-badge at-badge--success" id="contrast-badge"><span class="at-badge__dot" aria-hidden="true"></span>All pass</span></div>
+      <ul class="check-list" id="check-list"></ul>
+      <details style="margin-top:8px"><summary class="at-body-sm" style="cursor:pointer;color:var(--at-text-link);text-decoration:underline">How Atlas chose the roles</summary><ul class="notes" id="notes" style="margin-top:8px"></ul></details>
+    </div>
+
+    <div class="row">
+      <button type="button" class="at-btn at-btn--secondary at-btn--sm" aria-controls="import-dlg" data-at-dialog>Import theme</button>
+      <button type="button" class="at-btn at-btn--secondary at-btn--sm" id="random-btn">Surprise me</button>
+    </div>
+  </form>
+
+  <!-- ============================ Stage -->
+  <section class="studio__stage" aria-label="Preview and export">
+    <div class="at-tabs" data-at-tabs>
+      <div class="at-tabs__list" role="tablist" aria-label="Studio views">
+        <button type="button" class="at-tabs__tab" role="tab" id="t-preview" aria-controls="p-preview" aria-selected="true">Preview</button>
+        <button type="button" class="at-tabs__tab" role="tab" id="t-components" aria-controls="p-components" aria-selected="false">Components</button>
+        <button type="button" class="at-tabs__tab" role="tab" id="t-tokens" aria-controls="p-tokens" aria-selected="false">Tokens</button>
+        <button type="button" class="at-tabs__tab" role="tab" id="t-export" aria-controls="p-export" aria-selected="false">Export</button>
+      </div>
+
+      <!-- ---------- Preview -->
+      <div class="at-tabs__panel" role="tabpanel" id="p-preview" aria-labelledby="t-preview">
+        <div class="stage-bar">
+          <p class="at-body-sm at-text-secondary" style="margin:0">A sample product page in your brand. Switch the theme in the header to check dark mode.</p>
+          <fieldset class="at-fieldset"><legend class="at-sr-only">Preview width</legend>
+            <div class="at-segmented">
+              <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="vp" id="vp-desk" value="desktop" checked><label class="at-segmented__label" for="vp-desk">Desktop</label></span>
+              <span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="vp" id="vp-phone" value="phone"><label class="at-segmented__label" for="vp-phone">Phone</label></span>
+            </div>
+          </fieldset>
+        </div>
+        <div class="mock-wrap">
+          <div class="mock" id="mock">
+            <div class="at-navbar">
+              <span class="at-navbar__brand"><span class="mock__logo" aria-hidden="true" data-brand-initial>N</span><span data-brand-name>Northwind</span></span>
+              <nav aria-label="Sample product"><ul class="at-navbar__links"><li><a href="#p-preview" aria-current="page">Home</a></li><li><a href="#p-preview">Invest</a></li><li><a href="#p-preview">Cards</a></li><li><a href="#p-preview">Help</a></li></ul></nav>
+              <span class="at-navbar__spacer"></span>
+              <div class="at-navbar__actions"><button type="button" class="at-btn at-btn--secondary at-btn--sm at-btn--icon" aria-label="Notifications"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg></button><span class="at-avatar at-avatar--sm" role="img" aria-label="Priya Nair">PN</span></div>
+            </div>
+            <div class="mock__hero">
+              <div class="mock__hero-inner">
+                <div><p class="at-caption" style="margin:0 0 4px">Good morning, Priya</p><h2 class="at-h1" style="margin:0">Your money, one place</h2><p class="at-body at-text-secondary" style="margin:8px 0 0;max-width:46ch">Balances, cards and investments with <span data-brand-name>Northwind</span>. Transfers settle in seconds.</p></div>
+                <div class="row mock__hero-actions"><button type="button" class="at-btn at-btn--lg">Add money</button><button type="button" class="at-btn at-btn--secondary at-btn--lg">Send</button></div>
+              </div>
+            </div>
+            <div class="mock__body">
+              <div class="at-grid">
+                <div class="at-card"><div class="at-stat"><span class="at-stat__label">Total balance</span><span class="at-stat__value">₹2,48,310</span><span class="at-stat__delta at-stat__delta--up"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span class="at-sr-only">Up</span> +3.1% this month</span></div></div>
+                <div class="at-card"><div class="at-stat"><span class="at-stat__label">Invested</span><span class="at-stat__value">₹1,12,000</span><span class="at-stat__delta"><span class="at-sr-only">No change</span>— 0.0% today</span></div></div>
+                <div class="at-card"><div class="at-stat"><span class="at-stat__label">Rewards</span><span class="at-stat__value">4,210<small>pts</small></span><span class="at-badge at-badge--accent" style="width:max-content"><span class="at-badge__dot" aria-hidden="true"></span>Gold tier</span></div></div>
+              </div>
+              <div class="at-alert" role="status"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg><div class="at-alert__body"><strong class="at-alert__title">New: scheduled transfers</strong>Set a date and we'll move the money for you. <a class="at-link" href="#p-preview">Try it</a></div></div>
+              <div class="at-grid" style="grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
+                <div class="at-card">
+                  <div class="at-card__header"><div><h3 class="at-card__title">Send money</h3><p class="at-card__subtitle">To any bank account</p></div></div>
+                  <div class="at-stack">
+                    <div class="at-field"><label class="at-field__label" for="m-to">Recipient</label><select class="at-select" id="m-to"><option>Aarav Shah · HDFC ••4421</option><option>Mum · SBI ••9012</option></select></div>
+                    <div class="at-field"><label class="at-field__label" for="m-amt">Amount</label><div class="at-input-group"><span class="at-input-group__addon" aria-hidden="true">₹</span><input class="at-input" id="m-amt" type="text" inputmode="decimal" value="5,000"></div></div>
+                    <div class="at-field"><label class="at-field__label" for="m-note">Note <span class="at-field__optional">(optional)</span></label><input class="at-input" id="m-note" type="text" placeholder="Dinner, rent, gift"></div>
+                    <label class="at-choice"><input class="at-choice__control" type="checkbox" checked><span class="at-choice__text">Save as a favourite</span></label>
+                    <div class="at-form__actions"><button type="button" class="at-btn">Review transfer</button><button type="button" class="at-btn at-btn--tertiary">Cancel</button></div>
+                  </div>
+                </div>
+                <div class="at-card">
+                  <div class="at-card__header"><div><h3 class="at-card__title">Recent activity</h3></div><button type="button" class="at-btn at-btn--tertiary at-btn--sm">See all</button></div>
+                  <div class="at-tabs at-tabs--pills" data-at-tabs>
+                    <div class="at-tabs__list" role="tablist" aria-label="Activity filter"><button type="button" class="at-tabs__tab" role="tab" id="m-tab-all" aria-controls="m-p-all" aria-selected="true">All</button><button type="button" class="at-tabs__tab" role="tab" id="m-tab-in" aria-controls="m-p-in" aria-selected="false">In</button><button type="button" class="at-tabs__tab" role="tab" id="m-tab-out" aria-controls="m-p-out" aria-selected="false">Out</button></div>
+                    <div class="at-tabs__panel" role="tabpanel" id="m-p-all" aria-labelledby="m-tab-all" style="padding-bottom:0">
+                      <ul class="at-list">
+                        <li class="at-list__item"><span class="at-avatar at-avatar--sm" aria-hidden="true">AS</span><span class="at-list__body"><span class="at-list__title">Aarav Shah</span><span class="at-list__meta">Today · Transfer</span></span><span class="at-list__end"><span class="at-tabular">−₹2,400</span><br><span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Sent</span></span></li>
+                        <li class="at-list__item"><span class="at-avatar at-avatar--sm" aria-hidden="true">SW</span><span class="at-list__body"><span class="at-list__title">Salary · Westfield</span><span class="at-list__meta">1 Oct · Deposit</span></span><span class="at-list__end"><span class="at-tabular">+₹85,000</span><br><span class="at-badge at-badge--warning"><span class="at-badge__dot" aria-hidden="true"></span>Pending</span></span></li>
+                        <li class="at-list__item"><span class="at-avatar at-avatar--sm" aria-hidden="true">GS</span><span class="at-list__body"><span class="at-list__title">Gold SIP</span><span class="at-list__meta">5 Oct · Investment</span></span><span class="at-list__end"><span class="at-tabular">−₹5,000</span><br><span class="at-badge at-badge--danger"><span class="at-badge__dot" aria-hidden="true"></span>Failed</span></span></li>
+                      </ul>
+                    </div>
+                    <div class="at-tabs__panel" role="tabpanel" id="m-p-in" aria-labelledby="m-tab-in" hidden><p class="at-body-sm at-text-secondary" style="margin:0">1 deposit this month.</p></div>
+                    <div class="at-tabs__panel" role="tabpanel" id="m-p-out" aria-labelledby="m-tab-out" hidden><p class="at-body-sm at-text-secondary" style="margin:0">2 payments this month.</p></div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="at-progress-label"><span id="m-goal">Emergency fund goal</span><span class="at-tabular">68%</span></div>
+                <div class="at-progress" role="progressbar" aria-labelledby="m-goal" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"><div class="at-progress__bar" style="--value:68%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Components -->
+      <div class="at-tabs__panel" role="tabpanel" id="p-components" aria-labelledby="t-components" hidden>
+        <div class="gallery">
+          <div><h3 class="at-h4">Buttons</h3><div class="row"><button type="button" class="at-btn">Primary</button><button type="button" class="at-btn at-btn--secondary">Secondary</button><button type="button" class="at-btn at-btn--tertiary">Tertiary</button><button type="button" class="at-btn at-btn--accent">Accent</button><button type="button" class="at-btn at-btn--danger">Delete</button><button type="button" class="at-btn" disabled>Disabled</button><button type="button" class="at-btn" aria-busy="true">Saving</button><button type="button" class="at-btn at-btn--secondary at-btn--icon" aria-label="Edit"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4l10-10-4-4L4 16v4zM13 7l4 4"/></svg></button></div>
+            <p class="at-body" style="margin:12px 0 0">Inline <a class="at-link" href="#p-components">text links</a> and a <a class="at-link at-link--standalone" href="#p-components">standalone link →</a></p></div>
+          <div><h3 class="at-h4">Inputs</h3><div class="at-grid">
+            <div class="at-field"><label class="at-field__label" for="g-email">Email</label><input class="at-input" id="g-email" type="email" placeholder="you@example.com"></div>
+            <div class="at-field"><label class="at-field__label" for="g-user">Username</label><input class="at-input" id="g-user" type="text" value="priya" aria-invalid="true" aria-describedby="g-user-err"><p class="at-field__error" id="g-user-err"><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Already taken. Try priya-n.</p></div>
+            <div class="at-field"><label class="at-field__label" for="g-country">Country</label><select class="at-select" id="g-country"><option>India</option><option>Singapore</option></select></div>
+          </div></div>
+          <div><h3 class="at-h4">Choices</h3><div class="at-grid">
+            <fieldset class="at-fieldset"><legend class="at-fieldset__legend">Alerts</legend><label class="at-choice"><input class="at-choice__control" type="checkbox" checked><span class="at-choice__text">Payments</span></label><label class="at-choice"><input class="at-choice__control" type="checkbox"><span class="at-choice__text">Offers</span></label></fieldset>
+            <fieldset class="at-fieldset"><legend class="at-fieldset__legend">Plan</legend><label class="at-choice at-choice--card"><input class="at-choice__control" type="radio" name="g-plan" checked><span><span class="at-choice__text">Standard</span><span class="at-choice__hint">Free</span></span></label><label class="at-choice at-choice--card"><input class="at-choice__control" type="radio" name="g-plan"><span><span class="at-choice__text">Plus</span><span class="at-choice__hint">₹199 / month</span></span></label></fieldset>
+            <div class="at-stack at-stack--sm"><button type="button" class="at-switch" role="switch" aria-checked="true" data-at-switch><span class="at-switch__track" aria-hidden="true"></span>Face ID</button><button type="button" class="at-switch" role="switch" aria-checked="false" data-at-switch><span class="at-switch__track" aria-hidden="true"></span>Hide balances</button>
+              <fieldset class="at-fieldset"><legend class="at-sr-only">Period</legend><div class="at-segmented"><span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="g-period" id="g-p1" checked><label class="at-segmented__label" for="g-p1">1M</label></span><span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="g-period" id="g-p2"><label class="at-segmented__label" for="g-p2">1Y</label></span><span class="at-segmented__option"><input class="at-segmented__input" type="radio" name="g-period" id="g-p3"><label class="at-segmented__label" for="g-p3">All</label></span></div></fieldset></div>
+          </div></div>
+          <div><h3 class="at-h4">Badges, tags, avatars</h3><div class="row"><span class="at-badge at-badge--brand">Brand</span><span class="at-badge at-badge--accent">Accent</span><span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Active</span><span class="at-badge at-badge--warning"><span class="at-badge__dot" aria-hidden="true"></span>Pending</span><span class="at-badge at-badge--danger"><span class="at-badge__dot" aria-hidden="true"></span>Failed</span><span class="at-badge at-badge--info">Beta</span><button type="button" class="at-tag" aria-pressed="true">Selected</button><button type="button" class="at-tag" aria-pressed="false">Tag</button><span class="at-avatar" role="img" aria-label="Priya Nair">PN</span><span class="at-avatar at-avatar--lg" role="img" aria-label="Aarav Shah">AS</span></div></div>
+          <div><h3 class="at-h4">Feedback</h3><div class="at-stack">
+            <div class="at-alert at-alert--success" role="status"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><div class="at-alert__body"><strong class="at-alert__title">Verified</strong>Your account is ready.</div></div>
+            <div class="at-alert at-alert--danger" role="alert"><svg class="at-icon at-alert__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg><div class="at-alert__body"><strong class="at-alert__title">Payment failed</strong>Your bank declined the transaction.</div></div>
+            <div><div class="at-progress-label"><span id="g-pg">Uploading</span><span class="at-tabular">40%</span></div><div class="at-progress" role="progressbar" aria-labelledby="g-pg" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><div class="at-progress__bar" style="--value:40%"></div></div></div>
+            <div class="row"><button type="button" class="at-btn at-btn--secondary at-btn--sm" onclick="Atlas.toast({title:'Saved', body:'Theme updated', variant:'success'})">Show toast</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" aria-controls="g-dlg" data-at-dialog>Open dialog</button>
+              <span class="at-anchor"><button type="button" class="at-btn at-btn--secondary at-btn--sm" id="g-menu-btn" aria-controls="g-menu" data-at-menu>Menu</button><ul class="at-menu" id="g-menu" role="menu" aria-labelledby="g-menu-btn" hidden><li role="none"><button type="button" class="at-menu__item" role="menuitem">Rename</button></li><li role="none"><button type="button" class="at-menu__item" role="menuitem">Duplicate</button></li><li role="none" class="at-menu__separator"></li><li role="none"><button type="button" class="at-menu__item at-menu__item--danger" role="menuitem">Delete</button></li></ul></span></div>
+          </div></div>
+          <div><h3 class="at-h4">Navigation</h3><div class="at-stack">
+            <div class="at-tabs" data-at-tabs><div class="at-tabs__list" role="tablist" aria-label="Sample tabs"><button type="button" class="at-tabs__tab" role="tab" id="g-t1" aria-controls="g-p1x" aria-selected="true">Overview</button><button type="button" class="at-tabs__tab" role="tab" id="g-t2" aria-controls="g-p2x" aria-selected="false">Statements</button></div><div class="at-tabs__panel" role="tabpanel" id="g-p1x" aria-labelledby="g-t1"><p class="at-body-sm at-text-secondary" style="margin:0">Selected tab: underline plus weight, not only colour.</p></div><div class="at-tabs__panel" role="tabpanel" id="g-p2x" aria-labelledby="g-t2" hidden><p class="at-body-sm at-text-secondary" style="margin:0">Statements.</p></div></div>
+            <nav aria-label="Breadcrumb"><ol class="at-breadcrumb"><li><a href="#p-components">Home</a></li><li><a href="#p-components">Accounts</a></li><li><span aria-current="page">Savings</span></li></ol></nav>
+            <nav aria-label="Pages"><ul class="at-pagination"><li><a href="#p-components" aria-current="page">1</a></li><li><a href="#p-components">2</a></li><li><a href="#p-components">3</a></li><li><a href="#p-components" aria-label="Next page">›</a></li></ul></nav>
+            <ol class="at-stepper" aria-label="Setup progress"><li class="at-stepper__item is-complete"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">Account<span class="at-sr-only">, completed</span></span></li><li class="at-stepper__item" aria-current="step"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">Verify<span class="at-sr-only">, current step</span></span></li><li class="at-stepper__item"><span class="at-stepper__bar" aria-hidden="true"></span><span class="at-stepper__label">Fund</span></li></ol>
+          </div></div>
+          <div><h3 class="at-h4">Table</h3><div class="at-table-wrap" role="region" aria-labelledby="g-cap" tabindex="0"><table class="at-table"><caption id="g-cap" class="at-sr-only">Sample transactions</caption><thead><tr><th scope="col">Date</th><th scope="col">Description</th><th scope="col" class="is-numeric">Amount</th><th scope="col">Status</th></tr></thead><tbody><tr><td>18 Oct</td><td>Transfer to Aarav</td><td class="is-numeric">−₹2,400.00</td><td><span class="at-badge at-badge--success"><span class="at-badge__dot" aria-hidden="true"></span>Settled</span></td></tr><tr><td>05 Oct</td><td>Gold SIP</td><td class="is-numeric">−₹5,000.00</td><td><span class="at-badge at-badge--warning"><span class="at-badge__dot" aria-hidden="true"></span>Processing</span></td></tr></tbody></table></div></div>
+        </div>
+        <dialog class="at-dialog at-dialog--sm" id="g-dlg" aria-labelledby="g-dlg-t" aria-describedby="g-dlg-d"><div class="at-dialog__header"><h2 class="at-dialog__title" id="g-dlg-t">Confirm transfer</h2></div><div class="at-dialog__body"><p id="g-dlg-d" style="margin:0">Send ₹5,000 to Aarav Shah? This can't be undone.</p></div><div class="at-dialog__footer"><button type="button" class="at-btn at-btn--secondary" data-at-close autofocus>Cancel</button><button type="button" class="at-btn" data-at-close>Send ₹5,000</button></div></dialog>
+      </div>
+
+      <!-- ---------- Tokens -->
+      <div class="at-tabs__panel" role="tabpanel" id="p-tokens" aria-labelledby="t-tokens" hidden>
+        <p class="at-body-sm at-text-secondary" style="margin:0 0 16px">Each scale is solved so every step has a fixed contrast against white (shown under the hex). Your exact colour is pinned to its nearest step (outlined); roles are then chosen so each pairing passes.</p>
+        <div class="at-stack at-stack--lg" id="scales"></div>
+        <h3 class="at-h4" style="margin:32px 0 12px">Semantic roles</h3>
+        <div class="at-table-wrap" role="region" aria-label="Semantic role values" tabindex="0"><table class="at-table at-table--dense role-table"><thead><tr><th scope="col">Role</th><th scope="col">Light</th><th scope="col">Dark</th><th scope="col">Used for</th></tr></thead><tbody id="role-rows"></tbody></table></div>
+      </div>
+
+      <!-- ---------- Export -->
+      <div class="at-tabs__panel" role="tabpanel" id="p-export" aria-labelledby="t-export" hidden>
+        <div class="at-tabs at-tabs--pills" data-at-tabs>
+          <div class="at-tabs__list" role="tablist" aria-label="Export format">
+            <button type="button" class="at-tabs__tab" role="tab" id="x-css-t" aria-controls="x-css" aria-selected="true">CSS</button>
+            <button type="button" class="at-tabs__tab" role="tab" id="x-json-t" aria-controls="x-json" aria-selected="false">Tokens JSON</button>
+            <button type="button" class="at-tabs__tab" role="tab" id="x-tw-t" aria-controls="x-tw" aria-selected="false">Tailwind</button>
+            <button type="button" class="at-tabs__tab" role="tab" id="x-figma-t" aria-controls="x-figma" aria-selected="false">Figma</button>
+          </div>
+          <div class="at-tabs__panel" role="tabpanel" id="x-css" aria-labelledby="x-css-t">
+            <div class="export-head"><p class="at-body-sm at-text-secondary">Drop-in override. Load after <code class="at-code">atlas-tokens.css</code> and before <code class="at-code">atlas.css</code>; every component picks it up.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="css">Copy CSS</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="css">Download .css</button></div></div>
+            <pre class="studio-code" id="out-css" tabindex="0" aria-label="Generated CSS"></pre>
+          </div>
+          <div class="at-tabs__panel" role="tabpanel" id="x-json" aria-labelledby="x-json-t" hidden>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">W3C Design Tokens (DTCG) format with light and dark semantic sets. Also the file to re-import into Studio later.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="json">Copy JSON</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="json">Download .json</button></div></div>
+            <pre class="studio-code" id="out-json" tabindex="0" aria-label="Generated tokens JSON"></pre>
+          </div>
+          <div class="at-tabs__panel" role="tabpanel" id="x-tw" aria-labelledby="x-tw-t" hidden>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">Tailwind preset: scales as hex, roles as the CSS variables so dark mode keeps working.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="tw">Copy preset</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="tw">Download .js</button></div></div>
+            <pre class="studio-code" id="out-tw" tabindex="0" aria-label="Generated Tailwind preset"></pre>
+          </div>
+          <div class="at-tabs__panel" role="tabpanel" id="x-figma" aria-labelledby="x-figma-t" hidden>
+            <div class="export-head"><p class="at-body-sm at-text-secondary">Tokens Studio format (free Figma plugin). It creates Figma variables with Light and Dark modes from the sets below.</p><div class="row"><button type="button" class="at-btn at-btn--sm" data-copy="figma">Copy for Figma</button><button type="button" class="at-btn at-btn--secondary at-btn--sm" data-download="figma">Download .json</button></div></div>
+            <ol class="steps"><li>In Figma, open the Tokens Studio plugin and choose Tools → Load from file / JSON.</li><li>Paste this JSON. Enable the <code class="at-code">global</code> set plus either <code class="at-code">light</code> or <code class="at-code">dark</code>.</li><li>Use Styles &amp; Variables → Export to create Figma variables with both modes.</li></ol>
+            <pre class="studio-code" id="out-figma" tabindex="0" aria-label="Generated Tokens Studio JSON" style="margin-top:12px"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="at-dialog" id="import-dlg" aria-labelledby="import-t" aria-describedby="import-d">
+    <div class="at-dialog__header"><h2 class="at-dialog__title" id="import-t">Import a theme</h2><button type="button" class="at-btn at-btn--tertiary at-btn--sm at-btn--icon" aria-label="Close" data-at-close><svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="at-dialog__body">
+      <p id="import-d" style="margin-top:0">Paste a Tokens JSON exported from Studio, or a minimal object like <code class="at-code">{"primary":"#FF5A1F","secondary":"#0B3D91"}</code>.</p>
+      <div class="at-field"><label class="at-field__label" for="import-text">Theme JSON</label><textarea class="at-textarea" id="import-text" rows="8" autofocus spellcheck="false" aria-describedby="import-err"></textarea><p class="at-field__error" id="import-err"></p></div>
+    </div>
+    <div class="at-dialog__footer"><button type="button" class="at-btn at-btn--secondary" data-at-close>Cancel</button><button type="button" class="at-btn" id="import-apply">Apply theme</button></div>
+  </dialog>
+</main>
+
+<script src="../js/atlas.js"></script>
+<script>
+/* ======================================================================
+   Atlas Studio engine. Same maths as scripts/palette.mjs, run in the browser.
+   ====================================================================== */
+(function () {
+  "use strict";
+  const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+  const LADDER = { 50: 1.06, 100: 1.16, 200: 1.38, 300: 1.8, 400: 2.2, 500: 3.5, 600: 5.4, 700: 7.5, 800: 10.2, 900: 13.5, 950: 17.5 };
+  const CHROMA = { 50: 0.025, 100: 0.05, 200: 0.085, 300: 0.12, 400: 0.16, 500: 0.17, 600: 0.17, 700: 0.155, 800: 0.14, 900: 0.12, 950: 0.09 };
+  const WHITE = [255, 255, 255], BLACK = [0, 0, 0];
+  const FONTS = {
+    inter: { display: '"Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', body: '"Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', link: "family=Inter:wght@400;500;600;700" },
+    jakarta: { display: '"Plus Jakarta Sans", "Inter", sans-serif', body: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', link: "family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700" },
+    manrope: { display: '"Manrope", "Inter", sans-serif', body: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', link: "family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700" },
+    plex: { display: '"IBM Plex Sans", "Inter", sans-serif', body: '"IBM Plex Sans", "Inter", -apple-system, sans-serif', link: "family=IBM+Plex+Sans:wght@400;500;600;700" },
+    dm: { display: '"DM Sans", "Inter", sans-serif', body: '"DM Sans", "Inter", -apple-system, sans-serif', link: "family=DM+Sans:wght@400;500;600;700" },
+    fraunces: { display: '"Fraunces", Georgia, serif', body: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', link: "family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700" },
+  };
+  const RADII = { sharp: { button: 4, field: 4, card: 8, overlay: 12 }, soft: { button: 8, field: 8, card: 16, overlay: 24 }, round: { button: 12, field: 12, card: 20, overlay: 28 }, pill: { button: 9999, field: 12, card: 24, overlay: 32 } };
+  const DEFAULTS = { name: "Northwind", primary: "#4362CE", secondary: "#0893C6", neutral: "tinted", corners: "soft", type: "inter" };
+
+  /* ---------- colour maths ---------- */
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const hexToRgb = (h) => h.replace("#", "").match(/../g).map((x) => parseInt(x, 16));
+  const rgbToHex = (rgb) => "#" + rgb.map((v) => clamp(Math.round(v), 0, 255).toString(16).padStart(2, "0").toUpperCase()).join("");
+  const s2l = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const l2s = (v) => (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+  const luminance = ([r, g, b]) => { const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+  const contrast = (a, b) => { const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  function rgbToOklch([r, g, b]) {
+    const [R, G, B] = [s2l(r), s2l(g), s2l(b)];
+    const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B), m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B), s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+    const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, a = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+    return { L, C: Math.hypot(a, bb), h: ((Math.atan2(bb, a) * 180) / Math.PI + 360) % 360 };
+  }
+  function oklchToLinear(L, C, h) {
+    const a = C * Math.cos((h * Math.PI) / 180), b = C * Math.sin((h * Math.PI) / 180);
+    const l_ = L + 0.3963377774 * a + 0.2158037573 * b, m_ = L - 0.1055613458 * a - 0.0638541728 * b, s_ = L - 0.0894841775 * a - 1.291485548 * b;
+    const l = l_ ** 3, m = m_ ** 3, s = s_ ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+  }
+  const inGamut = (rgb) => rgb.every((v) => v >= -1e-6 && v <= 1 + 1e-6);
+  function toRgb(L, C, h) { let c = C, rgb = oklchToLinear(L, c, h); while (!inGamut(rgb) && c > 0) { c -= 0.002; rgb = oklchToLinear(L, c, h); } return rgb.map((v) => Math.round(clamp(l2s(v), 0, 1) * 255)); }
+  function solve(target, C, h) {
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (contrast(toRgb(mid, C, h), WHITE) > target) lo = mid; else hi = mid; }
+    let L = lo, rgb = toRgb(L, C, h); while (contrast(rgb, WHITE) < target && L > 0) { L -= 0.0005; rgb = toRgb(L, C, h); } return rgb;
+  }
+  /* A full scale from a hue, with the user's exact colour pinned to its nearest step. */
+  function scaleFrom(hex, chromaFloor, chromaCap) {
+    const rgb = hexToRgb(hex), { C, h } = rgbToOklch(rgb);
+    const c = chromaCap !== undefined ? chromaCap : Math.max(chromaFloor, C);
+    const out = {};
+    for (const s of STEPS) out[s] = rgbToHex(solve(LADDER[s], Math.min(c, CHROMA[s]), h));
+    let pin = null;
+    if (chromaCap === undefined) { const R0 = contrast(rgb, WHITE); pin = STEPS.reduce((best, s) => (Math.abs(Math.log(LADDER[s]) - Math.log(R0)) < Math.abs(Math.log(LADDER[best]) - Math.log(R0)) ? s : best), 50); out[pin] = hex.toUpperCase(); }
+    return { steps: out, pin, hue: h };
+  }
+  function neutralScale(primaryHex, mode) {
+    const { h } = rgbToOklch(hexToRgb(primaryHex));
+    const hue = mode === "cool" ? 262 : mode === "warm" ? 70 : h;
+    return scaleFrom(rgbToHex(toRgb(0.5, 0.1, hue)), 0, mode === "pure" ? 0 : 0.012);
+  }
+
+  /* ---------- role selection: every choice is a contrast rule ---------- */
+  const idx = (s) => STEPS.indexOf(s), at = (i) => STEPS[clamp(i, 0, STEPS.length - 1)];
+  const R = (hex) => contrast(hexToRgb(hex), WHITE);
+  const cr = (a, b) => contrast(hexToRgb(a), hexToRgb(b));
+  function textOn(fill, darkCandidate) { if (cr("#FFFFFF", fill) >= 4.5) return "#FFFFFF"; if (cr(darkCandidate, fill) >= 4.5) return darkCandidate; return "#000000"; }
+  /* Hover/active fills: step away from the resting fill in the preferred direction (+1 darker, -1 lighter),
+     but flip direction if the button text would drop below 4.5:1 on that shade. */
+  function states(s, step, text, dir) {
+    const pick = (k) => { let a = at(idx(step) + dir * k); if (a === step || cr(text, s[a]) < 4.5) a = at(idx(step) - dir * k); return s[a]; };
+    return [pick(1), pick(2)];
+  }
+  /* First step, scanning from the pinned step in a direction (+1 darker, -1 lighter), whose real contrast
+     against white satisfies pred. Uses actual scale values, so a pinned colour never breaks a rule. */
+  function stepWhere(s, start, dir, pred) { for (let i = idx(start); i >= 0 && i < STEPS.length; i += dir) if (pred(R(s[STEPS[i]]))) return STEPS[i]; return dir > 0 ? 950 : 50; }
+  function roles(scale, neutral, notes, label) {
+    const s = scale.steps, pin = scale.pin, r0 = R(s[pin]);
+    const light = {}, dark = {};
+    // light: fill = pinned colour; text chosen to pass; indicator/link darkened only as far as needed
+    light.action = s[pin];
+    light["text-on-action"] = textOn(light.action, s[950]);
+    [light["action-hover"], light["action-active"]] = states(s, pin, light["text-on-action"], 1);
+    const ind = stepWhere(s, pin, 1, (r) => r >= 3.3); light.brand = s[ind];        // >= 3:1 on canvas (1.06)
+    light["text-on-brand"] = textOn(light.brand, s[950]);
+    [light["brand-hover"], light["brand-active"]] = states(s, ind, light["text-on-brand"], 1);
+    const txt = stepWhere(s, pin, 1, (r) => r >= 5.4); light["brand-text"] = s[txt]; light["text-link"] = s[txt];   // >= 4.5 on sunken (1.16)
+    light["text-link-hover"] = s[at(idx(txt) + (idx(txt) >= 9 ? -1 : 1))];
+    light["brand-subtle"] = s[50]; light["brand-subtle-hover"] = s[100]; light["brand-border"] = s[300]; light["bg-selected"] = s[50]; light.selection = s[100]; light["focus-ring"] = light.brand; light["focus-ring-inner"] = "#FFFFFF";
+    // dark: surfaces are neutral 950 / 900 / 800 (17.5 / 13.5 / 10.2 vs white)
+    const dAct = stepWhere(s, pin, -1, (r) => r <= 5.8); dark.action = s[dAct];        // >= 3:1 on canvas
+    dark["text-on-action"] = textOn(dark.action, neutral.steps[950]);
+    [dark["action-hover"], dark["action-active"]] = states(s, dAct, dark["text-on-action"], -1);
+    const dInd = stepWhere(s, pin, -1, (r) => r <= 3.4); dark.brand = s[dInd];        // >= 3:1 on raised
+    dark["text-on-brand"] = textOn(dark.brand, neutral.steps[950]);
+    [dark["brand-hover"], dark["brand-active"]] = states(s, dInd, dark["text-on-brand"], -1);
+    const dTxt = stepWhere(s, pin, -1, (r) => r <= 2.2); dark["brand-text"] = s[dTxt]; dark["text-link"] = s[dTxt]; dark["text-link-hover"] = s[at(idx(dTxt) - 1)];   // >= 4.5 on raised
+    dark["brand-subtle"] = s[900]; dark["brand-subtle-hover"] = s[800]; dark["brand-border"] = s[700]; dark["bg-selected"] = s[900]; dark.selection = s[800]; dark["focus-ring"] = dark.brand; dark["focus-ring-inner"] = neutral.steps[950];
+    if (r0 < 4.5) notes.push(`${label} ${s[pin]} is light (${r0.toFixed(1)}:1 on white), so buttons use ${light["text-on-action"] === "#000000" ? "black" : "a deep shade"} text and links use step ${txt} (${R(s[txt]).toFixed(1)}:1).`);
+    else notes.push(`${label} ${s[pin]} is ${r0.toFixed(1)}:1 on white, so buttons keep white text${txt !== pin ? ` and links use step ${txt} for 4.5:1 on tinted surfaces` : " and links use it directly"}.`);
+    if (dAct !== pin) notes.push(`In dark mode ${label.toLowerCase()} buttons lighten to step ${dAct} so they stay 3:1 against the dark surfaces.`);
+    return { light, dark };
+  }
+  function accentRoles(scale, neutral, notes) {
+    const s = scale.steps, pin = scale.pin;
+    const li = stepWhere(s, pin, 1, (r) => r >= 3.3), lt = stepWhere(s, pin, 1, (r) => r >= 5.4);
+    const light = { accent: s[li], "accent-text": s[lt], "accent-bg": s[50], "accent-border": s[300] };
+    light["text-on-accent"] = textOn(light.accent, s[950]); light["accent-hover"] = states(s, li, light["text-on-accent"], 1)[0];
+    const di = stepWhere(s, pin, -1, (r) => r <= 3.4), dt = stepWhere(s, pin, -1, (r) => r <= 2.2);
+    const dark = { accent: s[di], "accent-text": s[dt], "accent-bg": s[900], "accent-border": s[700] };
+    dark["text-on-accent"] = textOn(dark.accent, neutral.steps[950]); dark["accent-hover"] = states(s, di, dark["text-on-accent"], -1)[0];
+    notes.push(`Secondary ${s[pin]} drives the accent roles: tinted band and badges use step 50 with step ${lt} text (${cr(s[lt], s[50]).toFixed(1)}:1).`);
+    return { light, dark };
+  }
+
+  /* ---------- theme assembly ---------- */
+  function buildTheme(st) {
+    const notes = [];
+    const brand = scaleFrom(st.primary, 0.1), accent = scaleFrom(st.secondary, 0.1), neutral = neutralScale(st.primary, st.neutral);
+    const b = roles(brand, neutral, notes, "Primary"), a = accentRoles(accent, neutral, notes);
+    const light = { ...b.light, ...a.light }, dark = { ...b.dark, ...a.dark };
+    notes.push({ tinted: "Neutrals carry a faint tint of the primary hue.", cool: "Neutrals are cool grey.", warm: "Neutrals are warm grey.", pure: "Neutrals are pure grey." }[st.neutral]);
+    return { brand, accent, neutral, light, dark, radius: RADII[st.corners], font: FONTS[st.type], notes, settings: st };
+  }
+  const NEUTRAL_ROLES = {
+    light: { "bg-canvas": 50, "bg-surface": "#FFFFFF", "bg-raised": "#FFFFFF", "bg-sunken": 100, "bg-inverse": 900, "bg-hover": 100, "bg-active": 200, "bg-disabled": 100, "text-primary": 900, "text-secondary": 700, "text-tertiary": 600, "text-placeholder": 600, "text-disabled": 400, "text-inverse": "#FFFFFF", "border-subtle": 200, "border-default": 300, "border-strong": 500, "border-inverse": 700, skeleton: 200, "skeleton-shine": 100 },
+    dark: { "bg-canvas": 950, "bg-surface": 900, "bg-raised": 800, "bg-sunken": 950, "bg-inverse": 50, "bg-hover": 800, "bg-active": 700, "bg-disabled": 800, "text-primary": 50, "text-secondary": 300, "text-tertiary": 400, "text-placeholder": 400, "text-disabled": 600, "text-inverse": 900, "border-subtle": 800, "border-default": 700, "border-strong": 400, "border-inverse": 300, skeleton: 800, "skeleton-shine": 700 },
+  };
+  const resolveNeutral = (th, theme, role) => { const v = NEUTRAL_ROLES[theme][role]; return typeof v === "number" ? th.neutral.steps[v] : v; };
+
+  /* ---------- contrast proof (same pairs the repo checker uses for these roles) ---------- */
+  const PAIRS = [
+    ["text-on-action", ["action", "action-hover", "action-active"], 4.5, "Button text on primary"],
+    ["text-link", ["bg-surface", "bg-canvas", "bg-sunken", "bg-selected"], 4.5, "Links on surfaces"],
+    ["brand-text", ["brand-subtle", "bg-surface"], 4.5, "Brand text on tint"],
+    ["text-on-brand", ["brand"], 4.5, "Text on brand indicator"],
+    ["accent-text", ["accent-bg", "bg-surface", "bg-canvas"], 4.5, "Accent text on tint and surfaces"],
+    ["text-on-accent", ["accent", "accent-hover"], 4.5, "Text on accent button"],
+    ["text-primary", ["bg-canvas", "bg-surface", "bg-raised", "bg-sunken", "bg-selected", "accent-bg"], 7, "Body text (AAA)"],
+    ["text-secondary", ["bg-canvas", "bg-surface", "bg-raised", "bg-sunken", "bg-selected", "accent-bg"], 4.5, "Secondary text"],
+    ["text-tertiary", ["bg-canvas", "bg-surface", "bg-raised", "bg-sunken"], 4.5, "Tertiary text"],
+    ["brand", ["bg-surface", "bg-canvas", "bg-raised"], 3, "Focus ring, checks, tab underline"],
+    ["accent", ["bg-surface", "bg-canvas"], 3, "Accent icons and borders"],
+    ["focus-ring", ["focus-ring-inner"], 3, "Focus ring vs halo"],
+    ["border-strong", ["bg-surface", "bg-canvas", "bg-raised"], 3, "Input borders"],
+  ];
+  function check(th) {
+    const val = (theme, role) => th[theme][role] || resolveNeutral(th, theme, role);
+    const rows = [];
+    for (const theme of ["light", "dark"]) for (const [fg, bgs, min, label] of PAIRS) { let worst = Infinity; for (const bg of bgs) worst = Math.min(worst, cr(val(theme, fg), val(theme, bg))); rows.push({ theme, label, min, ratio: worst, ok: worst >= min }); }
+    return rows;
+  }
+
+  /* ---------- outputs ---------- */
+  const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "brand";
+  function cssFor(th, scoped) {
+    const sel = scoped ? `:root[data-brand="${slug(th.settings.name)}"]` : ":root";
+    const prim = (name, sc) => STEPS.map((s) => `  --at-${name}-${s}: ${sc.steps[s]};`).join("\n");
+    const sem = (o) => Object.entries(o).map(([k, v]) => `  --at-${k}: ${v};`).join("\n");
+    const rad = Object.entries(th.radius).map(([k, v]) => `  --at-radius-${k}: ${v}px;`).join("\n");
+    const fonts = `  --at-font-display: ${th.font.display};\n  --at-font-sans: ${th.font.body};`;
+    return `/* ${th.settings.name} theme for Atlas, generated by Atlas Studio.\n   Primary ${th.settings.primary} · Secondary ${th.settings.secondary} · Neutrals ${th.settings.neutral} · Corners ${th.settings.corners}\n   Load after atlas-tokens.css. Every pairing below passes WCAG 2.2 AA in light and dark. */\n\n${sel} {\n${prim("brand", th.brand)}\n${prim("accent", th.accent)}\n${prim("neutral", th.neutral)}\n\n${sem(th.light)}\n\n${rad}\n${fonts}\n}\n\n@media (prefers-color-scheme: dark) {\n  ${sel}:not([data-theme="light"]) {\n${sem(th.dark).replace(/^/gm, "  ")}\n  }\n}\n\n${sel}[data-theme="dark"] {\n${sem(th.dark)}\n}\n`;
+  }
+  function dtcgFor(th) {
+    const color = (hex) => ({ $type: "color", $value: hex });
+    const scale = (sc) => Object.fromEntries(STEPS.map((s) => [String(s), color(sc.steps[s])]));
+    const sem = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, color(v)]));
+    return JSON.stringify({ $description: `${th.settings.name} theme for the Atlas design system (generated by Atlas Studio)`, $extensions: { "com.atlas.studio": th.settings }, color: { brand: scale(th.brand), accent: scale(th.accent), neutral: scale(th.neutral) }, semantic: { light: sem(th.light), dark: sem(th.dark) }, radius: Object.fromEntries(Object.entries(th.radius).map(([k, v]) => [k, { $type: "dimension", $value: `${v}px` }])), font: { display: { $type: "fontFamily", $value: th.font.display }, body: { $type: "fontFamily", $value: th.font.body } } }, null, 2);
+  }
+  function tailwindFor(th) {
+    const scale = (sc) => Object.fromEntries(STEPS.map((s) => [String(s), sc.steps[s]]));
+    const roles = Object.fromEntries(Object.keys(th.light).map((k) => [k, `var(--at-${k})`]));
+    return `// ${th.settings.name} · Tailwind preset generated by Atlas Studio. Import the CSS theme first.\nmodule.exports = ${JSON.stringify({ theme: { extend: { colors: { brand: scale(th.brand), accent: scale(th.accent), neutral: scale(th.neutral), ...roles }, borderRadius: Object.fromEntries(Object.entries(th.radius).map(([k, v]) => [k, `${v}px`])), fontFamily: { display: [th.font.display], sans: [th.font.body] } } } }, null, 2)};\n`;
+  }
+  function figmaFor(th) {
+    const tok = (v, type = "color") => ({ value: v, type });
+    const scale = (sc) => Object.fromEntries(STEPS.map((s) => [String(s), tok(sc.steps[s])]));
+    const ref = (hex, sets) => { for (const [name, sc] of sets) for (const s of STEPS) if (sc.steps[s] === hex) return `{color.${name}.${s}}`; return hex; };
+    const sets = [["brand", th.brand], ["accent", th.accent], ["neutral", th.neutral]];
+    const sem = (theme) => { const o = {}; for (const [k, v] of Object.entries(th[theme])) o[k] = tok(ref(v, sets)); for (const k of Object.keys(NEUTRAL_ROLES[theme])) o[k] = tok(ref(resolveNeutral(th, theme, k), sets)); return o; };
+    return JSON.stringify({ global: { color: { brand: scale(th.brand), accent: scale(th.accent), neutral: scale(th.neutral) }, radius: Object.fromEntries(Object.entries(th.radius).map(([k, v]) => [k, tok(String(v), "borderRadius")])), font: { display: tok(th.font.display.split(",")[0].replace(/"/g, ""), "fontFamilies"), body: tok(th.font.body.split(",")[0].replace(/"/g, ""), "fontFamilies") } }, light: { semantic: sem("light") }, dark: { semantic: sem("dark") }, $themes: [{ id: "light", name: "Light", selectedTokenSets: { global: "enabled", light: "enabled" } }, { id: "dark", name: "Dark", selectedTokenSets: { global: "enabled", dark: "enabled" } }], $metadata: { tokenSetOrder: ["global", "light", "dark"] } }, null, 2);
+  }
+
+  /* ---------- UI ---------- */
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const el = { name: $("#brand-name"), pHex: $("#primary-hex"), pPick: $("#primary-picker"), sHex: $("#secondary-hex"), sPick: $("#secondary-picker"), type: $("#type-pair") };
+  let settings = { ...DEFAULTS }, theme = null, fontLink = null;
+  const validHex = (v) => /^#?[0-9a-fA-F]{6}$/.test(v.trim());
+  const normHex = (v) => "#" + v.trim().replace("#", "").toUpperCase();
+
+  function readSettings() {
+    settings = { name: el.name.value.trim() || "Brand", primary: validHex(el.pHex.value) ? normHex(el.pHex.value) : settings.primary, secondary: validHex(el.sHex.value) ? normHex(el.sHex.value) : settings.secondary, neutral: $('input[name="neutral"]:checked').value, corners: $('input[name="corners"]:checked').value, type: el.type.value };
+    el.pPick.value = settings.primary; el.sPick.value = settings.secondary;
+    el.pHex.setAttribute("aria-invalid", !validHex(el.pHex.value)); el.sHex.setAttribute("aria-invalid", !validHex(el.sHex.value));
+  }
+  function writeSettings(st) {
+    el.name.value = st.name; el.pHex.value = st.primary; el.pPick.value = st.primary; el.sHex.value = st.secondary; el.sPick.value = st.secondary; el.type.value = st.type;
+    const n = $(`input[name="neutral"][value="${st.neutral}"]`); if (n) n.checked = true;
+    const c = $(`input[name="corners"][value="${st.corners}"]`); if (c) c.checked = true;
+  }
+  function loadFonts(key) {
+    const href = `https://fonts.googleapis.com/css2?${FONTS[key].link}&display=swap`;
+    if (fontLink && fontLink.href === href) return;
+    fontLink = fontLink || document.createElement("link"); fontLink.rel = "stylesheet"; fontLink.href = href; document.head.appendChild(fontLink);
+  }
+  function render() {
+    readSettings();
+    theme = buildTheme(settings);
+    loadFonts(settings.type);
+    $("#studio-theme").textContent = cssFor(theme, false);
+    $$("[data-brand-name]").forEach((n) => (n.textContent = settings.name));
+    $$("[data-brand-initial]").forEach((n) => (n.textContent = settings.name[0].toUpperCase()));
+    // contrast
+    const rows = check(theme), fails = rows.filter((r) => !r.ok);
+    const badge = $("#contrast-badge"); badge.className = `at-badge ${fails.length ? "at-badge--danger" : "at-badge--success"}`; badge.innerHTML = `<span class="at-badge__dot" aria-hidden="true"></span>${fails.length ? `${fails.length} to fix` : `All ${rows.length} pass`}`;
+    const key = ["Button text on primary", "Links on surfaces", "Accent text on tint and surfaces", "Body text (AAA)", "Focus ring, checks, tab underline"];
+    $("#check-list").innerHTML = rows.filter((r) => r.theme === "light" && key.includes(r.label)).map((r) => { const d = rows.find((x) => x.theme === "dark" && x.label === r.label); return `<li><span>${r.label}</span><span class="at-tabular">${r.ratio.toFixed(1)} · ${d.ratio.toFixed(1)}</span></li>`; }).join("") + `<li class="at-caption" style="justify-content:flex-start;margin-top:4px">light · dark ratios</li>`;
+    $("#notes").innerHTML = theme.notes.map((n) => `<li>${n}</li>`).join("");
+    // tokens tab
+    $("#scales").innerHTML = [["Primary (brand)", theme.brand], ["Secondary (accent)", theme.accent], ["Neutral", theme.neutral]].map(([label, sc]) => `<div><p class="at-label" style="margin:0 0 8px">${label}</p><div class="scale" role="list" aria-label="${label} scale">${STEPS.map((s) => `<div class="scale__step${sc.pin === s ? " is-pinned" : ""}" role="listitem" style="background:${sc.steps[s]};color:${s >= 600 ? "#fff" : "#16191F"}" aria-label="${label} ${s} ${sc.steps[s]}${sc.pin === s ? ", your colour" : ""}"><b>${s}</b>${sc.steps[s]}<span>${R(sc.steps[s]).toFixed(1)}:1</span></div>`).join("")}</div></div>`).join("");
+    const USE = { action: "Primary button fill", "text-on-action": "Primary button text", brand: "Focus ring, checkbox, tab underline, progress", "brand-text": "Brand-coloured text", "text-link": "Links", "brand-subtle": "Selected rows, tinted fills", accent: "Accent button, icons", "accent-text": "Text on accent tint", "accent-bg": "Hero band, badges, avatars", "focus-ring": "Focus outline" };
+    $("#role-rows").innerHTML = Object.keys(USE).map((k) => `<tr><th scope="row"><code>--at-${k}</code></th><td><span class="chip" style="background:${theme.light[k]}"></span><code>${theme.light[k]}</code></td><td><span class="chip" style="background:${theme.dark[k]}"></span><code>${theme.dark[k]}</code></td><td>${USE[k]}</td></tr>`).join("");
+    // exports
+    $("#out-css").textContent = cssFor(theme, true);
+    $("#out-json").textContent = dtcgFor(theme);
+    $("#out-tw").textContent = tailwindFor(theme);
+    $("#out-figma").textContent = figmaFor(theme);
+    try { localStorage.setItem("atlas-studio", JSON.stringify(settings)); } catch (_) { /* ignore */ }
+  }
+
+  /* events */
+  const onInput = () => render();
+  [el.name, el.pHex, el.sHex].forEach((i) => i.addEventListener("input", onInput));
+  el.pPick.addEventListener("input", () => { el.pHex.value = el.pPick.value.toUpperCase(); render(); });
+  el.sPick.addEventListener("input", () => { el.sHex.value = el.sPick.value.toUpperCase(); render(); });
+  $$('input[name="neutral"], input[name="corners"]').forEach((r) => r.addEventListener("change", onInput));
+  el.type.addEventListener("change", onInput);
+  $$('input[name="vp"]').forEach((r) => r.addEventListener("change", () => $("#mock").classList.toggle("mock--phone", $('input[name="vp"]:checked').value === "phone")));
+  $("#reset-btn").addEventListener("click", () => { writeSettings(DEFAULTS); render(); Atlas.announce("Theme reset to Atlas defaults"); });
+  $("#random-btn").addEventListener("click", () => {
+    const h = Math.random() * 360, h2 = (h + 120 + Math.random() * 120) % 360;
+    writeSettings({ ...settings, primary: rgbToHex(toRgb(0.35 + Math.random() * 0.4, 0.14 + Math.random() * 0.06, h)), secondary: rgbToHex(toRgb(0.45 + Math.random() * 0.3, 0.12 + Math.random() * 0.06, h2)) }); render();
+  });
+  const outputs = { css: () => cssFor(theme, true), json: () => dtcgFor(theme), tw: () => tailwindFor(theme), figma: () => figmaFor(theme) };
+  const names = { css: `atlas-theme-${slug(settings.name)}.css`, json: `atlas-theme-${slug(settings.name)}.tokens.json`, tw: `atlas-theme-${slug(settings.name)}.tailwind.js`, figma: `atlas-theme-${slug(settings.name)}.tokens-studio.json` };
+  $$("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+    const text = outputs[b.dataset.copy]();
+    try { await navigator.clipboard.writeText(text); Atlas.toast({ title: "Copied", body: `${b.dataset.copy.toUpperCase()} is on your clipboard`, variant: "success" }); }
+    catch (_) { const pre = $(`#out-${b.dataset.copy}`); const range = document.createRange(); range.selectNodeContents(pre); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range); Atlas.toast({ title: "Select and copy", body: "Clipboard access was refused, so the code is selected for you.", variant: "warning" }); }
+  }));
+  $$("[data-download]").forEach((b) => b.addEventListener("click", () => {
+    const k = b.dataset.download, blob = new Blob([outputs[k]()], { type: k === "css" ? "text/css" : k === "tw" ? "text/javascript" : "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = names[k].replace(slug(DEFAULTS.name), slug(settings.name)); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    Atlas.toast({ body: "If the download did not start (some embedded previews block it), use Copy instead.", variant: "info", timeout: 6000 });
+  }));
+  $("#import-apply").addEventListener("click", () => {
+    const err = $("#import-err"); err.textContent = "";
+    try {
+      const j = JSON.parse($("#import-text").value);
+      const st = j.$extensions?.["com.atlas.studio"] || j;
+      const next = { ...DEFAULTS, ...settings };
+      if (st.name) next.name = String(st.name).slice(0, 40);
+      if (st.primary && validHex(st.primary)) next.primary = normHex(st.primary); else if (j.color?.brand) { const sc = j.color.brand; const v = sc["600"]?.$value || sc["600"]?.value; if (v) next.primary = normHex(v); }
+      if (st.secondary && validHex(st.secondary)) next.secondary = normHex(st.secondary);
+      if (RADII[st.corners]) next.corners = st.corners; if (FONTS[st.type]) next.type = st.type; if (["tinted", "cool", "warm", "pure"].includes(st.neutral)) next.neutral = st.neutral;
+      if (!validHex(next.primary)) throw new Error("No primary colour found");
+      writeSettings(next); render(); $("#import-dlg").close(); Atlas.toast({ title: "Theme imported", body: `${next.name}: ${next.primary} / ${next.secondary}`, variant: "success" });
+    } catch (e) { err.innerHTML = `<svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Could not read that JSON: ${e.message}. Paste an export from Studio or {"primary":"#RRGGBB","secondary":"#RRGGBB"}.`; $("#import-text").setAttribute("aria-invalid", "true"); $("#import-text").setAttribute("aria-describedby", "import-err"); }
+  });
+
+  /* boot: saved settings, then ?primary=&secondary= overrides */
+  let saved = null; try { saved = JSON.parse(localStorage.getItem("atlas-studio") || "null"); } catch (_) { /* ignore */ }
+  const q = new URLSearchParams(location.search);
+  const boot = { ...DEFAULTS, ...(saved || {}) };
+  if (q.get("primary") && validHex(q.get("primary"))) boot.primary = normHex(q.get("primary"));
+  if (q.get("secondary") && validHex(q.get("secondary"))) boot.secondary = normHex(q.get("secondary"));
+  if (q.get("name")) boot.name = q.get("name").slice(0, 40);
+  if (q.get("theme")) document.documentElement.dataset.theme = q.get("theme");
+  writeSettings(boot); render();
+  window.AtlasStudio = { buildTheme, check, cssFor, dtcgFor, figmaFor, tailwindFor, get theme() { return theme; } };
+})();
+</script>
+</body>
+</html>

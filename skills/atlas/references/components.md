@@ -757,3 +757,20 @@ Not in v1 on purpose. When added, follow the named APG pattern and reuse the ato
 | Tree view | Tree view | `aria-expanded` per node, typeahead |
 | Carousel | Carousel | Pause control, no auto-advance under reduced motion, slides as a list |
 | Rich text editor | Toolbar + `role="textbox"` with `aria-multiline` | Toolbar is one tab stop with arrows |
+
+## Brand presets and Studio
+
+Every component reads the semantic roles, so a brand skin is only tokens. Two ways to make one:
+
+- **Preset in `tokens.json`** (`presets.<name>`): hues, pinned hex overrides, semantic remaps, shape
+  roles. Build with `build_tokens.mjs`, prove with `check_contrast.mjs`, apply with
+  `data-brand="<name>"` on `<html>` after loading `atlas-brand-<name>.css`. The showcase's
+  `data-at-brand` button cycles presets.
+- **Atlas Studio** (`assets/templates/atlas-studio.html`): primary and secondary hex in, scales
+  solved on the contrast ladder, roles chosen by scanning real values, every pairing checked, then
+  export CSS / DTCG JSON / Tailwind / Tokens Studio JSON (Figma variables with Light and Dark modes).
+
+Role-driven classes added for skins: `.at-btn--accent`, `.at-badge--accent`; avatars use the accent
+tint. Primary buttons read `action` / `text-on-action`, so a light brand colour gets dark text
+without touching the markup.
+

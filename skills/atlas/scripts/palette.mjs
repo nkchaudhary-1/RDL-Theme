@@ -59,9 +59,22 @@ for (const [name, { h, c }] of Object.entries(hues)) {
   for (const [step, R] of Object.entries(ladder)) primitive[name][step] = hex(solve(R, Math.min(c, chroma[step]), h));
 }
 t.primitive = primitive;
+// Presets: re-solve only the hues they change, then pin any exact overrides.
+for (const [name, preset] of Object.entries(t.presets || {})) {
+  if (name.startsWith("_")) continue;
+  const prim = {};
+  for (const [hueName, { h, c }] of Object.entries(preset.hues || {})) {
+    prim[hueName] = {};
+    for (const [step, R] of Object.entries(ladder)) prim[hueName][step] = hex(solve(R, Math.min(c, chroma[step]), h));
+  }
+  for (const [hueName, steps] of Object.entries(preset.overrides || {})) { prim[hueName] = { ...(prim[hueName] || {}), ...steps }; }
+  preset.primitive = prim;
+}
 writeFileSync(file, JSON.stringify(t, null, 2) + "\n");
-for (const [name, steps] of Object.entries(primitive)) {
+const all = [["base", primitive], ...Object.entries(t.presets || {}).filter(([k]) => !k.startsWith("_")).map(([k, p]) => [k, p.primitive])];
+for (const [label, prims] of all) for (const [name, steps] of Object.entries(prims)) {
   if (typeof steps === "string") continue;
+  if (label !== "base") process.stdout.write(`[${label}] `);
   console.log(name.padEnd(8), Object.entries(steps).map(([s, hx]) => `${s} ${hx} ${contrast(hx.slice(1).match(/../g).map((x) => parseInt(x, 16)), WHITE).toFixed(2)}`).join("  "));
 }
 console.log(`wrote ${file}`);

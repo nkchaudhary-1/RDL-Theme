@@ -7,8 +7,9 @@
 <meta name="description" content="Every Atlas atom and component with its accessible markup, in light and dark.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../tokens/atlas-tokens.css">
+<link rel="stylesheet" href="../tokens/atlas-brand-wise.css">
 <link rel="stylesheet" href="../css/atlas.css">
-<script>/* Showcase only: ?theme=dark|light forces a theme before first paint. */ (function(){ var t = new URLSearchParams(location.search).get("theme"); if (t) document.documentElement.dataset.theme = t; })();</script>
+<script>/* Showcase only: ?theme=dark|light forces a theme before first paint. */ (function(){ var q = new URLSearchParams(location.search), t = q.get("theme"), b = q.get("brand"); if (t) document.documentElement.dataset.theme = t; if (b) document.documentElement.dataset.brand = b; })();</script>
 <style>
   /* Showcase chrome only; product UI uses the Atlas classes unchanged. */
   .demo-section { padding: var(--at-space-10) 0; border-bottom: 1px solid var(--at-border-subtle); scroll-margin-top: 80px; }
@@ -33,7 +34,7 @@
   .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: var(--at-space-10); }
   .layout > * { min-width: 0; }
   @media (max-width: 1023px) { .layout { grid-template-columns: minmax(0, 1fr); } .toc { position: static; } }
-  @media (max-width: 639px) { .type-sample { grid-template-columns: 1fr; gap: var(--at-space-1); } .swatches { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  @media (max-width: 639px) { [data-at-brand-label], [data-at-theme-label] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .at-navbar__actions { gap: var(--at-space-1); } .type-sample { grid-template-columns: 1fr; gap: var(--at-space-1); } .swatches { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 </style>
 </head>
 <body>
@@ -54,6 +55,10 @@
   </nav>
   <span class="at-navbar__spacer"></span>
   <div class="at-navbar__actions">
+    <button type="button" class="at-btn at-btn--secondary at-btn--sm" data-at-brand="wise">
+      <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="15.5" cy="10" r="1.2"/><path d="M12 12a3 3 0 0 0 0 6h1a1.5 1.5 0 0 0 0-3h-1"/></svg>
+      <span data-at-brand-label>Atlas</span>
+    </button>
     <button type="button" class="at-btn at-btn--secondary at-btn--sm" data-at-theme>
       <svg class="at-icon at-icon--sm" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span data-at-theme-label>System</span>

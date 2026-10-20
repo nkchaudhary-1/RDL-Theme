@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.5.0 — Atlas Studio and brand presets
+- **Atlas Studio** (`skills/atlas/assets/templates/atlas-studio.html`): a theme builder. Primary and
+  secondary hex in; scales solved on the contrast ladder with the exact colour pinned; roles picked
+  by scanning real values so buttons, links, focus and accents pass AA in light and dark for any
+  input (fuzzed over 800 random pairs); neutrals, corners and type pairing options; live preview
+  (desktop/phone), component gallery, token scales with ratios, contrast proof; export as CSS,
+  DTCG tokens JSON, Tailwind preset and Tokens Studio JSON for Figma; import from a Studio export.
+- **Brand presets** in `tokens.json → presets`, built to `atlas-brand-<name>.css` under
+  `data-brand`, re-checked by `check_contrast.mjs`. Ships `wise`, a Wise-inspired skin.
+- **New roles:** `action*` (primary button fill/text, separate from `brand` indicators) and
+  `accent*` (secondary colour); shape roles `radius-button/field/card/overlay`; `font-display`.
+  New classes `.at-btn--accent`, `.at-badge--accent`; `data-at-brand` toggle in `atlas.js`.
+
 ## 3.4.0 — Atlas design system
 A second skill, `skills/atlas/`: an accessibility-first design system built to WCAG 2.2 AA by construction.
 

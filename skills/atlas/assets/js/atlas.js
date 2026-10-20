@@ -12,6 +12,7 @@
      data-at-tooltip="text"  on any element      (role=tooltip linked by aria-describedby; hover + focus; Escape)
      data-at-disclosure      on the trigger      (aria-expanded ↔ aria-controls hidden)
      data-at-theme           on a button         (cycles light/dark/system; persists in localStorage)
+     data-at-brand="wise"    on a button         (cycles atlas → listed presets; sets data-brand on <html>; persists)
      data-at-dismiss         on a button          (removes the closest .at-alert / .at-toast / .at-banner)
    Toasts: Atlas.toast({ title, body, variant: "info"|"success"|"warning"|"danger", timeout })
    Announce: Atlas.announce("Saved", "polite"|"assertive")                                            */
@@ -227,6 +228,24 @@
     });
   }
 
+  /* ---------- brand preset ---------- */
+  function initBrand(btn) {
+    const presets = ["atlas", ...btn.dataset.atBrand.split(",").map((s) => s.trim()).filter(Boolean)];
+    const apply = (name) => {
+      if (name === "atlas") document.documentElement.removeAttribute("data-brand"); else document.documentElement.dataset.brand = name;
+      btn.setAttribute("aria-label", `Brand: ${name}. Switch brand preset`);
+      const label = $("[data-at-brand-label]", btn); if (label) label.textContent = name[0].toUpperCase() + name.slice(1);
+    };
+    let saved = null; try { saved = localStorage.getItem("at-brand"); } catch (_) { /* private mode */ }
+    apply(document.documentElement.dataset.brand || saved || "atlas");
+    btn.addEventListener("click", () => {
+      const cur = document.documentElement.dataset.brand || "atlas";
+      const next = presets[(presets.indexOf(cur) + 1) % presets.length];
+      apply(next); try { localStorage.setItem("at-brand", next); } catch (_) { /* ignore */ }
+      announce(`Brand preset set to ${next}`);
+    });
+  }
+
   /* ---------- toasts ---------- */
   const ICONS = {
     info: '<svg class="at-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>',
@@ -285,6 +304,7 @@
     $$("[data-at-tooltip]", root).forEach(initTooltip);
     $$("[data-at-disclosure]", root).forEach(initDisclosure);
     $$("[data-at-theme]", root).forEach(initTheme);
+    $$("[data-at-brand]", root).forEach(initBrand);
     $$("[data-at-dismiss]", root).forEach(initDismiss);
     $$("[data-at-sort]", root).forEach(initSort);
   }

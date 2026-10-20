@@ -1,6 +1,6 @@
 ---
 name: atlas
-description: Build accessible, production-grade web UI with the Atlas design system (WCAG 2.2 AA by construction). Atlas ships a contrast-anchored colour palette proven by script in light and dark, rem type, a 4pt space ladder, a two-tone focus ring, 19 atoms and 23 components (buttons, inputs, choices, switch, badges, tags, avatars, progress, skeleton, tooltip, field, form, card, alert, banner, toast, dialog, drawer, popover, menu, tabs, accordion, breadcrumb, pagination, stepper, segmented, table, list, stat, empty state, app shell) with APG keyboard behaviour, plus an automated accessibility audit. Use whenever the user asks for "Atlas", an accessible or WCAG-compliant design system, component library or screen, a11y guidelines for atoms/components, an accessibility audit of HTML, or a neutral product UI (dashboard, forms, settings, admin, fintech) where compliance matters more than visual flourish. Covers HTML/CSS, Tailwind and vanilla JS; see rdl-theme for the Dribbble-style glass language.
+description: Build accessible, production-grade web UI with the Atlas design system (WCAG 2.2 AA by construction), or re-skin it to any brand with Atlas Studio (primary + secondary hex in, proven theme out as CSS, JSON, Tailwind or Figma tokens). Atlas ships a contrast-anchored colour palette proven by script in light and dark, rem type, a 4pt space ladder, a two-tone focus ring, 19 atoms and 23 components (buttons, inputs, choices, switch, badges, tags, avatars, progress, skeleton, tooltip, field, form, card, alert, banner, toast, dialog, drawer, popover, menu, tabs, accordion, breadcrumb, pagination, stepper, segmented, table, list, stat, empty state, app shell) with APG keyboard behaviour, plus an automated accessibility audit. Use whenever the user asks for "Atlas", an accessible or WCAG-compliant design system, component library or screen, a11y guidelines for atoms/components, an accessibility audit of HTML, or a neutral product UI (dashboard, forms, settings, admin, fintech) where compliance matters more than visual flourish. Covers HTML/CSS, Tailwind and vanilla JS; see rdl-theme for the Dribbble-style glass language.
 ---
 
 # Atlas · v1.0
@@ -41,6 +41,9 @@ is free (7:1 primary text, 44px primary targets, persistent errors).
    <html lang="en" data-theme="light">   <!-- omit data-theme to follow the OS -->
    ```
    Tailwind: import `atlas-tokens.css`, then `presets: [require('./tailwind.preset.js')]`.
+   **Brand colours:** open `assets/templates/atlas-studio.html`, enter the primary and secondary hex,
+   export the CSS and load it after `atlas-tokens.css` (or add a preset to `tokens.json → presets`
+   and rebuild). Never hand-pick tints: the ladder and the role picker keep every pairing at AA.
    Changing values: edit `assets/tokens/tokens.json`, run `scripts/palette.mjs` (if hues changed),
    `scripts/build_tokens.mjs`, then `scripts/check_contrast.mjs`.
 2. **Lay out with landmarks.** Skip link → `.at-navbar` (`<header>`) → labelled `<nav>` →
@@ -80,7 +83,7 @@ is free (7:1 primary text, 44px primary targets, persistent errors).
 | Hook | Does |
 |---|---|
 | `data-at-tabs` · `data-at-menu` · `data-at-popover` · `data-at-dialog` · `data-at-close` | APG tabs, menu button, popover, native modal dialog with focus return |
-| `data-at-switch` · `data-at-disclosure` · `data-at-tooltip="…"` · `data-at-sort` · `data-at-dismiss` · `data-at-theme` | switch state, expand/collapse, hoverable tooltip, aria-sort toggle, remove alert/toast, 3-state theme |
+| `data-at-switch` · `data-at-disclosure` · `data-at-tooltip="…"` · `data-at-sort` · `data-at-dismiss` · `data-at-theme` · `data-at-brand="wise"` | switch state, expand/collapse, hoverable tooltip, aria-sort toggle, remove alert/toast, 3-state theme, brand preset toggle |
 | `Atlas.toast({title, body, variant, timeout})` · `Atlas.announce(text, kind)` · `Atlas.init(root)` | live-region toasts (errors persist), announcements, re-init injected markup |
 
 ## Anti-patterns
@@ -106,7 +109,9 @@ is free (7:1 primary text, 44px primary targets, persistent errors).
 | `assets/tokens/` | `tokens.json` (source) → `atlas-tokens.css`, `tailwind.preset.js` |
 | `assets/css/atlas.css` | Component layer: base, 19 atoms, 23 components, shell |
 | `assets/js/atlas.js` | Behaviour: tabs, menu, popover, dialog, switch, tooltip, disclosure, theme, toast, announce, sort |
-| `assets/templates/atlas-showcase.html` | Every atom and component with reference markup; audits clean in light, dark and at 390px |
+| `assets/templates/atlas-showcase.html` | Every atom and component with reference markup; audits clean in light, dark and at 390px; brand toggle for presets |
+| `assets/templates/atlas-studio.html` | **Atlas Studio**: enter primary + secondary colours, neutrals, corners, type; live preview, contrast proof, export CSS / DTCG JSON / Tailwind / Tokens Studio (Figma) |
+| `assets/tokens/atlas-brand-wise.css` | Generated brand preset (Wise-inspired); presets live in `tokens.json → presets` |
 | `scripts/palette.mjs` | Solves the palette from the contrast ladder |
 | `scripts/build_tokens.mjs` | JSON → CSS + Tailwind |
 | `scripts/check_contrast.mjs` | Proves semantic pairings; `--md` writes the report |

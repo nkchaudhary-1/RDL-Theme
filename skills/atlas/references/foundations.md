@@ -68,7 +68,9 @@ Components never use a primitive directly. They use roles, which map differently
 | `text-on-brand` | white | neutral-950 | On `brand`, `danger` fills |
 | `border-subtle` · `border-default` | neutral-200 · 300 | neutral-800 · 700 | Decorative only |
 | `border-strong` | neutral-500 (3.5:1) | neutral-400 | Input and secondary-button boundaries (1.4.11) |
-| `brand` · `brand-hover` · `brand-active` | brand-600 · 700 · 800 | brand-400 · 300 · 200 | Primary fills, icons, indicators |
+| `brand` · `brand-hover` · `brand-active` | brand-600 · 700 · 800 | brand-400 · 300 · 200 | Indicators: focus ring, checks, tab underline, progress, switch |
+| `action` · `action-hover` · `action-active` · `text-on-action` | = brand · 700 · 800 · white | = brand-400 · 300 · 200 · neutral-950 | Primary button fill and its text; presets may split it from `brand` (a light fill with dark text) |
+| `accent` · `accent-hover` · `accent-text` · `accent-bg` · `accent-border` · `text-on-accent` | brand-600 · 700 · 700 · 50 · 300 · white | brand-400 · 300 · 300 · 900 · 700 · neutral-950 | Secondary colour: accent button, badge, avatar, tinted bands; equals brand by default |
 | `brand-subtle` · `brand-text` · `brand-border` | brand-50 · 700 · 300 | brand-900 · 300 · 700 | Tinted fills, text on them |
 | `focus-ring` · `focus-ring-inner` | brand-600 · white | brand-400 · neutral-950 | Two-tone ring, see §5 |
 | `{status}` | 600 | 400 | Icon, border, solid fill |
@@ -90,6 +92,22 @@ Rules that follow from the table:
   status token, which are ≥ 3:1 on every surface.
 - Disabled text is the only text allowed below 4.5:1, and the reason for being disabled must be
   visible nearby.
+
+### Brand presets and Studio
+
+`tokens.json → presets` holds brand skins. A preset can re-solve hues with the same ladder, pin
+exact hex for some steps (`overrides`), remap semantic roles (for example `action` = a light brand
+step with `text-on-action` = a deep step) and change shape and type roles. `build_tokens.mjs`
+writes each to `assets/tokens/atlas-brand-<name>.css`, scoped to `:root[data-brand="<name>"]`, and
+`check_contrast.mjs` re-proves every pairing for every preset. The shipped `wise` preset is a
+Wise-inspired skin: bright green pill actions with forest text, forest links and focus in light,
+bright green in dark, green-tinted neutrals.
+
+`assets/templates/atlas-studio.html` (Atlas Studio) does the same job interactively: enter a
+primary and secondary colour, choose neutrals, corners and type, see every component re-skinned,
+read the contrast proof, and export the theme as CSS, DTCG JSON, a Tailwind preset or Tokens Studio
+JSON for Figma. Its role picker scans the real scale values, so any colour, including mid-tones
+that fail with white text, gets a passing text colour and passing hover and active shades.
 
 ### Theme switching
 
@@ -128,7 +146,8 @@ Why these values:
 - **Large text** for contrast purposes is ≥ 24px, or ≥ 18.66px at 700. Only `display`, `h1`, `h2`
   and bold `h3` qualify for the 3:1 allowance; Atlas uses 4.5:1 tokens for all of them anyway.
 
-Families: Inter with the system stack (`--at-font-sans`), JetBrains Mono with the system mono stack.
+Families: Inter with the system stack (`--at-font-sans`), the same by default for `display`, `h1`
+and `h2` (`--at-font-display`, a hook for a brand display face), JetBrains Mono for code.
 No icon fonts: icons are inline SVG with `aria-hidden="true"` or `role="img"` plus `<title>`.
 
 ## 3. Space
@@ -155,6 +174,7 @@ Layout helpers: `.at-container` (max 1200, 20 side gutters, 16 on phones), `.at-
 
 | Radius | px | Use |
 |---|---|---|
+| `button` · `field` · `card` · `overlay` | 8 · 8 · 16 · 24 | Shape roles used by buttons, inputs, cards and dialogs; presets and Studio change these (pill buttons, rounder cards) |
 | `sm` | 4 | Checkbox, kbd, inline code, focus on inline links |
 | `md` | 8 | Buttons, inputs, menu items, tooltips |
 | `lg` | 12 | Alerts, toasts, menus, popovers, table wrapper, choice cards |
@@ -217,4 +237,6 @@ two-dimensional content (1.4.10). The audit checks this at 320.
 | `assets/tokens/tailwind.preset.js` | Generated Tailwind preset (`brand.DEFAULT` = `--at-brand`, scales under `brand.50…950`) |
 | `scripts/palette.mjs` | Solves the primitive palette from the ladder and hues |
 | `scripts/build_tokens.mjs` | JSON → CSS + Tailwind |
-| `scripts/check_contrast.mjs` | Proves `contrast-pairs` in both themes; `--md` writes `references/contrast-report.md` |
+| `scripts/check_contrast.mjs` | Proves `contrast-pairs` in both themes, for the base and every preset; `--md` writes `references/contrast-report.md` |
+| `assets/tokens/atlas-brand-wise.css` | Generated Wise-inspired preset (`data-brand="wise"`) |
+| `assets/templates/atlas-studio.html` | Atlas Studio: brand colours in, themed components and exports out |

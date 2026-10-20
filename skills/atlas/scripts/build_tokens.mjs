@@ -47,6 +47,29 @@ const cssRef = (v) => (typeof v === "string" && v.startsWith("{") ? `var(--at-${
   const dark = ["  color-scheme: dark;", ...semantic(t.semantic.dark)];
   L.push("@media (prefers-color-scheme: dark) {", '  :root:not([data-theme="light"]) {', ...dark.map((l) => "  " + l), "  }", "}", "");
   L.push(...block(':root[data-theme="dark"]', dark));
+  // Brand presets → atlas-brand-<name>.css, scoped to :root[data-brand="<name>"]. Load after atlas-tokens.css.
+  for (const [name, preset] of Object.entries(t.presets || {})) {
+    if (name.startsWith("_")) continue;
+    const P = [header("/*") + " */", "", `/* Atlas brand preset "${name}". ${preset._doc || ""} */`, ""];
+    const sel = `:root[data-brand="${name}"]`;
+    const light = [];
+    for (const [fam, steps] of Object.entries(preset.primitive || {})) for (const [step, hx] of Object.entries(steps)) light.push(`  --at-${fam}-${step}: ${hx};`);
+    light.push("", ...semantic(preset.semantic?.light || {}));
+    for (const [k, v] of Object.entries(preset.radius || {})) light.push(`  --at-radius-${k}: ${px(v)};`);
+    for (const [k, v] of Object.entries(preset.type?.family || {})) light.push(`  --at-font-${k}: ${v};`);
+    P.push(...block(sel, light));
+    // Dark block restates the base dark value of every token the light block touched, so a light-only
+    // override never leaks into dark (the preset file loads after the base dark blocks).
+    const touched = Object.keys(preset.semantic?.light || {});
+    const darkMap = { ...Object.fromEntries(touched.map((k) => [k, t.semantic.dark[k]])), ...(preset.semantic?.dark || {}) };
+    const dk = semantic(darkMap);
+    if (dk.length) {
+      P.push("@media (prefers-color-scheme: dark) {", `  ${sel}:not([data-theme="light"]) {`, ...dk.map((l) => "  " + l), "  }", "}", "");
+      P.push(...block(`${sel}[data-theme="dark"]`, dk));
+    }
+    writeFileSync(join(root, `assets/tokens/atlas-brand-${name}.css`), P.join("\n"));
+  }
+
   L.push("/* Reduced motion: collapse every duration (WCAG 2.3.3). */");
   L.push(...block("@media (prefers-reduced-motion: reduce) {\n  :root", entries(t.motion.duration).map(([k]) => `    --at-duration-${k}: 0ms;`).concat(["  }"])));
   writeFileSync(join(root, "assets/tokens/atlas-tokens.css"), L.join("\n").replace(/\n  }\n}\n\n$/, "\n  }\n}\n"));
@@ -89,4 +112,4 @@ const cssRef = (v) => (typeof v === "string" && v.startsWith("{") ? `var(--at-${
   };
   writeFileSync(join(root, "assets/tokens/tailwind.preset.js"), `${header("//")}\n// Import atlas-tokens.css first; this preset only maps utilities to the variables.\nmodule.exports = ${JSON.stringify(preset, null, 2)};\n`);
 }
-console.log("built atlas-tokens.css and tailwind.preset.js");
+console.log("built atlas-tokens.css, tailwind.preset.js" + Object.keys(t.presets || {}).filter((k) => !k.startsWith("_")).map((k) => `, atlas-brand-${k}.css`).join(""));
