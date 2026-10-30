@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDL Theme Studio</title>
+<!-- v4 theme studio: pick a primary and a secondary colour and see Light, Dark and Brand update live,
+     with every semantic role and the contrast audit. Uses assets/tokens/rdl-theme.js (the same engine
+     the build and RDLThemeEngine.swift use). Params: ?primary=0732D8&secondary=F2D33C -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&family=Doto:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="rdl-components.css">
+<script src="../tokens/rdl-theme.js"></script>
+<style>
+  h1, h2, h3, p { margin: 0; }
+  body { margin: 0; background: var(--rdl-bg-canvas); color: var(--rdl-fg-primary); font-family: var(--rdl-font-sans); }
+  .studio { max-width: 1440px; margin: 0 auto; padding: 40px 32px 80px; display: grid; gap: 32px; }
+  .studio__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 24px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .picker { display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 16px 0 6px; border-radius: 999px; background: var(--rdl-fill-control); font-size: 14px; font-weight: 500; }
+  .picker input[type=color] { width: 36px; height: 36px; border: 0; padding: 0; border-radius: 50%; background: none; cursor: pointer; }
+  .picker input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  .picker input[type=color]::-webkit-color-swatch { border: 0; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
+  .picker input[type=text] { width: 76px; border: 0; background: none; font: inherit; color: inherit; text-transform: uppercase; }
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; }
+  .preset { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px 0 8px; border: 0; border-radius: 999px; background: var(--rdl-fill-control); color: var(--rdl-fg-primary); font: 500 13px/1 var(--rdl-font-sans); cursor: pointer; }
+  .preset[aria-pressed="true"] { background: var(--rdl-action-primary); color: var(--rdl-on-action-primary); }
+  .dots { display: inline-flex; } .dots i { width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 0 2px var(--rdl-bg-canvas); } .dots i + i { margin-left: -6px; }
+  .phones { display: grid; grid-template-columns: repeat(3, 393px); justify-content: center; gap: 40px; }
+  .phonecol { display: grid; gap: 16px; justify-items: center; }
+  .phonecol__label { display: grid; justify-items: center; gap: 2px; font-size: 15px; font-weight: 500; }
+  .phonecol__label small { font-size: 12px; font-weight: 400; color: var(--rdl-fg-secondary); }
+  .phone { width: 393px; height: 852px; border-radius: 56px; position: relative; overflow: hidden; background: var(--rdl-bg-canvas); color: var(--rdl-text-primary);
+    box-shadow: 0 0 0 11px #0E0F10, 0 0 0 12.5px #3A3B3F, 0 40px 80px rgba(0,0,0,0.18); }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; border-radius: 20px; background: #000; z-index: 5; }
+  .statusbar { height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 6px 36px 0 40px; font-size: 16px; font-weight: 600; }
+  .statusbar svg { width: 64px; height: 14px; }
+  .phone .rdl-screen { min-height: 0; }
+  .wave { width: 100%; height: 72px; display: block; overflow: visible; }
+  .ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .audit { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .roles { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .roles th, .roles td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--rdl-border-subtle); vertical-align: middle; }
+  .roles th { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--rdl-fg-secondary); }
+  .roles td:first-child { font-family: var(--rdl-font-mono); font-size: 12px; white-space: nowrap; }
+  .roles .grp td { padding-top: 24px; font: 600 12px/1 var(--rdl-font-sans); color: var(--rdl-fg-secondary); text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 0; }
+  .chipval { display: inline-flex; align-items: center; gap: 8px; font-family: var(--rdl-font-mono); font-size: 12px; }
+  .chipval i { width: 28px; height: 20px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(127,127,127,0.25); background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%); background-size: 8px 8px; background-position: 0 0, 4px 4px; position: relative; }
+  .chipval i::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--c); }
+  .note { font-size: 13px; color: var(--rdl-fg-secondary); max-width: 72ch; line-height: 1.5; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-bars" viewBox="0 0 64 14"><rect x="0" y="8" width="3" height="5" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="8" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="11" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="13" rx="1" fill="currentColor"/><rect x="38" y="1" width="22" height="12" rx="4" fill="none" stroke="currentColor"/><rect x="40" y="3" width="15" height="8" rx="2" fill="currentColor"/></symbol>
+</svg>
+<template id="home">
+  <div class="island"></div>
+  <div class="statusbar"><span>9:41</span><svg><use href="#i-bars"/></svg></div>
+  <div class="rdl-screen rdl-stack--title">
+    <header class="rdl-header">
+      <button class="rdl-orb" aria-label="Profile"><svg class="ico"><use href="#i-user"/></svg></button>
+      <span class="rdl-chip">24K · 99.9% pure</span>
+      <span><button class="rdl-orb" aria-label="Alerts"><svg class="ico"><use href="#i-bell"/></svg></button></span>
+    </header>
+    <div class="rdl-stack rdl-stack--section">
+      <div class="rdl-stack rdl-stack--loose">
+        <h1 class="rdl-h2 rdl-mix">Good morning, <b>Aarav</b></h1>
+        <div class="rdl-stack rdl-stack--tight">
+          <p class="rdl-caption rdl-muted">Portfolio value</p>
+          <p class="rdl-figure rdl-display"><span class="rdl-cur">₹</span>4,82,190<span class="rdl-unit">.36</span></p>
+        </div>
+        <div class="rdl-inline"><span class="rdl-status">Live</span><span class="rdl-meta rdl-muted">+₹12,408 · 30 days</span></div>
+      </div>
+      <div class="rdl-stack rdl-stack--card">
+        <article class="rdl-card rdl-metric">
+          <p class="rdl-metric__label">Gold · per gram</p>
+          <span class="rdl-delta rdl-metric__action">+1.8%</span>
+          <div class="rdl-metric__viz">
+            <svg class="wave" viewBox="0 0 313 72" aria-label="Price, last 7 days">
+              <path d="M0 56 C24 52 36 40 60 44 S96 60 120 46 S160 14 188 24 S224 44 248 30 S286 12 313 14" fill="none" stroke="var(--rdl-tick)" stroke-width="1.4" stroke-dasharray="1.5 5" stroke-linecap="round"/>
+              <path d="M96 52 C104 50 112 48 120 46 S160 14 188 24 S220 40 236 34" fill="none" stroke="var(--rdl-fg-primary)" stroke-width="2"/>
+              <line x1="188" x2="188" y1="24" y2="72" stroke="var(--rdl-fg-primary)" stroke-dasharray="2 4"/>
+              <circle cx="188" cy="24" r="5" fill="var(--rdl-fg-primary)" stroke="var(--rdl-accent-graphic)" stroke-width="3"/>
+            </svg>
+          </div>
+          <p class="rdl-figure rdl-numeral rdl-metric__figure"><span class="rdl-cur">₹</span>7,284<span class="rdl-unit">.20</span></p>
+          <span class="rdl-meta rdl-muted rdl-metric__context">7 days</span>
+        </article>
+        <div class="rdl-grid-2">
+          <article class="rdl-widget rdl-widget--ink rdl-metric">
+            <p class="rdl-metric__label">Holdings</p>
+            <span class="rdl-tag rdl-tag--accent rdl-metric__action">+0.4 g</span>
+            <p class="rdl-figure rdl-figure--dot rdl-numeral rdl-metric__figure">66.2<span class="rdl-unit">g</span></p>
+          </article>
+          <article class="rdl-widget rdl-card--brand rdl-metric">
+            <p class="rdl-metric__label">Next SIP</p>
+            <button class="rdl-orb rdl-orb--white rdl-metric__action" aria-label="Open SIP"><svg class="ico"><use href="#i-arrow"/></svg></button>
+            <div class="rdl-stack rdl-stack--tight rdl-metric__figure">
+              <p class="rdl-figure rdl-h2">Oct 05</p>
+              <p class="rdl-meta rdl-muted">₹5,000/mo</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rdl-actionrow rdl-pin">
+    <button class="rdl-orb" aria-label="Exchange"><svg class="ico"><use href="#i-swap"/></svg></button>
+    <button class="rdl-btn">Buy gold</button>
+    <button class="rdl-orb rdl-orb--accent" aria-label="Sell"><svg class="ico"><use href="#i-down"/></svg></button>
+  </div>
+</template>
+
+<main class="studio">
+  <div class="studio__head">
+    <div class="rdl-stack rdl-stack--tight">
+      <p class="rdl-caption rdl-muted">RDL v4 · Theme studio</p>
+      <h1 class="rdl-h1">Light, Dark and your Brand</h1>
+    </div>
+    <div class="controls">
+      <label class="picker"><input type="color" id="p" value="#0732D8"><span>Primary</span><input type="text" id="ph" value="#0732D8" aria-label="Primary hex"></label>
+      <label class="picker"><input type="color" id="s" value="#F2D33C"><span>Secondary</span><input type="text" id="sh" value="#F2D33C" aria-label="Secondary hex"></label>
+    </div>
+  </div>
+  <div class="presets" id="presets" aria-label="Brand presets"></div>
+  <p class="note">The primary colour fills the Brand canvas and the brand panel (“Next SIP”) in Light and Dark. The secondary colour is the highlight in all three themes: the accent tag, the accent orb, the chart datum. Ink or white text is picked by measured contrast; a primary too mid-toned for text is deepened just enough to pass. Every pair below is checked live.</p>
+  <div class="phones">
+    <div class="phonecol"><section class="phone" data-theme="light" id="ph-light"></section><div class="phonecol__label">Light<small id="a-light"></small></div></div>
+    <div class="phonecol"><section class="phone" data-theme="dark" id="ph-dark"></section><div class="phonecol__label">Dark<small id="a-dark"></small></div></div>
+    <div class="phonecol"><section class="phone" data-theme="brand" id="ph-brand"></section><div class="phonecol__label">Brand<small id="a-brand"></small></div></div>
+  </div>
+  <table class="roles" id="roles"><thead><tr><th>Role</th><th>Light</th><th>Dark</th><th>Brand</th><th>Use</th></tr></thead><tbody></tbody></table>
+</main>
+
+<script>
+  const PRESETS = { cobalt: ["#0732D8", "#F2D33C"], mustard: ["#ECBB42", "#2A4BDC"], gold: ["#D9A632", "#1F4A3E"], olive: ["#687B59", "#D7F23A"], forest: ["#1F4A3E", "#D7F23A"], lavender: ["#AD80D4", "#F27A3A"], plum: ["#2F1125", "#F2D33C"], vermilion: ["#D44C27", "#D7F23A"], dusk: ["#7599AD", "#F6E27A"] };
+  const GROUPS = [
+    ["Background", [["bg-canvas", "App background"], ["bg-canvas-elevated", "Sheets, modals (HIG elevated)"], ["bg-surface", "Cards"], ["bg-surface-raised", "Menus, popovers, cards in sheets"], ["bg-surface-sunken", "Wells and tracks inside cards"], ["bg-emphasis", "Hero / emphasis card"], ["bg-brand", "Brand panel"]]],
+    ["Foreground", [["fg-primary", "Titles, figures, body"], ["fg-secondary", "Labels, meta"], ["fg-tertiary", "Captions, placeholders"], ["fg-on-emphasis", "Text on emphasis card"], ["fg-on-brand", "Text on brand panel"]]],
+    ["Fill and border", [["fill-control", "Orbs, chips, segmented track"], ["fill-control-pressed", "Pressed control"], ["border-subtle", "Hairlines"], ["border-strong", "Grabbers, dashed outlines"], ["border-focus", "Focus ring"]]],
+    ["Action", [["action-primary", "Primary button"], ["on-action-primary", "Primary button label"], ["action-secondary", "Secondary button"]]],
+    ["Accent (secondary colour)", [["accent", "Highlight fill with its own label"], ["on-accent", "Label on accent"], ["accent-subtle", "Tinted background"], ["accent-text", "Accent-coloured text"], ["accent-graphic", "Datum, needle, meter fill"]]],
+    ["Status", [["success", "Dot / meter"], ["success-text", "Status text"], ["warning", "Dot / meter"], ["danger", "Dot / meter"], ["danger-text", "Error text"], ["info", "Dot / meter"]]],
+    ["Material", [["material-regular", "Glass (default)"], ["material-thick", "Glass over busy backdrops"]]],
+  ];
+  const $ = (id) => document.getElementById(id);
+  const phones = { light: $("ph-light"), dark: $("ph-dark"), brand: $("ph-brand") };
+  for (const el of Object.values(phones)) el.append($("home").content.cloneNode(true));
+  const pres = $("presets");
+  for (const [name, [p, s]] of Object.entries(PRESETS))
+    pres.insertAdjacentHTML("beforeend", `<button class="preset" data-name="${name}"><span class="dots"><i style="background:${p}"></i><i style="background:${s}"></i></span>${name[0].toUpperCase() + name.slice(1)}</button>`);
+
+  function read(el) {
+    const cs = getComputedStyle(el), r = {};
+    for (const k of ["bg-canvas", "bg-surface", "bg-surface-raised", "bg-canvas-elevated", "bg-emphasis", "bg-emphasis-raised", "bg-brand", "fg-primary", "fg-secondary", "fg-tertiary", "fg-on-emphasis", "fg-on-emphasis-secondary", "fg-on-brand", "fg-on-brand-secondary", "action-primary", "action-primary-hover", "action-primary-pressed", "on-action-primary", "action-secondary", "action-secondary-hover", "action-secondary-pressed", "on-action-secondary", "accent", "accent-hover", "accent-pressed", "on-accent", "accent-text", "accent-graphic", "accent-subtle", "border-focus", "border-subtle", "border-strong", "fill-control", "fill-control-pressed", "success", "success-subtle", "success-text", "warning", "warning-subtle", "warning-text", "danger", "danger-subtle", "danger-text", "info", "info-subtle", "info-text", "material-regular", "material-thick"])
+      r[k] = cs.getPropertyValue("--rdl-" + k).trim().toUpperCase().replace(/^RGBA/, "rgba");
+    return r;
+  }
+  function render(p, s) {
+    p = RDL.hex(RDL.parse(p)); s = RDL.hex(RDL.parse(s));
+    $("p").value = $("ph").value = p; $("s").value = $("sh").value = s;
+    RDL.setTheme("light", { el: phones.light, primary: p, secondary: s });
+    RDL.setTheme("dark", { el: phones.dark, primary: p, secondary: s });
+    RDL.setTheme("brand", { el: phones.brand, primary: p, secondary: s });
+    const roles = { light: read(phones.light), dark: read(phones.dark), brand: read(phones.brand) };
+    for (const t of ["light", "dark", "brand"]) {
+      const a = RDL.audit(roles[t], t), pass = a.filter((x) => x.pass).length;
+      $("a-" + t).textContent = `${pass}/${a.length} contrast pairs pass`;
+    }
+    const tb = $("roles").tBodies[0]; tb.innerHTML = "";
+    for (const [g, rows] of GROUPS) {
+      tb.insertAdjacentHTML("beforeend", `<tr class="grp"><td colspan="5">${g}</td></tr>`);
+      for (const [k, use] of rows)
+        tb.insertAdjacentHTML("beforeend", `<tr><td>--rdl-${k}</td>${["light", "dark", "brand"].map((t) => `<td><span class="chipval"><i style="--c:${roles[t][k]}"></i>${roles[t][k]}</span></td>`).join("")}<td>${use}</td></tr>`);
+    }
+    document.querySelectorAll(".preset").forEach((b) => b.setAttribute("aria-pressed", String(PRESETS[b.dataset.name][0] === p && PRESETS[b.dataset.name][1] === s)));
+  }
+  pres.addEventListener("click", (e) => { const b = e.target.closest(".preset"); if (b) render(...PRESETS[b.dataset.name]); });
+  for (const [c, h, which] of [["p", "ph", 0], ["s", "sh", 1]]) {
+    $(c).addEventListener("input", () => render(which ? $("p").value : $(c).value, which ? $(c).value : $("s").value));
+    $(h).addEventListener("change", () => { const v = "#" + $(h).value.replace("#", ""); if (/^#[0-9a-f]{6}$/i.test(v)) render(which ? $("p").value : v, which ? v : $("s").value); });
+  }
+  const q = new URLSearchParams(location.search);
+  render("#" + (q.get("primary") || "0732D8"), "#" + (q.get("secondary") || "F2D33C"));
+</script>
+</body>
+</html>

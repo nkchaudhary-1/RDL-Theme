@@ -57,3 +57,14 @@ Ship at 0 errors.
 - [ ] Loading (skeleton panes at the same size, a shimmer on glass), empty (one line + one action
   in the same card), error (a status dot turns `crit` + a caption with the fix), and stale data
   (`warn` dot + "Updated n min ago"), wherever the screen has async data.
+
+## Themes (v4)
+- [ ] Every shipped theme renders: switch `data-theme` (light, dark, brand) and re-run the audit; 0 errors in each.
+- [ ] No hex or primitive in UI code; only v4 roles or component tokens (v3 aliases allowed in old code).
+- [ ] Brand pair added to `tokens.json` and the build passes (it fails on any contrast miss); or checked live in `assets/templates/theme-studio.html`.
+- [ ] Highlights use the right form: `accent` with a label, `accent-graphic` alone, `accent-text` for words.
+- [ ] Light/dark neutrals are not tinted with the brand colour; brand panels appear at most once per screen.
+- [ ] Brand theme: no brand panel on the brand canvas; one large colour area only; dense lists moved to light/dark if they strain.
+- [ ] Focus ring visible on every control; hover only on pointer devices; disabled uses `fg-disabled` / `fill-disabled`.
+- [ ] SwiftUI: `RDLTheme.apply(...)` at launch, `.rdlThemedRoot()` at the root, status bar matches (`RDLTheme.colorScheme`).
+

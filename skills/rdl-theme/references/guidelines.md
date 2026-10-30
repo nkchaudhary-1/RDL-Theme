@@ -60,18 +60,23 @@ last, and only for the accent or status.
 | Element | Budget |
 |---|---|
 | Neutrals (stone) | Unlimited: canvas, surfaces, text tiers, hairlines |
-| Accent | **1–3 uses**: active orb or dock item, needle or selected datum, one tag, or check marks |
+| Secondary colour (accent) | **1–3 uses**: active orb or dock item, needle or selected datum, one tag, or check marks |
+| Primary colour | Light/dark: at most one brand panel. Brand theme: the canvas, and nothing else large |
 | Auras | ≤ 2 (one hero + one widget, or a backdrop) |
 | Iridescent rim | ≤ 1 |
 | Dot-matrix figure | ≤ 1 |
 | Status colors | Only on dots, status pills and meter fills. Never on body text or icons |
 | Red | Only for errors and destructive actions. Destructive = red-tinted tile or text, never a red solid button |
 
-**Text tiers:** primary (ink 100%), secondary (~60%), tertiary (~40%). There are no other grays
-for text. On auras and photos, use ink or white plus their 60% variants, never mid-gray.
+**Text tiers:** `fg-primary`, `fg-secondary`, `fg-tertiary` (plus `fg-disabled`). There are no other
+grays for text. On auras and photos, use ink or white plus their 60% variants, never mid-gray. On the
+emphasis card and brand panels use their own `fg-on-*` roles.
 
-**Dark layering:** canvas → surface → raised → control, each about 4–6% lighter
-(`#0A0B0C → #131416 → #1C1D20 → #26272B`).
+**Dark layering:** canvas → surface → raised → control, one neutral step each
+(`#0A0B0C → #17181A → #1E1F22 → #25262A`). Depth comes from tone, not shadow.
+
+**Brand theme:** one hue fills the screen; cards are tinted glass or the white/ink emphasis card; the
+secondary colour stays small. Full rules: `themes.md` §7.
 
 ## 5. Consistency across an app
 
@@ -80,7 +85,7 @@ Lock these before designing screen two:
 | Decision | Choose once |
 |---|---|
 | Style | Glass (rounded) **or** Swiss (square) **or** flat (v1) |
-| Accent pack | One. Ink is the default primary; the accent is a highlight |
+| Colours and themes | One primary + one secondary; which themes ship (light + dark default, brand optional). Ink/white carry actions in light/dark |
 | Header pattern | Which header variant each screen role uses (home, detail, flow step) |
 | Pinned zone per role | Home = dock or action row · Flow step = action row · Confirmation = slide · Detail = action row |
 | Figure treatment | Currency position, decimals muted or not, unit style |
@@ -134,8 +139,10 @@ arrival. Stagger lists by 40ms. With Reduce Motion, fades only.
 
 ## 10. Accessibility
 
-- Contrast ≥ 4.5:1 for text, measured on the real backdrop (glass over photos can fail; use
-  `glass-fill-strong` or a scrim).
+- Contrast: primary text ≥ 7:1 (≥ 4.5:1 on brand canvases), secondary ≥ 4.5:1, tertiary ≥ 3:1,
+  graphics and focus rings ≥ 3:1. Token pairs are proven in `assets/tokens/contrast-report.md`;
+  glass over photos must be measured on the real backdrop (use `material-thick` or a scrim).
+- Focus is visible on every interactive element: 2px `border-focus` ring, 2px offset.
 - Hit targets ≥ 44. RDL controls are ≥ 48 except tags.
 - Status is never color-only (dot + word). Charts expose values to VoiceOver.
 - With Reduce Transparency, glass becomes solid surfaces.
@@ -149,6 +156,8 @@ arrival. Stagger lists by 40ms. With Reduce Motion, fades only.
 | One control height per row | 34px chip next to a 48 orb |
 | Gaps of 4 < 8 < 12 < 20 < 32 by relationship | Arbitrary 10 / 14 / 18 gaps |
 | Accent on one thing | Accent on every icon |
+| `accent-graphic` for a lone needle or datum | Raw secondary colour as thin lines on a canvas it can't be seen on |
+| v4 roles (`fg-secondary`, `action-primary`) | Hex values or primitives in UI code |
 | Status dot + word | Red text alone |
 | Radius from one family | 28 cards next to 6 buttons |
 | Nested radius = outer − gap (padding + border); go deeper with A · strict or B · soft (`radius.md`) | Inner pane with the same radius as its container, or a clamped radius that breaks concentricity |

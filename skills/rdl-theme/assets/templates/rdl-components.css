@@ -34,7 +34,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 /* ---------- Container-aware control fill ----------
    RDL rule: controls invert against their container. On the gray canvas they are white;
    inside a white card they are gray. Never gray-on-gray (invisible) or white-on-white. */
-:root { --rdl-ctl: var(--rdl-bg-surface); }
+:root, [data-theme] { --rdl-ctl: var(--rdl-bg-surface); }
 .rdl-card, .rdl-side { --rdl-ctl: var(--rdl-fill-control); }
 .rdl-card--muted { --rdl-ctl: var(--rdl-bg-surface); }
 .rdl-card--hero { --rdl-ctl: var(--rdl-bg-hero-raised); }
@@ -45,13 +45,16 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
   height: var(--rdl-size-control-lg); padding: 0 var(--rdl-space-6);
   border-radius: var(--rdl-radius-pill);
   font-size: 15px; font-weight: 500; letter-spacing: -0.005em;
-  background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong);
+  background: var(--rdl-button-primary-bg); color: var(--rdl-button-primary-fg);
   transition: transform var(--rdl-duration-fast) var(--rdl-ease-standard), background var(--rdl-duration-base) var(--rdl-ease-standard);
 }
-.rdl-btn:active { transform: scale(0.97); }
-.rdl-btn:focus-visible, .rdl-iconbtn:focus-visible, .rdl-chip:focus-visible { outline: 2px solid var(--rdl-accent); outline-offset: 2px; }
-.rdl-btn--accent { background: var(--rdl-accent); color: var(--rdl-on-accent); }
-.rdl-btn--accent:hover { background: var(--rdl-accent-strong); }
+@media (hover: hover) { .rdl-btn:hover { background: var(--rdl-button-primary-bg-hover); } }
+.rdl-btn:active { transform: scale(0.97); background: var(--rdl-button-primary-bg-pressed); }
+.rdl-btn:disabled, .rdl-btn[aria-disabled="true"] { background: var(--rdl-button-primary-bg-disabled); color: var(--rdl-button-primary-fg-disabled); transform: none; cursor: not-allowed; }
+:where(button, a, input, select, textarea, [tabindex]):focus-visible, .rdl-btn:focus-visible, .rdl-iconbtn:focus-visible, .rdl-chip:focus-visible { outline: var(--rdl-focus-width) solid var(--rdl-focus-ring); outline-offset: var(--rdl-focus-offset); }
+.rdl-btn--accent { background: var(--rdl-button-accent-bg); color: var(--rdl-button-accent-fg); }
+@media (hover: hover) { .rdl-btn--accent:hover { background: var(--rdl-button-accent-bg-hover); } }
+.rdl-btn--accent:active { background: var(--rdl-button-accent-bg-pressed); }
 .rdl-btn--secondary { background: var(--rdl-ctl); color: var(--rdl-text-primary); }
 .rdl-btn--md { height: var(--rdl-size-control-md); padding: 0 var(--rdl-space-5); font-size: 14px; }
 .rdl-btn--block { width: 100%; }
@@ -64,7 +67,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-card--hero .rdl-iconbtn { color: var(--rdl-text-on-hero); }
 .rdl-iconbtn--hero { background: var(--rdl-bg-hero-raised); color: var(--rdl-text-on-hero); }
 .rdl-iconbtn--accent { background: var(--rdl-accent); color: var(--rdl-on-accent); }
-.rdl-iconbtn__dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--rdl-orange-500); box-shadow: 0 0 0 2px var(--rdl-bg-canvas); }
+.rdl-iconbtn__dot { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--rdl-danger); box-shadow: 0 0 0 2px var(--rdl-bg-canvas); }
 
 /* Quick action: icon circle + label underneath */
 .rdl-action { display: grid; justify-items: center; gap: var(--rdl-space-2); font-size: 12px; font-weight: 500; color: var(--rdl-text-secondary); }
@@ -74,11 +77,11 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-chip { display: inline-flex; align-items: center; gap: var(--rdl-space-1_5); height: var(--rdl-size-control-sm); padding: 0 var(--rdl-space-4); border-radius: var(--rdl-radius-pill); background: var(--rdl-ctl); font-size: 14px; font-weight: 500; white-space: nowrap; }
 .rdl-chip--xs { height: var(--rdl-size-control-xs); padding: 0 var(--rdl-space-3); font-size: 13px; }
 .rdl-chip--md { height: var(--rdl-size-control-md); }
-.rdl-chip[aria-pressed="true"] { background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); }
+.rdl-chip[aria-pressed="true"] { background: var(--rdl-chip-bg-selected); color: var(--rdl-chip-fg-selected); }
 
 .rdl-seg { display: flex; height: var(--rdl-size-control-md); padding: var(--rdl-space-1); gap: var(--rdl-space-1); border-radius: var(--rdl-radius-pill); background: var(--rdl-ctl); }
 .rdl-seg button { flex: 1; height: var(--rdl-size-control-sm); padding: 0 var(--rdl-space-3); border-radius: var(--rdl-radius-pill); font-size: 14px; font-weight: 500; color: var(--rdl-text-secondary); transition: background var(--rdl-duration-base) var(--rdl-ease-standard); }
-.rdl-seg button[aria-selected="true"] { background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); }
+.rdl-seg button[aria-selected="true"] { background: var(--rdl-segmented-thumb); color: var(--rdl-segmented-fg-selected); }
 .rdl-card--hero .rdl-seg button { color: var(--rdl-text-on-hero-muted); }
 .rdl-card--hero .rdl-seg button[aria-selected="true"] { background: var(--rdl-accent); color: var(--rdl-on-accent); }
 
@@ -100,7 +103,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-bars__col { flex: 1; display: grid; grid-template-rows: 1fr auto; gap: 8px; height: 100%; text-align: center; }
 .rdl-bars__track { position: relative; border-radius: var(--rdl-radius-pill); background: var(--rdl-chart-track); overflow: visible; }
 .rdl-bars__fill { position: absolute; inset: auto 0 0 0; height: var(--v); border-radius: var(--rdl-radius-pill); animation: rdl-grow var(--rdl-duration-chart) var(--rdl-ease-emphasized) both; animation-delay: calc(var(--i, 0) * 40ms); transform-origin: bottom; }
-.rdl-bars__fill.is-active { background: var(--rdl-accent); }
+.rdl-bars__fill.is-active { background: var(--rdl-accent-graphic); }
 .rdl-bars__label { font-size: 11px; font-weight: 500; color: var(--rdl-text-tertiary); }
 .rdl-bars__col.is-active .rdl-bars__label { color: var(--rdl-text-primary); }
 .rdl-tooltip { position: absolute; left: 50%; bottom: calc(var(--v) + 8px); transform: translateX(-50%); padding: 4px 8px; border-radius: 8px; background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); font-size: 11px; font-weight: 600; white-space: nowrap; }
@@ -137,7 +140,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 
 /* ---------- Progress ---------- */
 .rdl-progress { height: var(--rdl-space-2); border-radius: var(--rdl-radius-pill); background: var(--rdl-chart-track); overflow: hidden; }
-.rdl-progress > span { display: block; height: 100%; width: var(--v); border-radius: inherit; background: var(--rdl-accent); }
+.rdl-progress > span { display: block; height: 100%; width: var(--v); border-radius: inherit; background: var(--rdl-accent-graphic); }
 
 /* ---------- Inputs ---------- */
 .rdl-input { display: flex; align-items: center; gap: var(--rdl-space-2); height: var(--rdl-size-control-md); padding: 0 var(--rdl-space-4); border-radius: var(--rdl-radius-pill); background: var(--rdl-ctl); color: var(--rdl-text-secondary); font-size: 15px; }
@@ -199,14 +202,17 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-aura--sunset .rdl-muted, .rdl-aura--dusk .rdl-muted, .rdl-aura--orchid .rdl-muted, .rdl-aura--ocean .rdl-muted { color: var(--rdl-text-secondary); }
 .rdl-aura--rose { background: var(--rdl-aura-rose); color: #0A0B0C; }
 
-/* Blueprint card: electric blue + white line art, square-ish corners. */
-.rdl-blueprint {
-  background: var(--rdl-electric-500); color: #fff; border-radius: var(--rdl-radius-lg); padding: var(--rdl-card-padding);
-  --rdl-ctl: rgba(255,255,255,0.14);
+/* Brand panel (blueprint card): filled with the brand primary, line art in the on-brand colour.
+   .rdl-blueprint is the v3 name; .rdl-card--brand is the v4 name. */
+.rdl-blueprint, .rdl-card--brand {
+  background: var(--rdl-bg-brand); color: var(--rdl-fg-on-brand); border-radius: var(--rdl-radius-lg); padding: var(--rdl-card-padding);
+  --rdl-ctl: color-mix(in srgb, var(--rdl-fg-on-brand) 14%, transparent);
+  --rdl-text-primary: var(--rdl-fg-on-brand); --rdl-text-secondary: var(--rdl-fg-on-brand-secondary); --rdl-text-tertiary: var(--rdl-fg-on-brand-secondary);
+  --rdl-tick: color-mix(in srgb, var(--rdl-fg-on-brand) 36%, transparent); --rdl-tick-strong: var(--rdl-fg-on-brand);
 }
-.rdl-blueprint { --rdl-text-secondary: rgba(255,255,255,0.78); --rdl-text-tertiary: rgba(255,255,255,0.6); }
-.rdl-blueprint .rdl-muted { color: var(--rdl-text-secondary); }
-.rdl-blueprint svg { stroke: #fff; }
+.rdl-card--brand { border-radius: var(--rdl-radius-card); }
+.rdl-blueprint .rdl-muted, .rdl-card--brand .rdl-muted { color: var(--rdl-text-secondary); }
+.rdl-blueprint svg, .rdl-card--brand svg { stroke: currentColor; }
 
 /* Film grain + dot grid textures */
 .rdl-grain { position: relative; }
@@ -236,7 +242,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-orb--lg { width: var(--rdl-size-orb-lg); height: var(--rdl-size-orb-lg); }
 .rdl-orb--lg .rdl-icon, .rdl-orb--lg .ico { width: var(--rdl-size-icon-lg); height: var(--rdl-size-icon-lg); }
 .rdl-orb--sm { width: var(--rdl-size-control-sm); height: var(--rdl-size-control-sm); }
-.rdl-orb--solid { background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); border-color: transparent; }
+.rdl-orb--solid { background: var(--rdl-orb-bg-selected); color: var(--rdl-orb-fg-selected); border-color: transparent; }
 .rdl-orb--white { background: #fff; color: #0A0B0C; border-color: transparent; }
 .rdl-orb--accent { background: var(--rdl-accent); color: var(--rdl-on-accent); border-color: transparent; }
 .rdl-orb--outline { background: transparent; border-color: var(--rdl-border-strong); backdrop-filter: none; }
@@ -267,17 +273,18 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .rdl-chip--glass { background: var(--rdl-glass-fill); border: 1px solid var(--rdl-glass-border); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
 .rdl-chip--outline { background: transparent; border: 1px solid var(--rdl-border-strong); }
 .rdl-tag { display: inline-flex; align-items: center; gap: var(--rdl-space-1); height: var(--rdl-size-tag); padding: 0 var(--rdl-space-2); border-radius: var(--rdl-radius-pill); font-size: 11px; font-weight: 600; background: var(--rdl-accent); color: var(--rdl-on-accent); white-space: nowrap; }
-.rdl-tag--dark { background: #0A0B0C; color: #fff; }
+.rdl-tag--dark { background: var(--rdl-bg-emphasis); color: var(--rdl-fg-on-emphasis); }
 .rdl-tag--white { background: #fff; color: #0A0B0C; }
-.rdl-tag--crit { background: var(--rdl-red-500); color: #fff; }
+.rdl-tag--accent { background: var(--rdl-accent); color: var(--rdl-on-accent); }
+.rdl-tag--crit { background: var(--rdl-danger-subtle); color: var(--rdl-danger-text); }
 
 /* Status: ● Operational */
 .rdl-status { display: inline-flex; align-items: center; gap: var(--rdl-space-1_5); font-size: 13px; line-height: 18px; font-weight: 500; }
-.rdl-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--rdl-status, var(--rdl-signal-400)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--rdl-status, var(--rdl-signal-400)) 22%, transparent); }
-.rdl-status--warn { --rdl-status: var(--rdl-amber-500); }
-.rdl-status--crit { --rdl-status: var(--rdl-red-500); }
-.rdl-status--info { --rdl-status: var(--rdl-electric-400); }
-.rdl-status--idle { --rdl-status: var(--rdl-stone-400); }
+.rdl-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--rdl-status, var(--rdl-success)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--rdl-status, var(--rdl-success)) 22%, transparent); }
+.rdl-status--warn { --rdl-status: var(--rdl-warning); }
+.rdl-status--crit { --rdl-status: var(--rdl-danger); }
+.rdl-status--info { --rdl-status: var(--rdl-info); }
+.rdl-status--idle { --rdl-status: var(--rdl-fg-tertiary); }
 
 /* Key / value pairs */
 .rdl-kv { display: grid; gap: var(--rdl-stack-tight); }
@@ -297,7 +304,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
   background: var(--rdl-glass-fill); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: inset 0 0 0 1px var(--rdl-glass-border), var(--rdl-shadow-glass);
 }
 .rdl-dock button { width: var(--rdl-size-dock-item); height: var(--rdl-size-dock-item); border-radius: 50%; display: grid; place-items: center; color: inherit; opacity: 0.7; }
-.rdl-dock button[aria-current="page"] { background: var(--rdl-fill-control-strong); color: var(--rdl-text-on-strong); opacity: 1; }
+.rdl-dock button[aria-current="page"] { background: var(--rdl-dock-item-selected); color: var(--rdl-dock-fg-selected); opacity: 1; }
 .rdl-dock--accent button[aria-current="page"] { background: var(--rdl-accent); color: var(--rdl-on-accent); }
 
 /* ---------- Instruments ---------- */
@@ -307,27 +314,27 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
     repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 30px) bottom / 100% 18px no-repeat,
     repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 6px) bottom / 100% 10px no-repeat;
 }
-.rdl-ticks__needle { position: absolute; bottom: 0; left: var(--at, 50%); width: 2px; height: 28px; border-radius: 2px; background: var(--rdl-accent); transform: translateX(-1px); box-shadow: 0 0 12px var(--rdl-accent); }
+.rdl-ticks__needle { position: absolute; bottom: 0; left: var(--at, 50%); width: 2px; height: 28px; border-radius: 2px; background: var(--rdl-accent-graphic); transform: translateX(-1px); box-shadow: 0 0 12px var(--rdl-accent-graphic); }
 .rdl-ticks__labels { display: flex; justify-content: space-between; font-size: 11px; line-height: 14px; color: var(--rdl-text-secondary); margin-top: var(--rdl-stack); }
 
 /* Thin meter line: label ........ value, 2px line underneath */
 .rdl-meter { display: grid; grid-template-columns: 1fr auto; gap: var(--rdl-stack) var(--rdl-space-3); font-size: 13px; line-height: 18px; }
 .rdl-meter__track { grid-column: 1 / -1; height: 2px; border-radius: 2px; background: var(--rdl-chart-track); overflow: hidden; }
-.rdl-meter__track > span { display: block; height: 100%; width: var(--v); background: var(--c, var(--rdl-accent)); border-radius: inherit; }
+.rdl-meter__track > span { display: block; height: 100%; width: var(--v); background: var(--c, var(--rdl-accent-graphic)); border-radius: inherit; }
 .rdl-glass--dark .rdl-meter__track, .rdl-on-dark .rdl-meter__track { background: rgba(255,255,255,0.12); }
 
 /* Vertical line bars (thin strokes, one bright) */
 .rdl-lines { display: flex; align-items: flex-end; justify-content: space-between; height: var(--h, 96px); gap: 2px; }
 .rdl-lines > i { width: 2px; height: var(--v); border-radius: 2px; background: currentColor; opacity: 0.28; transform-origin: bottom; animation: rdl-grow var(--rdl-duration-chart) var(--rdl-ease-emphasized) both; }
-.rdl-lines > i.is-active { opacity: 1; background: var(--rdl-accent); box-shadow: 0 0 10px var(--rdl-accent); }
+.rdl-lines > i.is-active { opacity: 1; background: var(--rdl-accent-graphic); box-shadow: 0 0 10px var(--rdl-accent-graphic); }
 
 /* Month grid of paid/missed/upcoming installments (SIP / EMI history) */
 .rdl-monthgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--rdl-space-1_5); }
 .rdl-monthgrid > div { aspect-ratio: 1 / 1.05; border-radius: var(--rdl-radius-tile); display: grid; justify-items: center; align-content: space-between; padding: var(--rdl-space-2) var(--rdl-space-1); font-size: 11px; color: var(--rdl-text-secondary); background: var(--rdl-ctl); }
 .rdl-monthgrid > div::after { content: ""; width: 20px; height: 20px; border-radius: 50%; border: 1px dashed var(--rdl-border-strong); }
-.rdl-monthgrid > .is-paid::after { border: 0; background: var(--rdl-accent) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M6 10.5l2.6 2.5L14 7.5' fill='none' stroke='%230A0B0C' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>") center / 20px no-repeat; }
-.rdl-monthgrid > .is-missed::after { border: 0; background: var(--rdl-stone-300) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M7 7l6 6M13 7l-6 6' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/></svg>") center / 20px no-repeat; }
-.rdl-monthgrid > .is-now { outline: 1.5px solid var(--rdl-accent); outline-offset: -1.5px; color: var(--rdl-text-primary); }
+.rdl-monthgrid > .is-paid::after { content: "✓"; border: 0; background: var(--rdl-accent); color: var(--rdl-on-accent); font-size: 12px; font-weight: 700; line-height: 20px; text-align: center; }
+.rdl-monthgrid > .is-missed::after { border: 0; background: var(--rdl-fill-control-pressed) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M7 7l6 6M13 7l-6 6' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/></svg>") center / 20px no-repeat; }
+.rdl-monthgrid > .is-now { outline: 1.5px solid var(--rdl-accent-graphic); outline-offset: -1.5px; color: var(--rdl-text-primary); }
 
 /* Accessibility: Reduce Transparency → glass becomes solid */
 @media (prefers-reduced-transparency: reduce) {
@@ -446,19 +453,26 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 }
 
 /* ---------- Surfaces (v3 additions) ---------- */
-.rdl-widget--ink { background: var(--rdl-stone-950); color: #F4F4F5; --rdl-ctl: rgba(255,255,255,0.10); }
-/* Dark layering: on a dark canvas the ink surface steps up one level so it keeps its edge */
-[data-theme="dark"] .rdl-widget--ink { background: var(--rdl-stone-800); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .rdl-widget--ink { background: var(--rdl-stone-800); } }
+/* Emphasis surface (v3 "ink widget"): ink in light, one step up in dark, the inverse of the canvas in brand. */
+.rdl-widget--ink, .rdl-card--emphasis {
+  background: var(--rdl-bg-emphasis); color: var(--rdl-fg-on-emphasis);
+  --rdl-ctl: color-mix(in srgb, var(--rdl-fg-on-emphasis) 10%, transparent);
+  --rdl-text-primary: var(--rdl-fg-on-emphasis); --rdl-text-secondary: var(--rdl-fg-on-emphasis-secondary); --rdl-text-tertiary: var(--rdl-fg-on-emphasis-secondary);
+  --rdl-tick: color-mix(in srgb, var(--rdl-fg-on-emphasis) 30%, transparent); --rdl-tick-strong: var(--rdl-fg-on-emphasis);
+  --rdl-glass-fill: color-mix(in srgb, var(--rdl-fg-on-emphasis) 8%, transparent); --rdl-glass-fill-strong: color-mix(in srgb, var(--rdl-fg-on-emphasis) 14%, transparent);
+  --rdl-glass-border: color-mix(in srgb, var(--rdl-fg-on-emphasis) 18%, transparent);
+  --rdl-chart-track: color-mix(in srgb, var(--rdl-fg-on-emphasis) 14%, transparent);
+}
+.rdl-card--emphasis { border-radius: var(--rdl-radius-card); padding: var(--rdl-card-padding); }
 /* Tinted glass sub-pane for use inside aura widgets (radius = widget − padding) */
 .rdl-glass--tint { background: rgba(10,11,12,0.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.28); border-radius: var(--rdl-nest-r, var(--rdl-radius-lg)); padding: var(--rdl-space-3) var(--rdl-space-4); }
 
 /* ---------- Text tiers over backdrops (never mid-gray on color) ---------- */
 .rdl-on-light-aura { --rdl-text-secondary: rgba(10,11,12,0.68); --rdl-text-tertiary: rgba(10,11,12,0.52); color: #0A0B0C; }
-.rdl-on-dark, .rdl-widget--ink, .rdl-glass--dark { --rdl-text-secondary: rgba(244,244,245,0.68); --rdl-text-tertiary: rgba(244,244,245,0.5); --rdl-tick: rgba(244,244,245,0.3); }
+.rdl-on-dark, .rdl-glass--dark { --rdl-text-secondary: rgba(244,244,245,0.68); --rdl-text-tertiary: rgba(244,244,245,0.5); --rdl-tick: rgba(244,244,245,0.3); }
 .rdl-widget--ink .rdl-figure .rdl-unit, .rdl-on-dark .rdl-figure .rdl-unit { color: var(--rdl-text-secondary); }
 /* Glass nested inside dark surfaces stays dark in both themes */
-.rdl-widget--ink, .rdl-glass--dark { --rdl-glass-fill: rgba(255,255,255,0.08); --rdl-glass-fill-strong: rgba(255,255,255,0.14); --rdl-glass-border: rgba(255,255,255,0.18); }
+.rdl-glass--dark { --rdl-glass-fill: rgba(255,255,255,0.08); --rdl-glass-fill-strong: rgba(255,255,255,0.14); --rdl-glass-border: rgba(255,255,255,0.18); }
 
 /* ---------- Web navigation and tables ---------- */
 .rdl-nav { display: flex; gap: var(--rdl-space-1); padding: var(--rdl-space-1); border-radius: var(--rdl-radius-pill); background: var(--rdl-glass-fill); box-shadow: inset 0 0 0 1px var(--rdl-glass-border); }

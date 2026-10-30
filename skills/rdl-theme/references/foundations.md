@@ -3,34 +3,51 @@
 All values live in `assets/tokens/tokens.json`. This file explains the intent behind them, so you
 can make the right call when a case isn't covered. Spacing, grids and radius rules are in
 `layout.md`; component dimensions are in `anatomy.md`; usage budgets are in `guidelines.md`.
-v3 colors are pixel-calibrated against the board (`research/calibration.md`). The glass style is the default; notes marked
+Colours are pixel-calibrated against the board (`research/calibration.md`, `research/theme-scan.md`). The glass style is the default; notes marked
 **Flat** apply to `data-style="flat"` (v1).
 
-## Modes and attributes
+## Themes and attributes
 
-Put these on `<html>` (web), or inject them at the SwiftUI root:
+v4 has three themes (full spec: `themes.md`; every value: `tokens.md`):
 
 | Attribute | Values | SwiftUI |
 |---|---|---|
-| `data-theme` | `light` · `dark` (or follow the system) | `.preferredColorScheme` |
+| `data-theme` | `light` · `dark` · `brand` (omit to follow the system light/dark) | `RDLTheme.apply(.light / .dark / .system / .brand(primary:secondary:))` |
+| `data-brand` | brand preset: `cobalt` (default) · `mustard` · `gold` · `olive` · `forest` · `lavender` · `plum` · `vermilion` · `dusk` | `.brandPreset("gold")` |
+| `data-accent` | secondary-colour preset for light/dark: `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `rose` · `lime` · `violet` · `orange` · `ocean` | `RDLTheme.apply(_, accent:)` or `.rdlAccent(.gold)` |
 | `data-style` | `glass` (default) · `flat` | `.rdlSurfaceStyle(.glass/.flat)` |
-| `data-accent` | `volt` (default) · `gold` · `signal` · `electric` · `ember` · `orchid` · `rose` · `lime` · `violet` · `orange` · `ocean` | `.rdlAccent(.gold)` |
 
-A single screen may switch theme locally. Put `data-theme="dark"` on a dark hero screen inside a
-light app, which is common on the board.
+Any two colours at runtime: `RDL.setTheme("brand", { primary, secondary })` (`assets/tokens/rdl-theme.js`).
+Attributes work on any element, so a screen can switch theme locally (a dark Buy screen inside a light
+app is common on the board).
 
 ## Color
 
-### Neutrals: stone
-A cool, very slightly warm gray ramp (`stone.0` to `stone.950`). The light canvas is `stone.100`
-`#EFEFF1`, cards are white, and ink is `stone.950` `#0A0B0C`. The dark canvas is `stone.950`,
-with surfaces at `stone.900` and `stone.800`. Board neutrals match these within ΔE 3.
+### Layers
+`primitive` (raw hex) → `theme` (semantic roles per theme) → `component` (per-component roles). UI code
+uses semantic or component roles only. Names follow `category-role-variant-state`: `bg-surface-raised`,
+`fg-secondary`, `action-primary-pressed`, `accent-text`.
 
-Text has three tiers only: primary (ink), secondary (`stone.550` `#5C5C64`, ≥ 4.5:1 on canvas
-and fog) and tertiary (`stone.400`, only for ≥ 24px text, disabled states and decoration).
+### Neutrals
+Two 12-step scales tuned separately (dark is not an inverted light). Radix usage: steps 1–2 backgrounds,
+3–5 control fills (rest/hover/pressed), 6–8 borders, 9–10 solid/tertiary, 11–12 text.
 
-### Accent packs
-Use one pack per product, and spend the accent 1–3 times per screen.
+| Step | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `neutral-light` | FCFCFC | F7F7F6 | **F0F0EF** canvas | E8E8E7 | E1E1E0 | D9D9D8 | CECECD | BBBBBA | 8D8D8C | 7A7A79 | 5E5E5D | **151515** ink |
+| `neutral-dark` | **0A0B0C** canvas | 111214 | 17181A | 1E1F22 | 25262A | 2D2E33 | 393A40 | 4A4B52 | 6E6F76 | 7C7D84 | A9AAB0 | **F2F2F3** |
+
+Measured on the board: light canvases `#EDECEC`–`#F7F6F6` (warm neutral, never pure white), cards
+`#FBFBFB`–`#FDFDFD`; dark canvases `#070A0B`–`#171717` (`research/theme-scan.md`).
+
+Text has three tiers plus disabled: `fg-primary` (≥ 7:1), `fg-secondary` (≥ 4.5:1), `fg-tertiary`
+(≥ 3:1, captions and placeholders only), `fg-disabled` (38%).
+
+### Secondary colour (accent)
+The secondary colour is the highlight in every theme. Presets below; any colour works at runtime. Spend it
+1–3 times per screen. Each preset yields seven roles per theme: `accent` (fill with its own label),
+`accent-hover`, `accent-pressed`, `accent-subtle`, `accent-text` (≥ 4.5:1), `accent-graphic` (≥ 3:1, for
+needles, data and focus) and `on-accent`.
 
 | Pack | Accent | On-accent | Seen on the board | Use for |
 |---|---|---|---|---|
@@ -44,9 +61,15 @@ Use one pack per product, and spend the accent 1–3 times per screen.
 | lime / violet / orange / ocean | v1 packs | | | Flat-style products |
 
 **Where the accent goes:** the active orb or dock item, a needle or selected tick, the selected
-data point or cell, one tag ("Best Seller", "+2.4%"), paid checkmarks, the brand dot. It never
-goes on body text or large background areas. The exception is a single accent widget or a
-blueprint card.
+data point or cell, one tag ("Best Seller", "+2.4%"), paid checkmarks, the brand dot. Use `accent` when
+the mark carries its own label, `accent-graphic` when it stands alone (a datum, a needle, a meter
+fill), `accent-text` for coloured words. It never goes on body text or large background areas.
+
+### Primary colour (brand)
+In light and dark, the primary colour appears only as a **brand panel**: `.rdl-card--brand` (v3
+`.rdl-blueprint`), `bg-brand` + `fg-on-brand`. In the brand theme it is the canvas. Presets
+(measured on the board): cobalt `#0732D8`, mustard `#ECBB42`, gold `#D9A632`, olive `#687B59`,
+forest `#1F4A3E`, lavender `#AD80D4`, plum `#2F1125`, vermilion `#D44C27`, dusk `#7599AD`.
 
 ### Auras (gradient washes)
 `--rdl-aura-*` / `RDLAura.*`. These fill widgets, hero cards and screen backdrops. Add
@@ -69,24 +92,29 @@ Each aura class redefines the text tiers (ink 68% on light auras, white 86% on d
 units, currency and captions stay ≥ 4.5:1. Keep auras soft, never neon rainbow. `dusk` was
 darkened in v3 so white text passes on every stop.
 
-### Glass
-| Token | Light | Dark |
-|---|---|---|
-| `glass-fill` | `rgba(255,255,255,.56)` | `rgba(28,30,33,.52)` |
-| `glass-fill-strong` | `rgba(255,255,255,.78)` | `rgba(36,38,42,.72)` |
-| `glass-border` | `rgba(255,255,255,.72)` | `rgba(255,255,255,.10)` |
-| blur / saturate | 24px / 1.6 | same |
-| `shadow-glass` | inset top highlight + soft 50px drop | stronger drop |
+### Materials (glass)
+Four thicknesses, as in HIG. Thicker means more opaque and more contrast; thinner shows more context.
 
-Glass needs something behind it (a photo, 3D render, map, aura or fog). On a flat gray canvas,
-use `glass-fill-strong` or a plain white card. The iridescent rim
-(`.rdl-glass--iridescent`) is reserved for one premium card per screen. **Flat:** glass becomes
-solid surfaces with no blur.
+| Role (v3 name) | Light | Dark | Use |
+|---|---|---|---|
+| `material-ultrathin` | white 24% | `rgba(28,30,33,.32)` | Chips over photos; never with tertiary text |
+| `material-thin` | white 40% | `.44` | Pills, toolbars over imagery |
+| `material-regular` (`glass-fill`) | white 56% | `.52` | Default glass card |
+| `material-thick` (`glass-fill-strong`) | white 78% | `rgba(36,38,42,.72)` | Busy backdrops, text-heavy glass |
+| `material-border` (`glass-border`) | white 72% | white 10% | Rim |
+| `material-dark` (`glass-dark-fill`) | `rgba(22,23,26,.52)` | same | Dark glass over photos in any theme |
+| blur / saturate | 24px / 1.6 | same | |
 
-### Semantic
-`success`/`danger`/`warning`/`info` each have base, `-soft` and `-text` variants (text passes
-4.5:1 on its tint). In glass style, **status is shown as a dot** (`.rdl-status`): signal green
-for ok, amber for warn, red for critical, electric for info, stone for idle.
+In the brand theme glass is white (or, on mid-tone primaries, black) at theme-computed strengths; see
+`themes.md` §3. Glass needs something behind it (a photo, 3D render, map, aura or fog). On a flat
+canvas, use `.rdl-card`. The iridescent rim (`.rdl-glass--iridescent`) is reserved for one premium
+card per screen. With Reduce Transparency, glass becomes `bg-surface`. **Flat:** solid surfaces, no blur.
+
+### Status
+`success` · `warning` · `danger` · `info`, each with three roles: the solid (dots, meter fills, ≥ 3:1),
+`-subtle` (pill and tile backgrounds) and `-text` (≥ 4.5:1 on canvas, surface and its own subtle fill).
+Light and dark have their own tuned values; brand computes them against the canvas. In glass style,
+**status is shown as a dot plus a word** (`.rdl-status`, `.rdl-status--warn|crit|info|idle`).
 
 ## Typography
 
@@ -175,8 +203,11 @@ circles (not filled) for list leads.
 
 ## Motion
 
-Same durations as v1 (fast 120 · base 200 · slow 320 · chart 600 · stagger 40 · spring
-0.35/0.82). Signature V2 motions:
+Durations: instant 50 · fast 120 · base 200 · slow 320 · chart 600 ms (Material 3 bands: short ≤ 200,
+medium 250–400, long 450–600); stagger 40; spring 0.35 / 0.82. Easing: `standard` (0.2,0,0,1) for most
+moves, `standard-decelerate` for entrances, `standard-accelerate` / `exit` for exits,
+`emphasized-decelerate` (0.05,0.7,0.1,1) for hero arrivals, `emphasized` (slight overshoot) for
+toggles and the dock highlight. Signature motions:
 - the needle glides across the tick ruler;
 - numbers roll (`contentTransition(.numericText())`);
 - glass panes fade and rise 12px with blur easing in;

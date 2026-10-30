@@ -221,7 +221,7 @@ for (const target of targets) {
   const page = await browser.newPage({ viewport: { width: W, height: H } });
   await page.goto(toURL(target));
   await page.evaluate(() => document.fonts.ready);
-  await page.addStyleTag({ content: "*, *::before, *::after { animation: none !important; transition: none !important; } [data-audit-scope] { transform: none !important; }" }); // flatten presentation tilt
+  await page.addStyleTag({ content: "*, *::before, *::after { animation: none !important; transition: none !important; } [data-audit-scope] { transform: none !important; zoom: 1 !important; }" }); // flatten presentation tilt and zoom
   await page.waitForTimeout(300);
   const { issues, texts } = await page.evaluate(collect, { ...rules, minTarget });
   for (const t of await contrast(page, texts)) issues.push({ sev: "error", rule: "contrast", where: t.where, detail: `${t.cr}:1 (needs ${t.need})`, scope: t.scope });

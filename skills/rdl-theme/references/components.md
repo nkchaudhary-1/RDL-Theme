@@ -122,3 +122,21 @@ action** (orb or pill).
 | Score card | aura or white → thin arc gauge or beaded arc → figure → verdict label → ↗ orb |
 | Product card (retail/health) | stone-50 squircle (radius 40) → tag → 3D render → name (gray) → price figure |
 | Node card (AI/workflow) | dark glass on dot grid → icon + title → glass inputs → port dots → glowing connectors |
+
+## v4 theme-aware surfaces and tokens
+
+| Web | Use |
+|---|---|
+| `.rdl-card--emphasis` (v3 `.rdl-widget--ink`) | The one high-emphasis card: `bg-emphasis` + `fg-on-emphasis*`. Ink in light, one step up in dark, white/ink in brand |
+| `.rdl-card--brand` (v3 `.rdl-blueprint`) | Brand panel in the primary colour: `bg-brand` + `fg-on-brand*`, line art in `currentColor`. Light/dark only |
+| `.rdl-tag--accent` | Highlight tag: `accent` + `on-accent` |
+| `.rdl-tag--crit`, `.rdl-statuspill--*` | Status on `*-subtle` with `*-text` (never a red solid) |
+| Needles, meter fills, selected datum, current month ring | Use `accent-graphic` (≥ 3:1), already wired in `rdl-components.css` |
+
+The core controls read **component tokens**, which point at semantic roles: the primary and accent
+buttons (rest, hover, pressed, disabled), selected chip, segmented thumb, solid orb, current dock
+item and the focus ring (`--rdl-button-primary-bg`, `--rdl-segmented-thumb`, `--rdl-focus-ring`…).
+To restyle one everywhere, change its row in `tokens.json → component` and rebuild, or override the
+variable on a scope. Other components read semantic roles directly. Full list:
+`tokens.md → Component tokens`.
+

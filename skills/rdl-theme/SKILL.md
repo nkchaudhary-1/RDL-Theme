@@ -1,17 +1,31 @@
 ---
 name: rdl-theme
-description: Design and build apps in the RonDesignLab (RDL) style, with a measured layout system and an automated UI audit. The default "glass" language (2025–26) has frosted glass over photos, 3D renders and soft gradient auras; huge light numerals with small muted units; dot-matrix figures; orbs, pills and circle–pill–circle action rows; tick-ruler and hairline instruments; status dots; line-art and blueprint illustration. There is also a "flat" fintech style (v1). Use whenever the user asks for the "RDL theme/style", "RonDesignLab style", or a Dribbble-grade minimal fintech, wealth/gold, health, energy, logistics, industrial/IoT, property or SaaS app, screen, dashboard or shot, and whenever a project already uses RDL tokens (tokens.css, RDLTokens.swift, tailwind.preset.js). Covers SwiftUI, HTML/CSS, Tailwind/React, web dashboards and portfolio presentation.
+description: Design and build apps in the RonDesignLab (RDL) style, with a measured layout system and an automated UI audit. The default "glass" language (2025–26) has frosted glass over photos, 3D renders and soft gradient auras; huge light numerals with small muted units; dot-matrix figures; orbs, pills and circle–pill–circle action rows; tick-ruler and hairline instruments; status dots; line-art and blueprint illustration. Three themes: Light, Dark and Brand (the user picks a primary and a secondary colour; every role is derived and contrast-checked). There is also a "flat" fintech style (v1). Use whenever the user asks for the "RDL theme/style", "RonDesignLab style", or a Dribbble-grade minimal fintech, wealth/gold, health, energy, logistics, industrial/IoT, property or SaaS app, screen, dashboard or shot, and whenever a project already uses RDL tokens (tokens.css, RDLTokens.swift, tailwind.preset.js). Covers SwiftUI, HTML/CSS, Tailwind/React, web dashboards and portfolio presentation.
 ---
 
-# RDL Theme · v3
+# RDL Theme · v4
 
-A production design system distilled from two passes over 220 RonDesignLab frames:
+A production design system distilled from three passes over the 219 RonDesignLab board frames:
 - **Style pass:** `references/design-study.md`.
 - **Structure pass:** `research/deep-scan.md`.
-- **Pixel calibration:** `research/calibration.md`.
+- **Theme pass:** `research/theme-scan.md`, plus pixel calibration (`research/calibration.md`).
 
-v3 adds measured layout rules, component anatomy, usage budgets and an audit script, so screens come
-out **consistent, minimal and well spaced** by construction rather than by eye.
+Structure follows Apple HIG, Material 3, Radix Colors and Primer (`research/standards.md`): semantic roles
+named `category-role-variant-state`, 12-step neutral scales, state layers, materials, elevation levels
+and contrast minimums. Measured layout rules, component anatomy, usage budgets and an audit script make
+screens **consistent, minimal and well spaced** by construction.
+
+**Three themes** (`references/themes.md`), one markup:
+
+| Theme | Canvas | Primary action | Highlight |
+|---|---|---|---|
+| **Light** | warm neutral `#F0F0EF`, white cards | ink | the secondary colour |
+| **Dark** | near-black `#0A0B0C`, lighter cards | white | the secondary colour |
+| **Brand** | **the user's primary colour**, tinted-glass cards | ink or white by contrast | the secondary colour |
+
+The user chooses the primary and secondary. Every role is derived from them by one engine
+(`assets/tokens/rdl-theme.js`, ported to Swift) and checked against WCAG/HIG minimums. The build fails
+if any pair misses.
 
 ## The RDL DNA
 
@@ -25,8 +39,9 @@ out **consistent, minimal and well spaced** by construction rather than by eye.
    bottom-right, with an optional instrument between.
 5. **Circles and pills.** Orbs (48, or 56 in action rows), pills, a circle–pill–circle action row,
    slide-to-confirm and a glass dock. The Swiss variant is radius 0 everywhere and never mixed.
-6. **One accent, spent 1–3×.** Use it on the active dock/orb, a needle or selected datum, one tag,
-   or check marks. Color otherwise lives in auras (≤ 2 per screen).
+6. **One highlight, spent 1–3×.** The secondary colour goes on the active dock/orb, a needle or
+   selected datum, one tag, or check marks (`accent` with a label, `accent-graphic` alone). Colour
+   otherwise lives in auras (≤ 2 per screen), a brand panel, or the whole canvas in the Brand theme.
 7. **Instruments, not charts.** Tick rulers, 2pt meters, hairline bars with one lit, window
    curves with glass beads, month grids, beaded arcs.
 8. **Status is a dot plus a word.** Soft-tint pills are for escalations only. Destructive actions
@@ -63,19 +78,25 @@ status bar
 ## Workflow
 
 1. **Classify.** Identify the domain (`references/domain-playbooks.md`), platform and style (glass
-   by default; flat if there's no imagery; Swiss for industrial or editorial). Pick one accent
-   pack and the backdrop.
+   by default; flat if there's no imagery; Swiss for industrial or editorial). Ask for (or pick) the
+   **primary and secondary colours** and which **themes** ship (light + dark by default; brand for
+   brand-led screens). Pick the backdrop.
 2. **Lock the app-level decisions** (`references/guidelines.md` §5): the header pattern per
    role, the pinned zone per role, the figure treatment, the radius family and the icon set.
    Every later screen reuses them. Structurally similar flows (SIP ↔ Lease) share one template.
 3. **Wire the tokens.** Never hard-code hex, size, radius or blur values.
    - **Web:** `assets/tokens/tokens.css` + `assets/templates/rdl-components.css`, with Urbanist
-     (300–700) and Doto (700). Set `<html data-theme data-style data-accent>`.
-   - **Tailwind:** use `assets/tokens/tailwind.preset.js`.
-   - **SwiftUI (iOS 17+):** add `RDLTokens.swift`, `RDLComponents.swift`,
-     `RDLGlassComponents.swift` and `RDLLayout.swift`, then set
-     `.rdlAccent(.gold).rdlSurfaceStyle(.glass)` at the root.
-   - **Changing values:** edit `assets/tokens/tokens.json`, then run `node scripts/build_tokens.mjs`.
+     (300–700) and Doto (700). Set `<html data-theme="light|dark|brand" data-brand data-accent data-style>`.
+     Custom colours at runtime: `assets/tokens/rdl-theme.js` → `RDL.setTheme("brand", { primary, secondary })`.
+   - **Tailwind:** use `assets/tokens/tailwind.preset.js` (utilities follow the theme).
+   - **SwiftUI (iOS 17+):** add `RDLTokens.swift`, `RDLThemeEngine.swift`, `RDLComponents.swift`,
+     `RDLGlassComponents.swift` and `RDLLayout.swift`. Call
+     `RDLTheme.apply(.brand(primary:secondary:))` (or `.light`, `.dark`, `.system`) and use
+     `.rdlThemedRoot()` at the root.
+   - **Use v4 roles** (`references/tokens.md`): `bg-*`, `fg-*`, `fill-*`, `border-*`, `action-*`,
+     `accent*`, status, `material-*`. Never primitives or hex in UI code.
+   - **Adding a brand pair:** add it to `tokens.json → brand.presets`, run `node scripts/build_tokens.mjs`
+     (it regenerates CSS, Tailwind, Swift, `references/tokens.md` and the contrast report).
 4. **Pick an archetype** (`references/screen-patterns.md`) and build on the skeleton:
    - Web: `.rdl-screen` → `.rdl-header` → `.rdl-stack--*` → `.rdl-pin`.
    - SwiftUI: `RDLScreen` → `RDLHeader` → `VStack(spacing: RDLSpace.…)` → `pinned:`.
@@ -84,26 +105,33 @@ status bar
    The default card is `.rdl-metric` / `RDLMetricTile`. Never invent one-off styles.
 6. **Design the real states**: loading skeleton at final size, empty (one line + one action),
    error (crit dot + fix), stale (warn dot + "Updated n min ago").
-7. **Audit.** Render HTML builds and run `node scripts/audit_ui.mjs page.html` until it reports 0
-   errors. It checks the type scale, spacing, radius, control heights, row consistency,
+7. **Audit in every theme you ship.** Render HTML builds and run `node scripts/audit_ui.mjs page.html` until it reports 0
+   errors (switch `data-theme` and re-run, or put each theme in its own `data-audit-scope`). It checks the type scale, spacing, radius, control heights, row consistency,
    pinned-zone clearance, accent budget, targets and pixel-measured contrast. Then walk
    `references/qa-checklist.md`. For SwiftUI, apply the same checklist by hand.
 
-## Token quick reference
+## Token quick reference (`references/tokens.md` has every value)
 
-| Role | Light | Dark |
-|---|---|---|
-| canvas / surface | `#EFEFF1` / `#FFFFFF` | `#0A0B0C` / `#131416` |
-| text primary / secondary / tertiary | `#0A0B0C` / `#5C5C64` / `#9B9BA3` | `#F4F4F5` / `#A1A1AA` / `#6B6B74` |
-| glass fill / rim | `rgba(255,255,255,.56)` / `.72` | `rgba(28,30,33,.52)` / `rgba(255,255,255,.10)` |
-| accents (calibrated) | volt `#DFFA32` · gold `#ECBC44` · signal `#4BE06E` · electric `#0832D8` · ember `#FC5A10` · orchid `#C16CF7` · rose `#F0548A` | same |
+| Role | Light | Dark | Brand |
+|---|---|---|---|
+| `bg-canvas` / `bg-surface` | `#F0F0EF` / `#FFFFFF` | `#0A0B0C` / `#17181A` | primary / primary + white tint |
+| `fg-primary` / `-secondary` / `-tertiary` | `#151515` / `#5E5E5D` / `#7A7A79` | `#F2F2F3` / `#A9AAB0` / `#7C7D84` | ink or white, then 4.5:1 / 3:1 tiers |
+| `action-primary` / `on-action-primary` | ink / white | white / ink | text colour / its opposite |
+| `fill-control` | `#E8E8E7` | `#25262A` | primary tinted toward contrast |
+| `bg-emphasis` (hero card) | ink | `#26272B` | white or ink (inverse) |
+| `accent` · `accent-text` · `accent-graphic` | secondary · ≥ 4.5:1 · ≥ 3:1 | same | same, against the brand canvas |
+| `material-regular` / `-thick` | white 56% / 78% | `rgba(28,30,33,.52)` / `.72` | white (or black) at computed strength |
+| Status | `success` `warning` `danger` `info`, each + `-subtle` + `-text` | | |
 
 | Scale | Values |
 |---|---|
 | Type | hero 96 · display-xl 72 · display 56 · numeral 40 (all 300) · h1 34 · h2 26 · h3 20 · title 17 · body 15 · label 14 · meta 13 · caption 12 · micro 11 |
-| Per screen | ≤ 5 type sizes · 1 focal figure · 1 primary action · accent ≤ 3 · auras ≤ 2 · 1 dot figure · 1 iridescent rim |
-| Glass | blur 24 · saturate 1.6 |
-| Motion | 120 / 200 / 320 / 600 ms · stagger 40 · spring 0.35 / 0.82 |
+| Per screen | ≤ 5 type sizes · 1 focal figure · 1 primary action · highlight ≤ 3 · auras ≤ 2 · 1 dot figure · 1 iridescent rim |
+| States (M3) | hover 8% · pressed 12% · focus 12% + 2px ring · disabled 38% / 12% |
+| Elevation | `shadow-e1`…`e4` + `shadow-glass` (themed); cards on canvas carry none |
+| Glass | blur 24 · saturate 1.6 · ultrathin / thin / regular / thick |
+| Motion | 50 / 120 / 200 / 320 / 600 ms · stagger 40 · spring 0.35 / 0.82 · M3 easings |
+| Contrast | text ≥ 7:1 (4.5 brand) · secondary ≥ 4.5 · tertiary ≥ 3 · graphics/focus ≥ 3 |
 
 ## Signature moves (use at least three per screen)
 
@@ -125,12 +153,16 @@ status bar
 - Rectangular buttons in glass, or Swiss blocks mixed with rounded glass.
 - Rainbow multi-series charts and pies; status shown as colored text alone; red solid buttons.
 - Mid-gray text on auras or photos (each aura redefines the text tiers, so use them).
+- Hex values or primitives in UI code; tinting light/dark neutrals with the brand colour; a brand panel
+  on a brand canvas; a second large colour area in the Brand theme.
 - Content running under the pinned zone; cards separated by dividers instead of gaps.
 
 ## Files
 
 | Path | Use |
 |---|---|
+| `references/themes.md` | **Light, Dark and Brand: inputs, setting a theme, the brand algorithm, contrast, states, elevation** |
+| `references/tokens.md` | **Every role with its value per theme, scales, component tokens, presets (generated)** |
 | `references/layout.md` | **Spacing ladder, screen skeleton, grids, alignment, control heights, radius** |
 | `references/anatomy.md` | **Exact specs for every component and layout primitive** |
 | `references/radius.md` | **Corner radius: scale, concentric nesting, strict vs soft, procedure, code, audit** |
@@ -142,9 +174,9 @@ status bar
 | `references/design-study.md` | 220-frame analysis: style frequencies, 20 structural rules, v1→v3 |
 | `references/presentation.md` | Shot composition: hands, DOF, angled devices, three-phone perspective |
 | `references/qa-checklist.md` | Pre-delivery review, including the audit |
-| `assets/tokens/` | `tokens.json` (source) → `tokens.css`, `tailwind.preset.js` |
-| `assets/ios/` | `RDLTokens.swift` (generated), `RDLComponents.swift`, `RDLGlassComponents.swift`, `RDLLayout.swift` |
-| `assets/templates/` | `rdl-components.css`; glass `mobile-app.html`, `web-dashboard.html` (audit-clean); flat `*-flat.html`; `radius-demo.html` (interactive corner-radius demo) |
-| `scripts/build_tokens.mjs` | Regenerates CSS / Tailwind / Swift from `tokens.json` |
+| `assets/tokens/` | `tokens.json` (source) → `tokens.css`, `tailwind.preset.js`, `contrast-report.md`; `rdl-theme.js` (theme engine + runtime) |
+| `assets/ios/` | `RDLTokens.swift` (generated), `RDLThemeEngine.swift`, `RDLComponents.swift`, `RDLGlassComponents.swift`, `RDLLayout.swift` |
+| `assets/templates/` | `rdl-components.css`; `themes.html` (one screen in all three themes + brand presets); `theme-studio.html` (live primary/secondary picker with every role and the audit); glass `mobile-app.html`, `web-dashboard.html`; flat `*-flat.html`; `radius-demo.html` |
+| `scripts/build_tokens.mjs` | Regenerates CSS / Tailwind / Swift / token reference from `tokens.json`; fails on any contrast miss |
 | `scripts/audit_ui.mjs` | Automated layout, consistency and contrast audit (Playwright) |
 | `scripts/extract_palette.py` | Calibrates tokens against exported shots (ΔE report) |

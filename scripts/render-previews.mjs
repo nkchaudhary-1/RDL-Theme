@@ -17,6 +17,9 @@ const tpl = (f) => {
   return pathToFileURL(join(root, "skills/rdl-theme/assets/templates", file)).href + (query ? `?${query}` : "");
 };
 const shots = [
+  { file: "themes.html", out: "v4-themes.png", w: 1700, h: 1300, sel: "#shot-themes" },
+  { file: "themes.html", out: "v4-brand-presets.png", w: 1700, h: 1300, sel: "#shot-presets" },
+  { file: "theme-studio.html?primary=D9A632&secondary=1F4A3E", out: "v4-theme-studio.png", w: 1440, h: 1250 },
   { file: "mobile-app.html", out: "v3-mobile-gold.png", w: 1600, h: 1200 },
   { file: "mobile-app.html?accent=volt", out: "v3-mobile-volt.png", w: 1600, h: 1200 },
   { file: "web-dashboard.html", out: "v3-dashboard-light.png", w: 1440, h: 960 },
@@ -32,7 +35,8 @@ for (const s of shots) {
   await page.goto(tpl(s.file));
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(900); // let entrance animations settle
-  await page.screenshot({ path: join(root, "docs", s.out), fullPage: !!s.full });
+  const target = s.sel ? page.locator(s.sel) : page;
+  await target.screenshot(s.sel ? { path: join(root, "docs", s.out) } : { path: join(root, "docs", s.out), fullPage: !!s.full });
   await page.close();
   console.log("rendered", s.out);
 }

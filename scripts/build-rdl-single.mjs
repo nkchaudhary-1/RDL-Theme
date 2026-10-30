@@ -16,6 +16,8 @@ const version = JSON.parse(readFileSync(join(root, ".claude-plugin/plugin.json")
 // Guide sections, in reading order: [file, title]
 const refs = [
   ["foundations.md", "Foundations"],
+  ["themes.md", "Themes: Light, Dark, Brand"],
+  ["tokens.md", "Token reference"],
   ["layout.md", "Layout and spacing"],
   ["radius.md", "Corner radius"],
   ["guidelines.md", "Guidelines"],
@@ -33,7 +35,7 @@ const secNo = Object.fromEntries(refs.map(([f, t], i) => [f, { n: i + 2, t }]));
 const appendices = [
   ["A", "assets/tokens/tokens.json", "json", "Source of truth for every token. Edit, then run Appendix C."],
   ["B", "assets/tokens/tokens.css", "css", "Generated CSS custom properties: themes, styles, accents, auras, type classes."],
-  ["C", "scripts/build_tokens.mjs", "js", "Regenerates Appendix B, D and E from Appendix A."],
+  ["C", "scripts/build_tokens.mjs", "js", "Regenerates Appendix B, D, E and §3 from Appendix A, using the engine in Appendix M. Fails if any contrast pair misses."],
   ["D", "assets/tokens/tailwind.preset.js", "js", "Generated Tailwind preset wired to the CSS variables."],
   ["E", "assets/ios/RDLTokens.swift", "swift", "Generated SwiftUI tokens."],
   ["F", "assets/templates/rdl-components.css", "css", "Web component layer: part 1 base, part 2 glass, part 3 layout + concentric nesting."],
@@ -43,6 +45,9 @@ const appendices = [
   ["J", "scripts/audit_ui.mjs", "js", "Playwright UI audit (needs Appendix A next to it at ../assets/tokens/tokens.json)."],
   ["K", "scripts/extract_palette.py", "python", "Pixel-calibrates tokens against exported shots."],
   ["L", "assets/templates/radius-demo.html", "html", "Interactive corner-radius demo. Opens on its own in any browser."],
+  ["M", "assets/tokens/rdl-theme.js", "js", "Theme engine and browser runtime: brand roles from two colours, accent roles, contrast audit, RDL.setTheme()."],
+  ["N", "assets/ios/RDLThemeEngine.swift", "swift", "SwiftUI port of Appendix M plus RDLTheme (apply, colour resolution, .rdlThemedRoot())."],
+  ["O", "assets/templates/theme-studio.html", "html", "Live primary/secondary picker: Light, Dark and Brand side by side, every role, live audit. Needs Appendices B, F and M at their paths."],
 ];
 
 // Rewrite references to other skill files as section numbers (outside code fences only).
@@ -83,7 +88,9 @@ const toc = [
   "|---|---|---|",
   "| 1 | Overview | DNA, layout in 60 seconds, workflow, token quick reference, signature moves, anti-patterns |",
   ...refs.map(([f, t], i) => `| ${i + 2} | ${t} | ${{
-    "foundations.md": "Modes, color, accents, auras, glass, type and numerals, textures, imagery, motion",
+    "foundations.md": "Themes and attributes, color layers, neutrals, secondary and primary colours, auras, materials, status, type, motion",
+    "themes.md": "Light, Dark and Brand: the two colours, setting a theme, the brand algorithm, contrast, states, elevation, rules",
+    "tokens.md": "Every role with its value per theme, scales, component tokens, presets, v3 aliases (generated)",
     "layout.md": "Spacing ladder, mobile skeleton, web grid, alignment, control heights, radius summary",
     "radius.md": "Radius scale, concentric nesting, A · strict vs B · soft, procedure, code, audit",
     "guidelines.md": "Hierarchy, type rules, color budget, app-wide consistency, minimalism, content",
@@ -93,7 +100,7 @@ const toc = [
     "domain-playbooks.md": "Wealth/gold/SIP/lease, banking, health, energy, logistics, industrial…",
     "presentation.md": "Dribbble shot composition: hands, depth of field, angled devices",
     "qa-checklist.md": "Pre-delivery review, including the automated audit",
-    "design-study.md": "220-frame analysis, 20 structural rules, v1 → v3",
+    "design-study.md": "Board analysis, 20 structural rules, v1 → v3",
   }[f]} |`),
   ...appendices.map(([l, p, , note]) => `| ${l} | \`${p}\` | ${note} |`),
 ].join("\n");
@@ -102,16 +109,18 @@ const out = [];
 out.push("---", "name: rdl", `description: ${description.replace(/^Design and build/, "RDL — design and build")} This single file holds the complete RDL skill: guide plus all code.`, "---", "");
 out.push(`# RDL · v${version}`, "");
 out.push("The complete RDL design skill in one file: the RonDesignLab-style design system distilled from",
-  "220 frames, with a measured layout system, concentric corner radius, component anatomy, usage",
-  "guidelines, screen archetypes, domain playbooks, QA, and all source code.", "");
+  "the 219-frame board, with three themes (Light, Dark, Brand from your primary + secondary colour), a",
+  "measured layout system, concentric corner radius, component anatomy, usage guidelines, screen",
+  "archetypes, domain playbooks, QA, and all source code.", "");
 out.push("**How to use this file**",
-  "- **Designing or reviewing:** read Part 1 (§1–§12).",
+  `- **Designing or reviewing:** read Part 1 (§1–§${refs.length + 1}).`,
   "- **Building:** copy the code you need from Part 2. Each appendix heading is the path to save it at",
   "  inside a skill folder (`assets/…`, `scripts/…`). Saved together, they reproduce the full skill, so",
   "  every path mentioned in the guide (for example `scripts/audit_ui.mjs`) works as written.",
-  "- **Changing values:** edit Appendix A (`tokens.json`), then run Appendix C (`build_tokens.mjs`).",
-  "- **Example screens:** the mobile, dashboard and flat templates live in the source skill",
-  "  (`skills/rdl-theme/assets/templates/`); this file keeps the radius demo (Appendix L).", "");
+  "- **Changing values or adding a brand pair:** edit Appendix A (`tokens.json`), then run Appendix C (`build_tokens.mjs`).",
+  "- **Any two colours at runtime:** Appendix M (`RDL.setTheme(\"brand\", { primary, secondary })`) or Appendix N (`RDLTheme.apply(.brand(...))`).",
+  "- **Example screens:** the mobile, dashboard, themes and flat templates live in the source skill",
+  "  (`skills/rdl-theme/assets/templates/`); this file keeps the radius demo (L) and the theme studio (O).", "");
 out.push("## Contents", "", toc, "", "# Part 1 · Guide", "", "## 1. Overview", "", body.trim(), "");
 for (const [f, t] of refs) {
   const { n } = secNo[f];

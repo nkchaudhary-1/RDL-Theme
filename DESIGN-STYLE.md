@@ -1,10 +1,16 @@
-# RDL Design Style · v3
+# RDL Design Style · v4
 
 A single-file style guide for designing and building apps in the RonDesignLab (RDL) visual
 language. It stands alone: drop it into a project, a Figma file description, or an AI prompt.
-It comes from two passes over 220 RDL shots (style, then structure) plus pixel calibration of the
-colors. The full system, with tokens, code, templates and an audit script, lives in
-`skills/rdl-theme/`.
+It comes from three passes over the 219-frame RDL board (style, structure, themes) plus pixel
+calibration, structured after Apple HIG, Material 3, Radix Colors and Primer. The full system, with
+tokens, code, templates and an audit script, lives in `skills/rdl-theme/`.
+
+There are **three themes**, sharing every size, radius, type role and component:
+- **Light:** warm-neutral canvas, white cards, ink actions, your secondary colour as the highlight.
+- **Dark:** near-black canvas, cards one tone lighter, white actions, the same highlight.
+- **Brand:** your **primary colour is the canvas**, cards are tinted glass, text and the main action
+  are ink or white (whichever reads), your **secondary colour** is the highlight.
 
 There are two styles:
 - **Glass** (default, 2025–26 RDL): frosted glass over imagery, light numerals, instruments.
@@ -21,8 +27,9 @@ There are two styles:
 3. **Light, not bold.** Numbers and headlines are thin and large. Weight comes from size, never
    from boldness.
 4. **Circles and pills.** Everything tappable is round: orbs for icons, pills for words.
-5. **One loud accent.** Neutrals do the work; the accent appears 1–3 times per screen.
-6. **Color lives in auras.** Soft gradient washes carry the color, not the UI chrome.
+5. **One loud highlight.** Neutrals do the work; the secondary colour appears 1–3 times per screen.
+6. **Color lives in auras, a brand panel, or the whole canvas.** Never in UI chrome. In the Brand
+   theme the primary colour fills the screen and nothing else is large and coloured.
 7. **Instruments, not charts.** Draw data like hardware: rulers, needles, meters, hairlines.
 8. **Status is a dot.** A small colored dot plus a word.
 9. **Technical illustration.** Line-art, blueprints, 3D renders, selective color.
@@ -33,62 +40,79 @@ There are two styles:
 
 ## 2. Color
 
-### Neutrals (stone)
-| Token | Hex | Use |
-|---|---|---|
-| stone-0 | `#FFFFFF` | Cards (light) |
-| stone-50 | `#F7F7F8` | Muted wells, product cards |
-| stone-100 | `#EFEFF1` | **Light canvas**, controls in cards |
-| stone-150 | `#E7E7EA` | Chart tracks, hover |
-| stone-200 | `#DCDCE0` | Hairlines |
-| stone-300 | `#C3C3C9` | Strong borders, missed markers |
-| stone-400 | `#9B9BA3` | Tertiary text (redundant info only) |
-| stone-500 | `#6B6B74` | **Secondary text** |
-| stone-700 | `#2E2F33` | Raised controls on dark |
-| stone-800 | `#1D1E21` | Dark surfaces, controls |
-| stone-900 | `#131416` | **Dark cards** |
-| stone-950 | `#0A0B0C` | **Ink** (text, primary buttons), **dark canvas** |
+You choose **two colours**: a primary and a secondary. Every other colour is a role derived from them
+or from the neutral scales, and every text/background pair is contrast-checked (primary text ≥ 7:1,
+or ≥ 4.5:1 on brand canvases; secondary ≥ 4.5:1; tertiary ≥ 3:1; graphics and focus ≥ 3:1).
 
-### Semantic roles
-| Role | Light | Dark |
-|---|---|---|
-| Canvas | `#EFEFF1` | `#0A0B0C` |
-| Surface (card) | `#FFFFFF` | `#131416` |
-| Text primary | `#0A0B0C` | `#F4F4F5` |
-| Text secondary | `#5C5C64` | `#A1A1AA` |
-| Text tertiary | `#9B9BA3` | `#6B6B74` |
-| Hairline | `#DCDCE0` | `#1D1E21` |
-| Tick marks | `rgba(10,11,12,.28)` | `rgba(244,244,245,.30)` |
-
-### Accent packs (choose one per product)
-| Pack | Accent | Text on accent | Best for |
+### Roles per theme
+| Role | Light | Dark | Brand (example: cobalt `#0732D8` + yellow `#F2D33C`) |
 |---|---|---|---|
-| **Volt** (default) | `#DFFA32` | ink | Fintech, AI, productivity |
-| **Gold** | `#ECBC44` | ink | Precious metals, wealth, energy |
-| **Signal** | `#4BE06E` | ink | Health "in range", sustainability, ops OK |
-| **Electric** | `#0832D8` | white | Automotive, industrial, blueprint cards |
-| **Ember** | `#FC5A10` | ink | Logistics, alerts-heavy ops, fitness |
-| **Orchid** | `#C16CF7` | ink | Wellness, consumer health |
-| **Rose** | `#F0548A` | ink | Health trackers, women's health, social |
+| Canvas `bg-canvas` | `#F0F0EF` | `#0A0B0C` | `#0732D8` (the primary) |
+| Elevated (sheets) `bg-canvas-elevated` | `#F7F7F6` | `#111214` | primary + 6% white |
+| Card `bg-surface` | `#FFFFFF` | `#17181A` | `#254BDD` (primary + 12% white) |
+| Raised (menus) `bg-surface-raised` | `#FFFFFF` | `#1E1F22` | `#395BE0` |
+| Emphasis card `bg-emphasis` | `#151515` | `#26272B` | `#FFFFFF` (inverse) |
+| Control `fill-control` | `#E8E8E7` | `#25262A` | primary tinted toward contrast |
+| Text `fg-primary` / `-secondary` / `-tertiary` | `#151515` / `#5E5E5D` / `#7A7A79` | `#F2F2F3` / `#A9AAB0` / `#7C7D84` | `#FFFFFF` / `#E3E8FB` / `#B0BDF3` |
+| Primary action `action-primary` / label | ink / white | white / ink | white / ink |
+| Hairline `border-subtle` | `#E8E8E7` | `#25262A` | primary + 16% text colour |
+| Highlight `accent` | secondary | secondary | secondary |
+| Highlight as text / mark | `accent-text` ≥ 4.5:1 · `accent-graphic` ≥ 3:1 | same | same, against the brand canvas |
+| Brand panel `bg-brand` | primary | primary | (= canvas; don't use) |
 
-**Where the accent goes** (1–3 per screen):
+### Neutrals
+Two 12-step scales, tuned separately:
+- **Light:** `#FCFCFC` `#F7F7F6` **`#F0F0EF`** `#E8E8E7` `#E1E1E0` `#D9D9D8` `#CECECD` `#BBBBBA` `#8D8D8C` `#7A7A79` `#5E5E5D` **`#151515`**
+- **Dark:** **`#0A0B0C`** `#111214` `#17181A` `#1E1F22` `#25262A` `#2D2E33` `#393A40` `#4A4B52` `#6E6F76` `#7C7D84` `#A9AAB0` **`#F2F2F3`**
+
+Steps 1–2 are backgrounds, 3–5 control fills, 6–8 borders, 9–10 solids/tertiary, 11–12 text.
+
+### Brand presets (measured on the board)
+| Preset | Primary | Secondary | Text on canvas |
+|---|---|---|---|
+| Cobalt (default) | `#0732D8` | `#F2D33C` | white |
+| Mustard | `#ECBB42` | `#2A4BDC` | ink |
+| Gold | `#D9A632` | `#1F4A3E` | ink |
+| Olive | `#687B59` | `#D7F23A` | white (canvas deepened to `#667957`) |
+| Forest | `#1F4A3E` | `#D7F23A` | white |
+| Lavender | `#AD80D4` | `#F27A3A` | ink |
+| Plum | `#2F1125` | `#F2D33C` | white |
+| Vermilion | `#D44C27` | `#D7F23A` | white (canvas deepened to `#CC4925`) |
+| Dusk | `#7599AD` | `#F6E27A` | ink |
+
+Any other pair works: the theme engine picks ink or white by measured contrast, deepens a mid-tone
+canvas just enough for text, and shifts the secondary's text and graphic forms until they read.
+
+### Secondary-colour presets for light and dark
+| Preset | Colour | Best for |
+|---|---|---|
+| **Volt** (default) | `#DFFA32` | Fintech, AI, productivity |
+| **Gold** | `#ECBC44` | Precious metals, wealth, energy |
+| **Signal** | `#4BE06E` | Health "in range", sustainability, ops OK |
+| **Electric** | `#0832D8` | Automotive, industrial, blueprint cards |
+| **Ember** | `#FC5A10` | Logistics, alerts-heavy ops, fitness |
+| **Orchid** | `#C16CF7` | Wellness, consumer health |
+| **Rose** | `#F0548A` | Health trackers, women's health, social |
+
+**Where the highlight goes** (1–3 per screen):
 - the active orb or dock item
-- the needle or selected data point
+- the needle or selected data point (`accent-graphic`)
 - one tag ("+1.8%", "Best Seller")
 - paid checkmarks
 - the brand dot
 
-It never goes on body text or large backgrounds. The exceptions are one accent widget or a
-blueprint card.
+It never goes on body text or large backgrounds.
 
 ### Status colors (always a dot plus a word)
-| Status | Dot | Example |
-|---|---|---|
-| OK | `#4BE06E` | ● Operational · ● Settled · ● Live |
-| Warning | `#F5A70B` | ● In transit · ● Updated 12 min ago |
-| Critical | `#F0453E` | ● Delayed · 2h · ● Failing |
-| Info | `#4F5BFF` | ● Scheduled |
-| Idle | `#9B9BA3` | ● Market closed |
+| Status | Dot light / dark | Text light / dark | Example |
+|---|---|---|---|
+| OK `success` | `#1FB877` / `#4BD394` | `#0E7048` / `#7CE0B3` | ● Operational · ● Settled · ● Live |
+| Warning `warning` | `#F5A70B` / `#FFC23D` | `#8A5B00` / `#FFD266` | ● In transit · ● Updated 12 min ago |
+| Critical `danger` | `#F0453E` / `#FF6B64` | `#C2241E` / `#FF9A9A` | ● Delayed · 2h · ● Failing |
+| Info `info` | `#2F66F6` / `#6E95FF` | `#1F4FD1` / `#9DB8FF` | ● Scheduled |
+| Idle | `fg-tertiary` | | ● Market closed |
+
+The brand theme recomputes each against its canvas. Each status also has a `-subtle` background for pills.
 
 The dot is 7px with a 3px halo at 22% opacity of its color. Use pills only for escalations
 ("High Priority" coral, "Maintenance" red).
@@ -112,20 +136,24 @@ Rules:
 
 ---
 
-## 3. Glass
+## 3. Glass (materials)
 
-| Property | Light glass | Dark glass |
-|---|---|---|
-| Fill | `rgba(255,255,255,.56)` (strong: `.78`) | `rgba(28,30,33,.52)` (strong: `rgba(36,38,42,.72)`) |
-| Rim | 1px `rgba(255,255,255,.72)` | 1px `rgba(255,255,255,.10)` |
-| Blur | 24px, saturate 1.6 | same |
-| Shadow | inset 0 1px 0 white 60% + 0 20px 50px `rgba(20,20,24,.12)` | inset white 8% + 0 24px 60px black 45% |
+| Material | Light | Dark | Use |
+|---|---|---|---|
+| Ultra-thin | white 24% | `rgba(28,30,33,.32)` | Chips over photos (no tertiary text) |
+| Thin | white 40% | `.44` | Pills, toolbars |
+| **Regular** | white 56% | `rgba(28,30,33,.52)` | Default glass card |
+| Thick | white 78% | `rgba(36,38,42,.72)` | Busy backdrops, text-heavy glass |
+| Rim | 1px white 72% | 1px white 10% | |
+| Blur | 24px, saturate 1.6 | same | |
+| Shadow | inset 0 1px 0 white 60% + 0 20px 50px `rgba(20,20,24,.12)` | inset white 8% + 0 24px 60px black 45% | |
 
+- **Brand theme:** glass is white at 8–24% on deep primaries, 18–56% on light ones, and black on
+  mid-tones where white would cost contrast.
 - **Iridescent rim:** a 1px gradient border (pink → cyan → lime → amber) on one premium card
   per screen at most.
-- **Controls inside glass** use the stronger glass fill.
 - **Reduce Transparency:** glass becomes a solid surface.
-- **Flat style:** glass becomes solid white or `#131416` cards with no blur.
+- **Flat style:** glass becomes solid cards with no blur.
 
 ---
 
@@ -241,7 +269,7 @@ used ≤ 3 times, ≤ 2 auras, 1 dot-matrix figure, 1 iridescent rim.
 - **Blueprint card:** electric blue `#0832D8`, radius 20, white isometric line-art, three stacked
   key/values at the bottom.
 - **Ink widget:** `#111214` with a dot-matrix figure in the accent.
-- **White card** (light instrument variant): radius 28–40 on the `#EFEFF1` canvas.
+- **White card** (light instrument variant): radius 28–40 on the `#F0F0EF` canvas.
 
 ### Controls
 - **Orb:** a round icon button in one of five kinds:
@@ -346,6 +374,7 @@ used ≤ 3 times, ≤ 2 auras, 1 dot-matrix figure, 1 iridescent rim.
 | Chart | 600ms | Bars and curves drawing in |
 | Stagger | 40ms | Sequences |
 | Spring | response 0.35, damping 0.82 | Interactive (iOS) |
+| Easing | standard (0.2,0,0,1) · decelerate (0,0,0,1) in · accelerate (0.3,0,1,1) out · emphasized-decelerate (0.05,0.7,0.1,1) hero arrivals | Material 3 |
 
 Signature motions:
 - the needle glides along the ruler
@@ -367,13 +396,18 @@ With Reduce Motion, keep fades only.
 | Error | The status dot turns critical, with a caption stating the fix |
 | Stale | Warning dot + "Updated n min ago" |
 | Closed | Idle dot + "Market closed · opens 10:00" |
+| Hover (pointer only) | +8% of the label colour over the fill |
+| Pressed | +12%, buttons scale to 0.97 |
+| Focus | 2px ring in `border-focus` (≥ 3:1), 2px offset |
+| Disabled | content 38%, container 12% |
 
 ---
 
 ## 11. Accessibility
 
-- Contrast ≥ 4.5:1, **measured on the actual backdrop**. Add strong glass or a scrim over busy
-  photos.
+- Contrast: primary text ≥ 7:1 (≥ 4.5:1 on brand canvases), secondary ≥ 4.5:1, tertiary ≥ 3:1,
+  graphics and focus ≥ 3:1. Token pairs are proven by the build; glass over photos must be
+  **measured on the actual backdrop** (use thick glass or a scrim over busy photos).
 - Hit targets ≥ 44pt. Every orb and dock item has a label.
 - Status is never shown by color alone (dot plus word). Money deltas show a sign or arrow.
 - Dot-matrix and figure views expose the plain value to screen readers.
@@ -387,7 +421,8 @@ With Reduce Motion, keep fades only.
 |---|---|
 | Thin 300-weight hero numbers with small gray units | Bold numbers; units at full size; big currency symbols |
 | Glass over photos, 3D, maps, auras | Glass floating on flat gray |
-| One accent, 1–3 uses | Several accents or rainbow gradients |
+| One highlight, 1–3 uses | Several accents or rainbow gradients |
+| Brand theme: one hue fills the screen, cards are tinted glass | A second large colour area; a brand panel on the brand canvas |
 | Orbs, pills, circle–pill–circle rows | Rectangular buttons in the glass style |
 | Tick rulers, meters, hairlines, month grids | Multi-color charts, many-slice pies, chunky bars by default |
 | Status dot plus word | Status by colored text alone |
@@ -419,17 +454,22 @@ Switch with `data-style="flat"` / `.rdlSurfaceStyle(.flat)`.
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&family=Doto:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="skills/rdl-theme/assets/tokens/tokens.css">
 <link rel="stylesheet" href="skills/rdl-theme/assets/templates/rdl-components.css">
-<html data-theme="light" data-style="glass" data-accent="gold">
+<html data-theme="light" data-accent="gold">              <!-- or data-theme="dark" -->
+<html data-theme="brand" data-brand="gold">               <!-- brand theme, preset pair -->
+<script src="skills/rdl-theme/assets/tokens/rdl-theme.js"></script>
+<script>RDL.setTheme("brand", { primary: "#0732D8", secondary: "#F2D33C" })</script>  <!-- any pair -->
 ```
 
 **SwiftUI (iOS 17+)**
 ```swift
-// Add RDLTokens.swift, RDLComponents.swift, RDLGlassComponents.swift, RDLLayout.swift
-ContentView().rdlAccent(.gold).rdlSurfaceStyle(.glass)
+// Add RDLTokens.swift, RDLThemeEngine.swift, RDLComponents.swift, RDLGlassComponents.swift, RDLLayout.swift
+RDLTheme.apply(.brand(primary: "#0732D8", secondary: "#F2D33C"))   // or .light / .dark / .system, accent:
+ContentView().rdlThemedRoot().rdlSurfaceStyle(.glass)
 ```
 
-To change values, edit `skills/rdl-theme/assets/tokens/tokens.json`, then run
-`node skills/rdl-theme/scripts/build_tokens.mjs`.
+To change values or add a brand pair, edit `skills/rdl-theme/assets/tokens/tokens.json`, then run
+`node skills/rdl-theme/scripts/build_tokens.mjs` (it fails if any contrast pair misses). Try pairs live
+in `skills/rdl-theme/assets/templates/theme-studio.html`.
 
 **Audit any HTML build** (0 errors before shipping):
 ```bash

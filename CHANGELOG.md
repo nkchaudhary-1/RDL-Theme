@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.0 — Three themes: Light, Dark, Brand
+- **Research.** A third pass over all 219 board frames with a theme lens (`research/theme-scan.md`): 41% light, 36% dark, 21% brand-coloured, with brand used at four strengths (canvas, backdrop, panel, accent). Canvas and hue colours pixel-sampled. Structure taken from Apple HIG, Material 3, Radix Colors and Primer (`research/standards.md`).
+- **Themes.** `data-theme="light|dark|brand"`. Brand = the user's primary colour as the canvas and their secondary colour as the highlight; text and the primary action are ink or white by measured contrast.
+- **Theme engine** `assets/tokens/rdl-theme.js`: derives every brand role from two colours, deepens mid-tone canvases only as far as text needs, computes accent text/graphic forms and status per canvas, and audits contrast. Used by the build, in the browser (`RDL.setTheme`) and ported line for line to SwiftUI (`RDLThemeEngine.swift`, `RDLTheme.apply`).
+- **Tokens v4.** 12-step `neutral-light` / `neutral-dark` scales; ~70 semantic roles named `category-role-variant-state` (`bg-*`, `fill-*`, `fg-*`, `border-*`, `action-*`, `accent*` incl. `accent-text` and `accent-graphic`, status `*`/`-subtle`/`-text`, `material-*` ultrathin→thick, chart, `shadow-e1…e4`); state layers, opacity, border-width, z-index and breakpoint scales; M3 easings; component tokens; 9 brand presets; v3 names kept as aliases.
+- **Contrast proof.** The build checks 43 pairs in every theme and preset (primary text ≥ 7:1, ≥ 4.5:1 on brand; secondary ≥ 4.5; tertiary ≥ 3; labels ≥ 4.5 in every state; graphics and focus ≥ 3) and fails on a miss. Report: `assets/tokens/contrast-report.md`.
+- **Generated reference** `references/tokens.md` (every role per theme), new spec `references/themes.md`; foundations, guidelines, components, QA, SKILL.md, DESIGN-STYLE.md and README updated.
+- **Components.** Core controls read component tokens (buttons with hover/pressed/disabled, chips, segmented, orbs, dock, focus ring). Brand panel `.rdl-card--brand`, emphasis card `.rdl-card--emphasis`, `.rdl-tag--accent`; needles, meters and data marks use `accent-graphic`; status uses semantic roles; global focus ring.
+- **Templates.** `themes.html` (one screen in all three themes; four brand presets) and `theme-studio.html` (live primary/secondary picker with every role and the audit). All glass templates audit-clean; the audit now neutralises presentation zoom.
+- **Fixes.** Theme-dependent variables are re-declared on every themed element, so sub-tree theming works; radius demo contrast error fixed.
+
 ## 3.3.0 — RDL single-file skill
 - **New `RDL/SKILL.md`:** the complete skill as one file.
   - Part 1 is the full guide: overview plus all 11 references as §1–§12, with cross-references rewritten to section numbers.

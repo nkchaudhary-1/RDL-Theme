@@ -5,218 +5,463 @@ import SwiftUI
 import UIKit
 #endif
 
-// MARK: - Color
-
-public extension Color {
-    init(rdlR r: Double, g: Double, b: Double, a: Double = 1) { self.init(.sRGB, red: r, green: g, blue: b, opacity: a) }
-
-    /// Resolves to `light` or `dark` depending on the current color scheme.
-    static func rdlDynamic(light: (Double, Double, Double, Double), dark: (Double, Double, Double, Double)) -> Color {
-        #if canImport(UIKit)
-        return Color(UIColor { traits in
-            let c = traits.userInterfaceStyle == .dark ? dark : light
-            return UIColor(red: c.0, green: c.1, blue: c.2, alpha: c.3)
-        })
-        #else
-        return Color(.sRGB, red: light.0, green: light.1, blue: light.2, opacity: light.3)
-        #endif
-    }
+/// Theme data from tokens.json. Resolved at runtime by `RDLTheme` (RDLThemeEngine.swift).
+public enum RDLThemeData {
+    public static let defaultBrand = "cobalt"
+    public static let defaultAccent = "volt"
+    /// Static light roles. `$role` values point at computed roles (accent, brand panel).
+    public static let light: [String: String] = [
+        "bg-canvas": "#F0F0EF",
+        "bg-canvas-elevated": "#F7F7F6",
+        "bg-surface": "#FFFFFF",
+        "bg-surface-raised": "#FFFFFF",
+        "bg-surface-sunken": "#F7F7F6",
+        "bg-emphasis": "#151515",
+        "bg-emphasis-raised": "#2A2A2A",
+        "bg-scrim": "rgba(10,11,12,0.48)",
+        "fill-control": "#E8E8E7",
+        "fill-control-hover": "#E1E1E0",
+        "fill-control-pressed": "#D9D9D8",
+        "fill-disabled": "rgba(21,21,21,0.12)",
+        "fg-primary": "#151515",
+        "fg-secondary": "#5E5E5D",
+        "fg-tertiary": "#7A7A79",
+        "fg-disabled": "rgba(21,21,21,0.38)",
+        "fg-on-emphasis": "#F2F2F3",
+        "fg-on-emphasis-secondary": "#A3A3A3",
+        "border-subtle": "#E8E8E7",
+        "border-default": "#D9D9D8",
+        "border-strong": "#BBBBBA",
+        "border-focus": "$accent-graphic",
+        "action-primary": "#151515",
+        "action-primary-hover": "#282828",
+        "action-primary-pressed": "#313131",
+        "on-action-primary": "#FFFFFF",
+        "action-secondary": "#E8E8E7",
+        "action-secondary-hover": "#E1E1E0",
+        "action-secondary-pressed": "#D9D9D8",
+        "on-action-secondary": "#151515",
+        "success": "#1FB877",
+        "success-subtle": "#E4F6EF",
+        "success-text": "#0E7048",
+        "warning": "#F5A70B",
+        "warning-subtle": "#FEF4E2",
+        "warning-text": "#8A5B00",
+        "danger": "#F0453E",
+        "danger-subtle": "#FDE9E8",
+        "danger-text": "#C2241E",
+        "info": "#2F66F6",
+        "info-subtle": "#E6EDFE",
+        "info-text": "#1F4FD1",
+        "material-ultrathin": "rgba(255,255,255,0.24)",
+        "material-thin": "rgba(255,255,255,0.4)",
+        "material-regular": "rgba(255,255,255,0.56)",
+        "material-thick": "rgba(255,255,255,0.78)",
+        "material-border": "rgba(255,255,255,0.72)",
+        "material-highlight": "rgba(255,255,255,0.9)",
+        "material-shade": "rgba(20,20,24,0.06)",
+        "material-dark": "rgba(22,23,26,0.52)",
+        "material-dark-border": "rgba(255,255,255,0.10)",
+        "chart-track": "#E8E8E7",
+        "chart-grid": "#E8E8E7",
+        "chart-muted": "#D9D9D8",
+        "chart-hatch": "#CECECD",
+        "tick": "rgba(21,21,21,0.28)",
+        "tick-strong": "#151515",
+    ]
+    public static let dark: [String: String] = [
+        "bg-canvas": "#0A0B0C",
+        "bg-canvas-elevated": "#111214",
+        "bg-surface": "#17181A",
+        "bg-surface-raised": "#1E1F22",
+        "bg-surface-sunken": "#111214",
+        "bg-emphasis": "#26272B",
+        "bg-emphasis-raised": "#34353A",
+        "bg-scrim": "rgba(0,0,0,0.64)",
+        "fill-control": "#25262A",
+        "fill-control-hover": "#2D2E33",
+        "fill-control-pressed": "#393A40",
+        "fill-disabled": "rgba(242,242,243,0.12)",
+        "fg-primary": "#F2F2F3",
+        "fg-secondary": "#A9AAB0",
+        "fg-tertiary": "#7C7D84",
+        "fg-disabled": "rgba(242,242,243,0.38)",
+        "fg-on-emphasis": "#F2F2F3",
+        "fg-on-emphasis-secondary": "#A9AAB0",
+        "border-subtle": "#25262A",
+        "border-default": "#2D2E33",
+        "border-strong": "#4A4B52",
+        "border-focus": "$accent-graphic",
+        "action-primary": "#F2F2F3",
+        "action-primary-hover": "#DFE0E1",
+        "action-primary-pressed": "#D6D6D7",
+        "on-action-primary": "#0A0B0C",
+        "action-secondary": "#25262A",
+        "action-secondary-hover": "#2D2E33",
+        "action-secondary-pressed": "#393A40",
+        "on-action-secondary": "#F2F2F3",
+        "success": "#4BD394",
+        "success-subtle": "#1F362E",
+        "success-text": "#7CE0B3",
+        "warning": "#FFC23D",
+        "warning-subtle": "#3C3320",
+        "warning-text": "#FFD266",
+        "danger": "#FF6B64",
+        "danger-subtle": "#3C2526",
+        "danger-text": "#FF9A9A",
+        "info": "#6E95FF",
+        "info-subtle": "#252C3F",
+        "info-text": "#9DB8FF",
+        "material-ultrathin": "rgba(28,30,33,0.32)",
+        "material-thin": "rgba(28,30,33,0.44)",
+        "material-regular": "rgba(28,30,33,0.52)",
+        "material-thick": "rgba(36,38,42,0.72)",
+        "material-border": "rgba(255,255,255,0.10)",
+        "material-highlight": "rgba(255,255,255,0.08)",
+        "material-shade": "rgba(0,0,0,0.30)",
+        "material-dark": "rgba(22,23,26,0.52)",
+        "material-dark-border": "rgba(255,255,255,0.10)",
+        "chart-track": "#1E1F22",
+        "chart-grid": "#25262A",
+        "chart-muted": "#2D2E33",
+        "chart-hatch": "#4A4B52",
+        "tick": "rgba(242,242,243,0.30)",
+        "tick-strong": "#F2F2F3",
+    ]
+    /// Brand presets: name → (primary, secondary).
+    public static let brandPresets: [String: (primary: String, secondary: String)] = [
+        "cobalt": ("#0732D8", "#F2D33C"),
+        "mustard": ("#ECBB42", "#2A4BDC"),
+        "gold": ("#D9A632", "#1F4A3E"),
+        "olive": ("#687B59", "#D7F23A"),
+        "forest": ("#1F4A3E", "#D7F23A"),
+        "lavender": ("#AD80D4", "#F27A3A"),
+        "plum": ("#2F1125", "#F2D33C"),
+        "vermilion": ("#D44C27", "#D7F23A"),
+        "dusk": ("#7599AD", "#F6E27A"),
+    ]
+    /// Secondary-colour presets for light and dark.
+    public static let accentPresets: [String: String] = [
+        "volt": "#DFFA32",
+        "lime": "#CBEF43",
+        "gold": "#ECBC44",
+        "signal": "#4BE06E",
+        "electric": "#0832D8",
+        "ember": "#FC5A10",
+        "orchid": "#C16CF7",
+        "violet": "#7152F5",
+        "orange": "#F55F24",
+        "ocean": "#2F66F6",
+        "rose": "#F0548A",
+    ]
+    /// v3 role names → v4 roles.
+    public static let legacy: [String: String] = [
+        "bg-surface-muted": "bg-surface-sunken",
+        "bg-hero": "bg-emphasis",
+        "bg-hero-raised": "bg-emphasis-raised",
+        "scrim": "bg-scrim",
+        "fill-control-strong": "action-primary",
+        "text-primary": "fg-primary",
+        "text-secondary": "fg-secondary",
+        "text-tertiary": "fg-tertiary",
+        "text-on-hero": "fg-on-emphasis",
+        "text-on-hero-muted": "fg-on-emphasis-secondary",
+        "text-on-strong": "on-action-primary",
+        "success-soft": "success-subtle",
+        "danger-soft": "danger-subtle",
+        "warning-soft": "warning-subtle",
+        "info-soft": "info-subtle",
+        "glass-fill": "material-regular",
+        "glass-fill-strong": "material-thick",
+        "glass-border": "material-border",
+        "glass-shade": "material-shade",
+        "glass-text": "fg-primary",
+        "glass-text-muted": "fg-secondary",
+        "glass-dark-fill": "material-dark",
+        "glass-dark-border": "material-dark-border",
+        "accent-strong": "accent-hover",
+        "accent-soft": "accent-subtle",
+    ]
 }
 
 /// Raw palette. Prefer `RDLColor` semantic roles in UI code.
 public enum RDLPalette {
-    public static let ink600 = Color(rdlR: 0.2039, g: 0.2039, b: 0.2275, a: 1)
-    public static let ink700 = Color(rdlR: 0.149, g: 0.149, b: 0.1686, a: 1)
-    public static let ink800 = Color(rdlR: 0.1098, g: 0.1098, b: 0.1255, a: 1)
-    public static let ink900 = Color(rdlR: 0.0784, g: 0.0784, b: 0.0902, a: 1)
-    public static let ink950 = Color(rdlR: 0.0431, g: 0.0431, b: 0.051, a: 1)
-    public static let gray0 = Color(rdlR: 1, g: 1, b: 1, a: 1)
-    public static let gray50 = Color(rdlR: 0.9725, g: 0.9725, b: 0.9804, a: 1)
-    public static let gray100 = Color(rdlR: 0.9529, g: 0.9529, b: 0.9608, a: 1)
-    public static let gray150 = Color(rdlR: 0.9216, g: 0.9216, b: 0.9373, a: 1)
-    public static let gray200 = Color(rdlR: 0.8863, g: 0.8863, b: 0.9059, a: 1)
-    public static let gray300 = Color(rdlR: 0.7843, g: 0.7843, b: 0.8118, a: 1)
-    public static let gray400 = Color(rdlR: 0.6039, g: 0.6039, b: 0.6392, a: 1)
-    public static let gray500 = Color(rdlR: 0.4314, g: 0.4314, b: 0.4706, a: 1)
-    public static let gray600 = Color(rdlR: 0.3333, g: 0.3333, b: 0.3686, a: 1)
-    public static let lime50 = Color(rdlR: 0.9686, g: 0.9922, b: 0.8902, a: 1)
-    public static let lime100 = Color(rdlR: 0.9333, g: 0.9843, b: 0.7686, a: 1)
-    public static let lime200 = Color(rdlR: 0.8902, g: 0.9725, b: 0.6039, a: 1)
-    public static let lime300 = Color(rdlR: 0.8471, g: 0.9608, b: 0.4353, a: 1)
-    public static let lime400 = Color(rdlR: 0.7961, g: 0.9373, b: 0.2627, a: 1)
-    public static let lime500 = Color(rdlR: 0.698, g: 0.851, b: 0.1647, a: 1)
-    public static let lime600 = Color(rdlR: 0.549, g: 0.6863, b: 0.0706, a: 1)
-    public static let lime700 = Color(rdlR: 0.3725, g: 0.4784, b: 0.0314, a: 1)
-    public static let violet50 = Color(rdlR: 0.9569, g: 0.9451, b: 1, a: 1)
-    public static let violet100 = Color(rdlR: 0.9137, g: 0.8902, b: 1, a: 1)
-    public static let violet200 = Color(rdlR: 0.8235, g: 0.7765, b: 1, a: 1)
-    public static let violet300 = Color(rdlR: 0.6902, g: 0.6118, b: 1, a: 1)
-    public static let violet400 = Color(rdlR: 0.5647, g: 0.4627, b: 1, a: 1)
-    public static let violet500 = Color(rdlR: 0.4431, g: 0.3216, b: 0.9608, a: 1)
-    public static let violet600 = Color(rdlR: 0.3529, g: 0.2314, b: 0.8588, a: 1)
-    public static let violet700 = Color(rdlR: 0.2627, g: 0.1608, b: 0.6824, a: 1)
-    public static let orange50 = Color(rdlR: 1, g: 0.9529, b: 0.9333, a: 1)
-    public static let orange100 = Color(rdlR: 1, g: 0.8902, b: 0.8431, a: 1)
-    public static let orange200 = Color(rdlR: 1, g: 0.7647, b: 0.6667, a: 1)
-    public static let orange300 = Color(rdlR: 1, g: 0.6157, b: 0.4588, a: 1)
-    public static let orange400 = Color(rdlR: 1, g: 0.4784, b: 0.2706, a: 1)
-    public static let orange500 = Color(rdlR: 0.9608, g: 0.3725, b: 0.1412, a: 1)
-    public static let orange600 = Color(rdlR: 0.8235, g: 0.2824, b: 0.0706, a: 1)
-    public static let orange700 = Color(rdlR: 0.6314, g: 0.2118, b: 0.0431, a: 1)
-    public static let blue50 = Color(rdlR: 0.9333, g: 0.9569, b: 1, a: 1)
-    public static let blue100 = Color(rdlR: 0.8627, g: 0.9059, b: 1, a: 1)
-    public static let blue200 = Color(rdlR: 0.7137, g: 0.8, b: 1, a: 1)
-    public static let blue300 = Color(rdlR: 0.5176, g: 0.6627, b: 1, a: 1)
-    public static let blue400 = Color(rdlR: 0.3333, g: 0.5216, b: 1, a: 1)
-    public static let blue500 = Color(rdlR: 0.1843, g: 0.4, b: 0.9647, a: 1)
-    public static let blue600 = Color(rdlR: 0.1216, g: 0.3098, b: 0.8196, a: 1)
-    public static let blue700 = Color(rdlR: 0.0902, g: 0.2314, b: 0.6196, a: 1)
-    public static let gold50 = Color(rdlR: 0.9922, g: 0.9725, b: 0.9176, a: 1)
-    public static let gold100 = Color(rdlR: 0.9804, g: 0.9294, b: 0.7804, a: 1)
-    public static let gold200 = Color(rdlR: 0.9569, g: 0.8549, b: 0.5569, a: 1)
-    public static let gold300 = Color(rdlR: 0.9255, g: 0.7373, b: 0.2667, a: 1)
-    public static let gold400 = Color(rdlR: 0.851, g: 0.651, b: 0.1961, a: 1)
-    public static let gold500 = Color(rdlR: 0.7647, g: 0.5725, b: 0.1333, a: 1)
-    public static let gold600 = Color(rdlR: 0.6118, g: 0.4471, b: 0.0824, a: 1)
-    public static let gold700 = Color(rdlR: 0.4314, g: 0.3137, b: 0.0549, a: 1)
-    public static let mint50 = Color(rdlR: 0.9176, g: 0.9843, b: 0.9529, a: 1)
-    public static let mint100 = Color(rdlR: 0.8118, g: 0.9608, b: 0.8902, a: 1)
-    public static let mint300 = Color(rdlR: 0.4863, g: 0.8784, b: 0.702, a: 1)
-    public static let mint500 = Color(rdlR: 0.1216, g: 0.7216, b: 0.4667, a: 1)
-    public static let mint600 = Color(rdlR: 0.0745, g: 0.5882, b: 0.3725, a: 1)
-    public static let mint700 = Color(rdlR: 0.0549, g: 0.4392, b: 0.2824, a: 1)
-    public static let red50 = Color(rdlR: 1, g: 0.9412, b: 0.9412, a: 1)
-    public static let red100 = Color(rdlR: 1, g: 0.8627, b: 0.8627, a: 1)
-    public static let red300 = Color(rdlR: 1, g: 0.6039, b: 0.6039, a: 1)
-    public static let red500 = Color(rdlR: 0.9412, g: 0.2706, b: 0.2431, a: 1)
-    public static let red600 = Color(rdlR: 0.8, g: 0.1843, b: 0.1608, a: 1)
-    public static let amber50 = Color(rdlR: 1, g: 0.9725, b: 0.902, a: 1)
-    public static let amber100 = Color(rdlR: 1, g: 0.9294, b: 0.749, a: 1)
-    public static let amber300 = Color(rdlR: 1, g: 0.8235, b: 0.4, a: 1)
-    public static let amber500 = Color(rdlR: 0.9608, g: 0.6549, b: 0.0431, a: 1)
-    public static let amber600 = Color(rdlR: 0.8, g: 0.5294, b: 0, a: 1)
-    public static let amber700 = Color(rdlR: 0.5412, g: 0.3569, b: 0, a: 1)
-    public static let volt50 = Color(rdlR: 0.9843, g: 0.9961, b: 0.898, a: 1)
-    public static let volt100 = Color(rdlR: 0.9608, g: 0.9922, b: 0.7529, a: 1)
-    public static let volt200 = Color(rdlR: 0.9294, g: 0.9843, b: 0.549, a: 1)
-    public static let volt300 = Color(rdlR: 0.902, g: 0.9804, b: 0.3686, a: 1)
-    public static let volt400 = Color(rdlR: 0.8745, g: 0.9804, b: 0.1961, a: 1)
-    public static let volt500 = Color(rdlR: 0.7882, g: 0.8863, b: 0.0784, a: 1)
-    public static let volt600 = Color(rdlR: 0.6039, g: 0.6784, b: 0.0392, a: 1)
-    public static let volt700 = Color(rdlR: 0.3725, g: 0.4196, b: 0.0196, a: 1)
-    public static let signal50 = Color(rdlR: 0.9176, g: 0.9882, b: 0.9373, a: 1)
-    public static let signal100 = Color(rdlR: 0.7882, g: 0.9686, b: 0.8353, a: 1)
-    public static let signal300 = Color(rdlR: 0.4824, g: 0.9216, b: 0.5922, a: 1)
-    public static let signal400 = Color(rdlR: 0.2941, g: 0.8784, b: 0.4314, a: 1)
-    public static let signal500 = Color(rdlR: 0.1333, g: 0.7725, b: 0.3216, a: 1)
-    public static let signal600 = Color(rdlR: 0.0824, g: 0.6314, b: 0.251, a: 1)
-    public static let signal700 = Color(rdlR: 0.0549, g: 0.4314, b: 0.1725, a: 1)
-    public static let electric50 = Color(rdlR: 0.9255, g: 0.9373, b: 1, a: 1)
-    public static let electric100 = Color(rdlR: 0.8275, g: 0.8549, b: 1, a: 1)
-    public static let electric300 = Color(rdlR: 0.5412, g: 0.6, b: 1, a: 1)
-    public static let electric400 = Color(rdlR: 0.2627, g: 0.3804, b: 0.9608, a: 1)
-    public static let electric500 = Color(rdlR: 0.0314, g: 0.1961, b: 0.8471, a: 1)
-    public static let electric600 = Color(rdlR: 0.0235, g: 0.1529, b: 0.6902, a: 1)
-    public static let electric700 = Color(rdlR: 0.0196, g: 0.1098, b: 0.502, a: 1)
-    public static let ember50 = Color(rdlR: 1, g: 0.9451, b: 0.9216, a: 1)
-    public static let ember100 = Color(rdlR: 1, g: 0.8627, b: 0.8, a: 1)
-    public static let ember300 = Color(rdlR: 1, g: 0.6039, b: 0.4392, a: 1)
-    public static let ember400 = Color(rdlR: 1, g: 0.4549, b: 0.251, a: 1)
-    public static let ember500 = Color(rdlR: 0.9882, g: 0.3529, b: 0.0627, a: 1)
-    public static let ember600 = Color(rdlR: 0.8588, g: 0.2667, b: 0.0627, a: 1)
-    public static let ember700 = Color(rdlR: 0.6196, g: 0.1882, b: 0.0392, a: 1)
-    public static let orchid50 = Color(rdlR: 0.9804, g: 0.9412, b: 1, a: 1)
-    public static let orchid100 = Color(rdlR: 0.9451, g: 0.8549, b: 1, a: 1)
-    public static let orchid300 = Color(rdlR: 0.8431, g: 0.6078, b: 1, a: 1)
-    public static let orchid400 = Color(rdlR: 0.7569, g: 0.4235, b: 0.9686, a: 1)
-    public static let orchid500 = Color(rdlR: 0.6471, g: 0.2824, b: 0.9333, a: 1)
-    public static let orchid600 = Color(rdlR: 0.5176, g: 0.1882, b: 0.7882, a: 1)
-    public static let orchid700 = Color(rdlR: 0.3686, g: 0.1216, b: 0.5686, a: 1)
-    public static let stone0 = Color(rdlR: 1, g: 1, b: 1, a: 1)
-    public static let stone50 = Color(rdlR: 0.9686, g: 0.9686, b: 0.9725, a: 1)
-    public static let stone100 = Color(rdlR: 0.9373, g: 0.9373, b: 0.9451, a: 1)
-    public static let stone150 = Color(rdlR: 0.9059, g: 0.9059, b: 0.9176, a: 1)
-    public static let stone200 = Color(rdlR: 0.8627, g: 0.8627, b: 0.8784, a: 1)
-    public static let stone300 = Color(rdlR: 0.7647, g: 0.7647, b: 0.7882, a: 1)
-    public static let stone400 = Color(rdlR: 0.6078, g: 0.6078, b: 0.6392, a: 1)
-    public static let stone500 = Color(rdlR: 0.4196, g: 0.4196, b: 0.4549, a: 1)
-    public static let stone550 = Color(rdlR: 0.3608, g: 0.3608, b: 0.3922, a: 1)
-    public static let stone600 = Color(rdlR: 0.3059, g: 0.3059, b: 0.3373, a: 1)
-    public static let stone700 = Color(rdlR: 0.1804, g: 0.1843, b: 0.2, a: 1)
-    public static let stone800 = Color(rdlR: 0.1137, g: 0.1176, b: 0.1294, a: 1)
-    public static let stone900 = Color(rdlR: 0.0745, g: 0.0784, b: 0.0863, a: 1)
-    public static let stone950 = Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1)
-    public static let rose50 = Color(rdlR: 1, g: 0.9412, b: 0.9569, a: 1)
-    public static let rose100 = Color(rdlR: 1, g: 0.8627, b: 0.902, a: 1)
-    public static let rose300 = Color(rdlR: 0.9686, g: 0.6039, b: 0.7137, a: 1)
-    public static let rose500 = Color(rdlR: 0.9412, g: 0.3294, b: 0.5412, a: 1)
-    public static let rose600 = Color(rdlR: 0.8235, g: 0.2275, b: 0.4353, a: 1)
-    public static let rose700 = Color(rdlR: 0.6118, g: 0.149, b: 0.3137, a: 1)
+    public static let neutralLight1 = RDLTheme.fixed("#FCFCFC")
+    public static let neutralLight2 = RDLTheme.fixed("#F7F7F6")
+    public static let neutralLight3 = RDLTheme.fixed("#F0F0EF")
+    public static let neutralLight4 = RDLTheme.fixed("#E8E8E7")
+    public static let neutralLight5 = RDLTheme.fixed("#E1E1E0")
+    public static let neutralLight6 = RDLTheme.fixed("#D9D9D8")
+    public static let neutralLight7 = RDLTheme.fixed("#CECECD")
+    public static let neutralLight8 = RDLTheme.fixed("#BBBBBA")
+    public static let neutralLight9 = RDLTheme.fixed("#8D8D8C")
+    public static let neutralLight10 = RDLTheme.fixed("#7A7A79")
+    public static let neutralLight11 = RDLTheme.fixed("#5E5E5D")
+    public static let neutralLight12 = RDLTheme.fixed("#151515")
+    public static let neutralDark1 = RDLTheme.fixed("#0A0B0C")
+    public static let neutralDark2 = RDLTheme.fixed("#111214")
+    public static let neutralDark3 = RDLTheme.fixed("#17181A")
+    public static let neutralDark4 = RDLTheme.fixed("#1E1F22")
+    public static let neutralDark5 = RDLTheme.fixed("#25262A")
+    public static let neutralDark6 = RDLTheme.fixed("#2D2E33")
+    public static let neutralDark7 = RDLTheme.fixed("#393A40")
+    public static let neutralDark8 = RDLTheme.fixed("#4A4B52")
+    public static let neutralDark9 = RDLTheme.fixed("#6E6F76")
+    public static let neutralDark10 = RDLTheme.fixed("#7C7D84")
+    public static let neutralDark11 = RDLTheme.fixed("#A9AAB0")
+    public static let neutralDark12 = RDLTheme.fixed("#F2F2F3")
+    public static let ink600 = RDLTheme.fixed("#34343A")
+    public static let ink700 = RDLTheme.fixed("#26262B")
+    public static let ink800 = RDLTheme.fixed("#1C1C20")
+    public static let ink900 = RDLTheme.fixed("#141417")
+    public static let ink950 = RDLTheme.fixed("#0B0B0D")
+    public static let gray0 = RDLTheme.fixed("#FFFFFF")
+    public static let gray50 = RDLTheme.fixed("#F8F8FA")
+    public static let gray100 = RDLTheme.fixed("#F3F3F5")
+    public static let gray150 = RDLTheme.fixed("#EBEBEF")
+    public static let gray200 = RDLTheme.fixed("#E2E2E7")
+    public static let gray300 = RDLTheme.fixed("#C8C8CF")
+    public static let gray400 = RDLTheme.fixed("#9A9AA3")
+    public static let gray500 = RDLTheme.fixed("#6E6E78")
+    public static let gray600 = RDLTheme.fixed("#55555E")
+    public static let lime50 = RDLTheme.fixed("#F7FDE3")
+    public static let lime100 = RDLTheme.fixed("#EEFBC4")
+    public static let lime200 = RDLTheme.fixed("#E3F89A")
+    public static let lime300 = RDLTheme.fixed("#D8F56F")
+    public static let lime400 = RDLTheme.fixed("#CBEF43")
+    public static let lime500 = RDLTheme.fixed("#B2D92A")
+    public static let lime600 = RDLTheme.fixed("#8CAF12")
+    public static let lime700 = RDLTheme.fixed("#5F7A08")
+    public static let violet50 = RDLTheme.fixed("#F4F1FF")
+    public static let violet100 = RDLTheme.fixed("#E9E3FF")
+    public static let violet200 = RDLTheme.fixed("#D2C6FF")
+    public static let violet300 = RDLTheme.fixed("#B09CFF")
+    public static let violet400 = RDLTheme.fixed("#9076FF")
+    public static let violet500 = RDLTheme.fixed("#7152F5")
+    public static let violet600 = RDLTheme.fixed("#5A3BDB")
+    public static let violet700 = RDLTheme.fixed("#4329AE")
+    public static let orange50 = RDLTheme.fixed("#FFF3EE")
+    public static let orange100 = RDLTheme.fixed("#FFE3D7")
+    public static let orange200 = RDLTheme.fixed("#FFC3AA")
+    public static let orange300 = RDLTheme.fixed("#FF9D75")
+    public static let orange400 = RDLTheme.fixed("#FF7A45")
+    public static let orange500 = RDLTheme.fixed("#F55F24")
+    public static let orange600 = RDLTheme.fixed("#D24812")
+    public static let orange700 = RDLTheme.fixed("#A1360B")
+    public static let blue50 = RDLTheme.fixed("#EEF4FF")
+    public static let blue100 = RDLTheme.fixed("#DCE7FF")
+    public static let blue200 = RDLTheme.fixed("#B6CCFF")
+    public static let blue300 = RDLTheme.fixed("#84A9FF")
+    public static let blue400 = RDLTheme.fixed("#5585FF")
+    public static let blue500 = RDLTheme.fixed("#2F66F6")
+    public static let blue600 = RDLTheme.fixed("#1F4FD1")
+    public static let blue700 = RDLTheme.fixed("#173B9E")
+    public static let gold50 = RDLTheme.fixed("#FDF8EA")
+    public static let gold100 = RDLTheme.fixed("#FAEDC7")
+    public static let gold200 = RDLTheme.fixed("#F4DA8E")
+    public static let gold300 = RDLTheme.fixed("#ECBC44")
+    public static let gold400 = RDLTheme.fixed("#D9A632")
+    public static let gold500 = RDLTheme.fixed("#C39222")
+    public static let gold600 = RDLTheme.fixed("#9C7215")
+    public static let gold700 = RDLTheme.fixed("#6E500E")
+    public static let mint50 = RDLTheme.fixed("#EAFBF3")
+    public static let mint100 = RDLTheme.fixed("#CFF5E3")
+    public static let mint300 = RDLTheme.fixed("#7CE0B3")
+    public static let mint500 = RDLTheme.fixed("#1FB877")
+    public static let mint600 = RDLTheme.fixed("#13965F")
+    public static let mint700 = RDLTheme.fixed("#0E7048")
+    public static let red50 = RDLTheme.fixed("#FFF0F0")
+    public static let red100 = RDLTheme.fixed("#FFDCDC")
+    public static let red300 = RDLTheme.fixed("#FF9A9A")
+    public static let red500 = RDLTheme.fixed("#F0453E")
+    public static let red600 = RDLTheme.fixed("#CC2F29")
+    public static let amber50 = RDLTheme.fixed("#FFF8E6")
+    public static let amber100 = RDLTheme.fixed("#FFEDBF")
+    public static let amber300 = RDLTheme.fixed("#FFD266")
+    public static let amber500 = RDLTheme.fixed("#F5A70B")
+    public static let amber600 = RDLTheme.fixed("#CC8700")
+    public static let amber700 = RDLTheme.fixed("#8A5B00")
+    public static let volt50 = RDLTheme.fixed("#FBFEE5")
+    public static let volt100 = RDLTheme.fixed("#F5FDC0")
+    public static let volt200 = RDLTheme.fixed("#EDFB8C")
+    public static let volt300 = RDLTheme.fixed("#E6FA5E")
+    public static let volt400 = RDLTheme.fixed("#DFFA32")
+    public static let volt500 = RDLTheme.fixed("#C9E214")
+    public static let volt600 = RDLTheme.fixed("#9AAD0A")
+    public static let volt700 = RDLTheme.fixed("#5F6B05")
+    public static let signal50 = RDLTheme.fixed("#EAFCEF")
+    public static let signal100 = RDLTheme.fixed("#C9F7D5")
+    public static let signal300 = RDLTheme.fixed("#7BEB97")
+    public static let signal400 = RDLTheme.fixed("#4BE06E")
+    public static let signal500 = RDLTheme.fixed("#22C552")
+    public static let signal600 = RDLTheme.fixed("#15A140")
+    public static let signal700 = RDLTheme.fixed("#0E6E2C")
+    public static let electric50 = RDLTheme.fixed("#ECEFFF")
+    public static let electric100 = RDLTheme.fixed("#D3DAFF")
+    public static let electric300 = RDLTheme.fixed("#8A99FF")
+    public static let electric400 = RDLTheme.fixed("#4361F5")
+    public static let electric500 = RDLTheme.fixed("#0832D8")
+    public static let electric600 = RDLTheme.fixed("#0627B0")
+    public static let electric700 = RDLTheme.fixed("#051C80")
+    public static let ember50 = RDLTheme.fixed("#FFF1EB")
+    public static let ember100 = RDLTheme.fixed("#FFDCCC")
+    public static let ember300 = RDLTheme.fixed("#FF9A70")
+    public static let ember400 = RDLTheme.fixed("#FF7440")
+    public static let ember500 = RDLTheme.fixed("#FC5A10")
+    public static let ember600 = RDLTheme.fixed("#DB4410")
+    public static let ember700 = RDLTheme.fixed("#9E300A")
+    public static let orchid50 = RDLTheme.fixed("#FAF0FF")
+    public static let orchid100 = RDLTheme.fixed("#F1DAFF")
+    public static let orchid300 = RDLTheme.fixed("#D79BFF")
+    public static let orchid400 = RDLTheme.fixed("#C16CF7")
+    public static let orchid500 = RDLTheme.fixed("#A548EE")
+    public static let orchid600 = RDLTheme.fixed("#8430C9")
+    public static let orchid700 = RDLTheme.fixed("#5E1F91")
+    public static let stone0 = RDLTheme.fixed("#FFFFFF")
+    public static let stone50 = RDLTheme.fixed("#F7F7F8")
+    public static let stone100 = RDLTheme.fixed("#EFEFF1")
+    public static let stone150 = RDLTheme.fixed("#E7E7EA")
+    public static let stone200 = RDLTheme.fixed("#DCDCE0")
+    public static let stone300 = RDLTheme.fixed("#C3C3C9")
+    public static let stone400 = RDLTheme.fixed("#9B9BA3")
+    public static let stone500 = RDLTheme.fixed("#6B6B74")
+    public static let stone550 = RDLTheme.fixed("#5C5C64")
+    public static let stone600 = RDLTheme.fixed("#4E4E56")
+    public static let stone700 = RDLTheme.fixed("#2E2F33")
+    public static let stone800 = RDLTheme.fixed("#1D1E21")
+    public static let stone900 = RDLTheme.fixed("#131416")
+    public static let stone950 = RDLTheme.fixed("#0A0B0C")
+    public static let rose50 = RDLTheme.fixed("#FFF0F4")
+    public static let rose100 = RDLTheme.fixed("#FFDCE6")
+    public static let rose300 = RDLTheme.fixed("#F79AB6")
+    public static let rose500 = RDLTheme.fixed("#F0548A")
+    public static let rose600 = RDLTheme.fixed("#D23A6F")
+    public static let rose700 = RDLTheme.fixed("#9C2650")
 }
 
-/// Semantic roles — adapt to light/dark automatically.
+/// Semantic roles. Each resolves for the active theme (light, dark, system or brand) — see `RDLTheme.apply`.
 public enum RDLColor {
-    public static let bgCanvas = Color.rdlDynamic(light: (0.9373, 0.9373, 0.9451, 1), dark: (0.0392, 0.0431, 0.0471, 1))
-    public static let bgSurface = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (0.0745, 0.0784, 0.0863, 1))
-    public static let bgSurfaceMuted = Color.rdlDynamic(light: (0.9686, 0.9686, 0.9725, 1), dark: (0.1137, 0.1176, 0.1294, 1))
-    public static let bgHero = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.1137, 0.1176, 0.1294, 1))
-    public static let bgHeroRaised = Color.rdlDynamic(light: (0.1804, 0.1843, 0.2, 1), dark: (0.3059, 0.3059, 0.3373, 1))
-    public static let fillControl = Color.rdlDynamic(light: (0.9373, 0.9373, 0.9451, 1), dark: (0.1137, 0.1176, 0.1294, 1))
-    public static let fillControlHover = Color.rdlDynamic(light: (0.9059, 0.9059, 0.9176, 1), dark: (0.1804, 0.1843, 0.2, 1))
-    public static let fillControlStrong = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (1, 1, 1, 1))
-    public static let textPrimary = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.9569, 0.9569, 0.9608, 1))
-    public static let textSecondary = Color.rdlDynamic(light: (0.3608, 0.3608, 0.3922, 1), dark: (0.6314, 0.6314, 0.6667, 1))
-    public static let textTertiary = Color.rdlDynamic(light: (0.6078, 0.6078, 0.6392, 1), dark: (0.4196, 0.4196, 0.4549, 1))
-    public static let textOnHero = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (1, 1, 1, 1))
-    public static let textOnHeroMuted = Color.rdlDynamic(light: (0.6392, 0.6392, 0.6784, 1), dark: (0.6392, 0.6392, 0.6784, 1))
-    public static let textOnStrong = Color.rdlDynamic(light: (1, 1, 1, 1), dark: (0.0431, 0.0431, 0.051, 1))
-    public static let borderSubtle = Color.rdlDynamic(light: (0.8627, 0.8627, 0.8784, 1), dark: (0.1137, 0.1176, 0.1294, 1))
-    public static let borderStrong = Color.rdlDynamic(light: (0.7647, 0.7647, 0.7882, 1), dark: (0.1804, 0.1843, 0.2, 1))
-    public static let chartTrack = Color.rdlDynamic(light: (0.9059, 0.9059, 0.9176, 1), dark: (0.1137, 0.1176, 0.1294, 1))
-    public static let chartMuted = Color.rdlDynamic(light: (0.8627, 0.8627, 0.8784, 1), dark: (0.1804, 0.1843, 0.2, 1))
-    public static let chartHatch = Color.rdlDynamic(light: (0.7647, 0.7647, 0.7882, 1), dark: (0.3059, 0.3059, 0.3373, 1))
-    public static let success = Color.rdlDynamic(light: (0.1216, 0.7216, 0.4667, 1), dark: (0.4863, 0.8784, 0.702, 1))
-    public static let successSoft = Color.rdlDynamic(light: (0.9176, 0.9843, 0.9529, 1), dark: (0.1216, 0.7216, 0.4667, 0.14))
-    public static let successText = Color.rdlDynamic(light: (0.0549, 0.4392, 0.2824, 1), dark: (0.4863, 0.8784, 0.702, 1))
-    public static let danger = Color.rdlDynamic(light: (0.9412, 0.2706, 0.2431, 1), dark: (1, 0.6039, 0.6039, 1))
-    public static let dangerSoft = Color.rdlDynamic(light: (1, 0.9412, 0.9412, 1), dark: (0.9412, 0.2706, 0.2431, 0.14))
-    public static let dangerText = Color.rdlDynamic(light: (0.8, 0.1843, 0.1608, 1), dark: (1, 0.6039, 0.6039, 1))
-    public static let warning = Color.rdlDynamic(light: (0.9608, 0.6549, 0.0431, 1), dark: (1, 0.8235, 0.4, 1))
-    public static let warningSoft = Color.rdlDynamic(light: (1, 0.9725, 0.902, 1), dark: (0.9608, 0.6549, 0.0431, 0.14))
-    public static let warningText = Color.rdlDynamic(light: (0.5412, 0.3569, 0, 1), dark: (1, 0.8235, 0.4, 1))
-    public static let info = Color.rdlDynamic(light: (0.1843, 0.4, 0.9647, 1), dark: (0.5176, 0.6627, 1, 1))
-    public static let infoSoft = Color.rdlDynamic(light: (0.9333, 0.9569, 1, 1), dark: (0.1843, 0.4, 0.9647, 0.16))
-    public static let infoText = Color.rdlDynamic(light: (0.0902, 0.2314, 0.6196, 1), dark: (0.5176, 0.6627, 1, 1))
-    public static let scrim = Color.rdlDynamic(light: (0.0431, 0.0431, 0.051, 0.48), dark: (0, 0, 0, 0.64))
-    public static let glassFill = Color.rdlDynamic(light: (1, 1, 1, 0.56), dark: (0.1098, 0.1176, 0.1294, 0.52))
-    public static let glassFillStrong = Color.rdlDynamic(light: (1, 1, 1, 0.78), dark: (0.1412, 0.149, 0.1647, 0.72))
-    public static let glassBorder = Color.rdlDynamic(light: (1, 1, 1, 0.72), dark: (1, 1, 1, 0.1))
-    public static let glassShade = Color.rdlDynamic(light: (0.0784, 0.0784, 0.0941, 0.06), dark: (0, 0, 0, 0.3))
-    public static let glassText = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.9569, 0.9569, 0.9608, 1))
-    public static let glassTextMuted = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 0.55), dark: (0.9569, 0.9569, 0.9608, 0.55))
-    public static let glassDarkFill = Color.rdlDynamic(light: (0.0863, 0.0902, 0.102, 0.52), dark: (0.0863, 0.0902, 0.102, 0.52))
-    public static let glassDarkBorder = Color.rdlDynamic(light: (1, 1, 1, 0.1), dark: (1, 1, 1, 0.1))
-    public static let tick = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 0.28), dark: (0.9569, 0.9569, 0.9608, 0.3))
-    public static let tickStrong = Color.rdlDynamic(light: (0.0392, 0.0431, 0.0471, 1), dark: (0.9569, 0.9569, 0.9608, 1))
+    public static let bgCanvas = RDLTheme.color("bg-canvas")
+    public static let bgCanvasElevated = RDLTheme.color("bg-canvas-elevated")
+    public static let bgSurface = RDLTheme.color("bg-surface")
+    public static let bgSurfaceRaised = RDLTheme.color("bg-surface-raised")
+    public static let bgSurfaceSunken = RDLTheme.color("bg-surface-sunken")
+    public static let bgEmphasis = RDLTheme.color("bg-emphasis")
+    public static let bgEmphasisRaised = RDLTheme.color("bg-emphasis-raised")
+    public static let bgScrim = RDLTheme.color("bg-scrim")
+    public static let fillControl = RDLTheme.color("fill-control")
+    public static let fillControlHover = RDLTheme.color("fill-control-hover")
+    public static let fillControlPressed = RDLTheme.color("fill-control-pressed")
+    public static let fillDisabled = RDLTheme.color("fill-disabled")
+    public static let fgPrimary = RDLTheme.color("fg-primary")
+    public static let fgSecondary = RDLTheme.color("fg-secondary")
+    public static let fgTertiary = RDLTheme.color("fg-tertiary")
+    public static let fgDisabled = RDLTheme.color("fg-disabled")
+    public static let fgOnEmphasis = RDLTheme.color("fg-on-emphasis")
+    public static let fgOnEmphasisSecondary = RDLTheme.color("fg-on-emphasis-secondary")
+    public static let borderSubtle = RDLTheme.color("border-subtle")
+    public static let borderDefault = RDLTheme.color("border-default")
+    public static let borderStrong = RDLTheme.color("border-strong")
+    public static let borderFocus = RDLTheme.color("border-focus")
+    public static let actionPrimary = RDLTheme.color("action-primary")
+    public static let actionPrimaryHover = RDLTheme.color("action-primary-hover")
+    public static let actionPrimaryPressed = RDLTheme.color("action-primary-pressed")
+    public static let onActionPrimary = RDLTheme.color("on-action-primary")
+    public static let actionSecondary = RDLTheme.color("action-secondary")
+    public static let actionSecondaryHover = RDLTheme.color("action-secondary-hover")
+    public static let actionSecondaryPressed = RDLTheme.color("action-secondary-pressed")
+    public static let onActionSecondary = RDLTheme.color("on-action-secondary")
+    public static let success = RDLTheme.color("success")
+    public static let successSubtle = RDLTheme.color("success-subtle")
+    public static let successText = RDLTheme.color("success-text")
+    public static let warning = RDLTheme.color("warning")
+    public static let warningSubtle = RDLTheme.color("warning-subtle")
+    public static let warningText = RDLTheme.color("warning-text")
+    public static let danger = RDLTheme.color("danger")
+    public static let dangerSubtle = RDLTheme.color("danger-subtle")
+    public static let dangerText = RDLTheme.color("danger-text")
+    public static let info = RDLTheme.color("info")
+    public static let infoSubtle = RDLTheme.color("info-subtle")
+    public static let infoText = RDLTheme.color("info-text")
+    public static let materialUltrathin = RDLTheme.color("material-ultrathin")
+    public static let materialThin = RDLTheme.color("material-thin")
+    public static let materialRegular = RDLTheme.color("material-regular")
+    public static let materialThick = RDLTheme.color("material-thick")
+    public static let materialBorder = RDLTheme.color("material-border")
+    public static let materialHighlight = RDLTheme.color("material-highlight")
+    public static let materialShade = RDLTheme.color("material-shade")
+    public static let materialDark = RDLTheme.color("material-dark")
+    public static let materialDarkBorder = RDLTheme.color("material-dark-border")
+    public static let chartTrack = RDLTheme.color("chart-track")
+    public static let chartGrid = RDLTheme.color("chart-grid")
+    public static let chartMuted = RDLTheme.color("chart-muted")
+    public static let chartHatch = RDLTheme.color("chart-hatch")
+    public static let tick = RDLTheme.color("tick")
+    public static let tickStrong = RDLTheme.color("tick-strong")
+    public static let accent = RDLTheme.color("accent")
+    public static let accentHover = RDLTheme.color("accent-hover")
+    public static let accentPressed = RDLTheme.color("accent-pressed")
+    public static let accentSubtle = RDLTheme.color("accent-subtle")
+    public static let accentText = RDLTheme.color("accent-text")
+    public static let accentGraphic = RDLTheme.color("accent-graphic")
+    public static let onAccent = RDLTheme.color("on-accent")
+    public static let bgBrand = RDLTheme.color("bg-brand")
+    public static let fgOnBrand = RDLTheme.color("fg-on-brand")
+    public static let fgOnBrandSecondary = RDLTheme.color("fg-on-brand-secondary")
+    // v3 names (aliases)
+    public static let bgSurfaceMuted = RDLTheme.color("bg-surface-sunken")
+    public static let bgHero = RDLTheme.color("bg-emphasis")
+    public static let bgHeroRaised = RDLTheme.color("bg-emphasis-raised")
+    public static let scrim = RDLTheme.color("bg-scrim")
+    public static let fillControlStrong = RDLTheme.color("action-primary")
+    public static let textPrimary = RDLTheme.color("fg-primary")
+    public static let textSecondary = RDLTheme.color("fg-secondary")
+    public static let textTertiary = RDLTheme.color("fg-tertiary")
+    public static let textOnHero = RDLTheme.color("fg-on-emphasis")
+    public static let textOnHeroMuted = RDLTheme.color("fg-on-emphasis-secondary")
+    public static let textOnStrong = RDLTheme.color("on-action-primary")
+    public static let successSoft = RDLTheme.color("success-subtle")
+    public static let dangerSoft = RDLTheme.color("danger-subtle")
+    public static let warningSoft = RDLTheme.color("warning-subtle")
+    public static let infoSoft = RDLTheme.color("info-subtle")
+    public static let glassFill = RDLTheme.color("material-regular")
+    public static let glassFillStrong = RDLTheme.color("material-thick")
+    public static let glassBorder = RDLTheme.color("material-border")
+    public static let glassShade = RDLTheme.color("material-shade")
+    public static let glassText = RDLTheme.color("fg-primary")
+    public static let glassTextMuted = RDLTheme.color("fg-secondary")
+    public static let glassDarkFill = RDLTheme.color("material-dark")
+    public static let glassDarkBorder = RDLTheme.color("material-dark-border")
+    public static let accentStrong = RDLTheme.color("accent-hover")
+    public static let accentSoft = RDLTheme.color("accent-subtle")
 }
 
-/// Accent pack. Pick one per product and inject with `.rdlAccent(.volt)`.
+/// Accent (secondary colour). `.theme` follows `RDLTheme`; named presets override it for a subtree via `.rdlAccent(.volt)`.
 public struct RDLAccent {
-    public let accent: Color, accentStrong: Color, accentSoft: Color, onAccent: Color, accentText: Color
-    public static let volt = RDLAccent(accent: Color(rdlR: 0.8745, g: 0.9804, b: 0.1961, a: 1), accentStrong: Color(rdlR: 0.7882, g: 0.8863, b: 0.0784, a: 1), accentSoft: Color.rdlDynamic(light: (0.9608, 0.9922, 0.7529, 1), dark: (0.8745, 0.9804, 0.1961, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.3725, 0.4196, 0.0196, 1), dark: (0.902, 0.9804, 0.3686, 1)))
-    public static let lime = RDLAccent(accent: Color(rdlR: 0.7961, g: 0.9373, b: 0.2627, a: 1), accentStrong: Color(rdlR: 0.698, g: 0.851, b: 0.1647, a: 1), accentSoft: Color.rdlDynamic(light: (0.9333, 0.9843, 0.7686, 1), dark: (0.7961, 0.9373, 0.2627, 0.16)), onAccent: Color(rdlR: 0.0431, g: 0.0431, b: 0.051, a: 1), accentText: Color.rdlDynamic(light: (0.3725, 0.4784, 0.0314, 1), dark: (0.8471, 0.9608, 0.4353, 1)))
-    public static let gold = RDLAccent(accent: Color(rdlR: 0.9255, g: 0.7373, b: 0.2667, a: 1), accentStrong: Color(rdlR: 0.851, g: 0.651, b: 0.1961, a: 1), accentSoft: Color.rdlDynamic(light: (0.9922, 0.9725, 0.9176, 1), dark: (0.9255, 0.7373, 0.2667, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.4314, 0.3137, 0.0549, 1), dark: (0.9569, 0.8549, 0.5569, 1)))
-    public static let signal = RDLAccent(accent: Color(rdlR: 0.2941, g: 0.8784, b: 0.4314, a: 1), accentStrong: Color(rdlR: 0.1333, g: 0.7725, b: 0.3216, a: 1), accentSoft: Color.rdlDynamic(light: (0.9176, 0.9882, 0.9373, 1), dark: (0.2941, 0.8784, 0.4314, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.0549, 0.4314, 0.1725, 1), dark: (0.4824, 0.9216, 0.5922, 1)))
-    public static let electric = RDLAccent(accent: Color(rdlR: 0.0314, g: 0.1961, b: 0.8471, a: 1), accentStrong: Color(rdlR: 0.0235, g: 0.1529, b: 0.6902, a: 1), accentSoft: Color.rdlDynamic(light: (0.9255, 0.9373, 1, 1), dark: (0.0314, 0.1961, 0.8471, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.0235, 0.1529, 0.6902, 1), dark: (0.5412, 0.6, 1, 1)))
-    public static let ember = RDLAccent(accent: Color(rdlR: 0.9882, g: 0.3529, b: 0.0627, a: 1), accentStrong: Color(rdlR: 0.8588, g: 0.2667, b: 0.0627, a: 1), accentSoft: Color.rdlDynamic(light: (1, 0.9451, 0.9216, 1), dark: (0.9882, 0.3529, 0.0627, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.6196, 0.1882, 0.0392, 1), dark: (1, 0.6039, 0.4392, 1)))
-    public static let orchid = RDLAccent(accent: Color(rdlR: 0.7569, g: 0.4235, b: 0.9686, a: 1), accentStrong: Color(rdlR: 0.6471, g: 0.2824, b: 0.9333, a: 1), accentSoft: Color.rdlDynamic(light: (0.9804, 0.9412, 1, 1), dark: (0.7569, 0.4235, 0.9686, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.5176, 0.1882, 0.7882, 1), dark: (0.8431, 0.6078, 1, 1)))
-    public static let violet = RDLAccent(accent: Color(rdlR: 0.4431, g: 0.3216, b: 0.9608, a: 1), accentStrong: Color(rdlR: 0.3529, g: 0.2314, b: 0.8588, a: 1), accentSoft: Color.rdlDynamic(light: (0.9569, 0.9451, 1, 1), dark: (0.4431, 0.3216, 0.9608, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.3529, 0.2314, 0.8588, 1), dark: (0.6902, 0.6118, 1, 1)))
-    public static let orange = RDLAccent(accent: Color(rdlR: 0.9608, g: 0.3725, b: 0.1412, a: 1), accentStrong: Color(rdlR: 0.8235, g: 0.2824, b: 0.0706, a: 1), accentSoft: Color.rdlDynamic(light: (1, 0.9529, 0.9333, 1), dark: (0.9608, 0.3725, 0.1412, 0.16)), onAccent: Color(rdlR: 0.0431, g: 0.0431, b: 0.051, a: 1), accentText: Color.rdlDynamic(light: (0.6314, 0.2118, 0.0431, 1), dark: (1, 0.6157, 0.4588, 1)))
-    public static let ocean = RDLAccent(accent: Color(rdlR: 0.1843, g: 0.4, b: 0.9647, a: 1), accentStrong: Color(rdlR: 0.1216, g: 0.3098, b: 0.8196, a: 1), accentSoft: Color.rdlDynamic(light: (0.9333, 0.9569, 1, 1), dark: (0.1843, 0.4, 0.9647, 0.16)), onAccent: Color(rdlR: 1, g: 1, b: 1, a: 1), accentText: Color.rdlDynamic(light: (0.1216, 0.3098, 0.8196, 1), dark: (0.5176, 0.6627, 1, 1)))
-    public static let rose = RDLAccent(accent: Color(rdlR: 0.9412, g: 0.3294, b: 0.5412, a: 1), accentStrong: Color(rdlR: 0.8235, g: 0.2275, b: 0.4353, a: 1), accentSoft: Color.rdlDynamic(light: (1, 0.9412, 0.9569, 1), dark: (0.9412, 0.3294, 0.5412, 0.16)), onAccent: Color(rdlR: 0.0392, g: 0.0431, b: 0.0471, a: 1), accentText: Color.rdlDynamic(light: (0.6118, 0.149, 0.3137, 1), dark: (0.9686, 0.6039, 0.7137, 1)))
+    public let accent: Color, accentStrong: Color, accentSoft: Color, onAccent: Color, accentText: Color, accentGraphic: Color
+    public init(secondary: String?) {
+        accent = RDLTheme.color("accent", secondary: secondary)
+        accentStrong = RDLTheme.color("accent-hover", secondary: secondary)
+        accentSoft = RDLTheme.color("accent-subtle", secondary: secondary)
+        onAccent = RDLTheme.color("on-accent", secondary: secondary)
+        accentText = RDLTheme.color("accent-text", secondary: secondary)
+        accentGraphic = RDLTheme.color("accent-graphic", secondary: secondary)
+    }
+    public static let theme = RDLAccent(secondary: nil)
+    public static let volt = RDLAccent(secondary: "#DFFA32")
+    public static let lime = RDLAccent(secondary: "#CBEF43")
+    public static let gold = RDLAccent(secondary: "#ECBC44")
+    public static let signal = RDLAccent(secondary: "#4BE06E")
+    public static let electric = RDLAccent(secondary: "#0832D8")
+    public static let ember = RDLAccent(secondary: "#FC5A10")
+    public static let orchid = RDLAccent(secondary: "#C16CF7")
+    public static let violet = RDLAccent(secondary: "#7152F5")
+    public static let orange = RDLAccent(secondary: "#F55F24")
+    public static let ocean = RDLAccent(secondary: "#2F66F6")
+    public static let rose = RDLAccent(secondary: "#F0548A")
 }
 
-private struct RDLAccentKey: EnvironmentKey { static let defaultValue = RDLAccent.volt }
+private struct RDLAccentKey: EnvironmentKey { static let defaultValue = RDLAccent.theme }
 public extension EnvironmentValues {
     var rdlAccent: RDLAccent { get { self[RDLAccentKey.self] } set { self[RDLAccentKey.self] = newValue } }
 }
@@ -226,17 +471,16 @@ public extension View {
 
 // MARK: - Aura gradients
 
-/// Soft gradient washes for card fills and screen backdrops.
 public enum RDLAura {
-    public static let gold = RadialGradient(stops: [.init(color: Color(rdlR: 0.949, g: 0.7882, b: 0.3608, a: 1), location: 0), .init(color: Color(rdlR: 0.9529, g: 0.8902, b: 0.7373, a: 1), location: 0.38), .init(color: Color(rdlR: 0.9373, g: 0.9373, b: 0.9451, a: 1), location: 0.78)], center: UnitPoint(x: 0.85, y: 0), startRadius: 0, endRadius: 520)
-    public static let sunset = RadialGradient(stops: [.init(color: Color(rdlR: 1, g: 0.5412, b: 0.1216, a: 1), location: 0), .init(color: Color(rdlR: 1, g: 0.4353, b: 0.6275, a: 1), location: 0.45), .init(color: Color(rdlR: 0.6235, g: 0.7176, b: 1, a: 1), location: 1)], center: UnitPoint(x: 0.5, y: 0.5), startRadius: 0, endRadius: 520)
-    public static let meadow = LinearGradient(stops: [.init(color: Color(rdlR: 0.1843, g: 0.749, b: 0.3059, a: 1), location: 0), .init(color: Color(rdlR: 0.7216, g: 0.9412, b: 0.2353, a: 1), location: 0.7), .init(color: Color(rdlR: 0.9333, g: 0.9686, b: 0.7843, a: 1), location: 1)], startPoint: UnitPoint(x: 0.329, y: 0.03), endPoint: UnitPoint(x: 0.671, y: 0.97))
-    public static let dusk = LinearGradient(stops: [.init(color: Color(rdlR: 0.3686, g: 0.3529, b: 0.149, a: 1), location: 0), .init(color: Color(rdlR: 0.5412, g: 0.3373, b: 0.2745, a: 1), location: 0.55), .init(color: Color(rdlR: 0.6039, g: 0.3529, b: 0.4157, a: 1), location: 1)], startPoint: UnitPoint(x: 0.371, y: 0.017), endPoint: UnitPoint(x: 0.629, y: 0.983))
-    public static let orchid = LinearGradient(stops: [.init(color: Color(rdlR: 0.8784, g: 0.2745, b: 0.7843, a: 1), location: 0), .init(color: Color(rdlR: 0.5412, g: 0.2314, b: 0.9373, a: 1), location: 1)], startPoint: UnitPoint(x: 0.25, y: 0.067), endPoint: UnitPoint(x: 0.75, y: 0.933))
-    public static let ocean = LinearGradient(stops: [.init(color: Color(rdlR: 0.0706, g: 0.1373, b: 0.2784, a: 1), location: 0), .init(color: Color(rdlR: 0.1059, g: 0.3569, b: 0.4196, a: 1), location: 1)], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 1))
-    public static let ember = LinearGradient(stops: [.init(color: Color(rdlR: 0.949, g: 0.6275, b: 0.2902, a: 1), location: 0), .init(color: Color(rdlR: 0.9216, g: 0.8235, b: 0.6824, a: 1), location: 1)], startPoint: UnitPoint(x: 0.25, y: 0.067), endPoint: UnitPoint(x: 0.75, y: 0.933))
-    public static let fog = LinearGradient(stops: [.init(color: Color(rdlR: 0.8627, g: 0.8902, b: 0.9176, a: 1), location: 0), .init(color: Color(rdlR: 0.9569, g: 0.9608, b: 0.9686, a: 1), location: 1)], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 1))
-    public static let rose = RadialGradient(stops: [.init(color: Color(rdlR: 0.9412, g: 0.3294, b: 0.5412, a: 1), location: 0), .init(color: Color(rdlR: 0.9686, g: 0.6039, b: 0.7137, a: 1), location: 0.45), .init(color: Color(rdlR: 0.9294, g: 0.902, b: 0.949, a: 1), location: 1)], center: UnitPoint(x: 0.5, y: 0.4), startRadius: 0, endRadius: 520)
+    public static let gold = RadialGradient(stops: [.init(color: RDLTheme.fixed("#F2C95C"), location: 0), .init(color: RDLTheme.fixed("#F3E3BC"), location: 0.38), .init(color: RDLTheme.fixed("#EFEFF1"), location: 0.78)], center: UnitPoint(x: 0.85, y: 0), startRadius: 0, endRadius: 520)
+    public static let sunset = RadialGradient(stops: [.init(color: RDLTheme.fixed("#FF8A1F"), location: 0), .init(color: RDLTheme.fixed("#FF6FA0"), location: 0.45), .init(color: RDLTheme.fixed("#9FB7FF"), location: 1)], center: UnitPoint(x: 0.5, y: 0.5), startRadius: 0, endRadius: 520)
+    public static let meadow = LinearGradient(stops: [.init(color: RDLTheme.fixed("#2FBF4E"), location: 0), .init(color: RDLTheme.fixed("#B8F03C"), location: 0.7), .init(color: RDLTheme.fixed("#EEF7C8"), location: 1)], startPoint: UnitPoint(x: 0.329, y: 0.03), endPoint: UnitPoint(x: 0.671, y: 0.97))
+    public static let dusk = LinearGradient(stops: [.init(color: RDLTheme.fixed("#5E5A26"), location: 0), .init(color: RDLTheme.fixed("#8A5646"), location: 0.55), .init(color: RDLTheme.fixed("#9A5A6A"), location: 1)], startPoint: UnitPoint(x: 0.371, y: 0.017), endPoint: UnitPoint(x: 0.629, y: 0.983))
+    public static let orchid = LinearGradient(stops: [.init(color: RDLTheme.fixed("#E046C8"), location: 0), .init(color: RDLTheme.fixed("#8A3BEF"), location: 1)], startPoint: UnitPoint(x: 0.25, y: 0.067), endPoint: UnitPoint(x: 0.75, y: 0.933))
+    public static let ocean = LinearGradient(stops: [.init(color: RDLTheme.fixed("#122347"), location: 0), .init(color: RDLTheme.fixed("#1B5B6B"), location: 1)], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 1))
+    public static let ember = LinearGradient(stops: [.init(color: RDLTheme.fixed("#F2A04A"), location: 0), .init(color: RDLTheme.fixed("#EBD2AE"), location: 1)], startPoint: UnitPoint(x: 0.25, y: 0.067), endPoint: UnitPoint(x: 0.75, y: 0.933))
+    public static let fog = LinearGradient(stops: [.init(color: RDLTheme.fixed("#DCE3EA"), location: 0), .init(color: RDLTheme.fixed("#F4F5F7"), location: 1)], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 1))
+    public static let rose = RadialGradient(stops: [.init(color: RDLTheme.fixed("#F0548A"), location: 0), .init(color: RDLTheme.fixed("#F79AB6"), location: 0.45), .init(color: RDLTheme.fixed("#EDE6F2"), location: 1)], center: UnitPoint(x: 0.5, y: 0.4), startRadius: 0, endRadius: 520)
 }
 
 // MARK: - Type
@@ -246,31 +490,32 @@ public enum RDLFont {
     public static var family: String? = "Urbanist"
 }
 public struct RDLTextStyle {
-    public let size: CGFloat, lineHeight: CGFloat, weight: Font.Weight, tracking: CGFloat
+    public let size: CGFloat, lineHeight: CGFloat, weight: Font.Weight, tracking: CGFloat, relativeTo: Font.TextStyle
+    /// Scales with Dynamic Type relative to the matching iOS text style.
     public var font: Font {
         #if canImport(UIKit)
         if let family = RDLFont.family, UIFont(name: family, size: size) != nil {
-            return .custom(family, size: size).weight(weight)
+            return .custom(family, size: size, relativeTo: relativeTo).weight(weight)
         }
         #endif
         return .system(size: size, weight: weight, design: .default)
     }
 }
 public enum RDLType {
-    public static let hero = RDLTextStyle(size: 96, lineHeight: 92, weight: .light, tracking: -3.84)
-    public static let displayXl = RDLTextStyle(size: 72, lineHeight: 72, weight: .light, tracking: -2.52)
-    public static let display = RDLTextStyle(size: 56, lineHeight: 58, weight: .light, tracking: -1.68)
-    public static let numeral = RDLTextStyle(size: 40, lineHeight: 44, weight: .light, tracking: -0.8)
-    public static let h1 = RDLTextStyle(size: 34, lineHeight: 38, weight: .regular, tracking: -0.68)
-    public static let h2 = RDLTextStyle(size: 26, lineHeight: 30, weight: .regular, tracking: -0.39)
-    public static let h3 = RDLTextStyle(size: 20, lineHeight: 24, weight: .medium, tracking: -0.2)
-    public static let title = RDLTextStyle(size: 17, lineHeight: 22, weight: .medium, tracking: -0.09)
-    public static let body = RDLTextStyle(size: 15, lineHeight: 22, weight: .regular, tracking: 0)
-    public static let bodyStrong = RDLTextStyle(size: 15, lineHeight: 22, weight: .semibold, tracking: 0)
-    public static let label = RDLTextStyle(size: 14, lineHeight: 18, weight: .medium, tracking: 0)
-    public static let meta = RDLTextStyle(size: 13, lineHeight: 18, weight: .medium, tracking: 0)
-    public static let caption = RDLTextStyle(size: 12, lineHeight: 16, weight: .regular, tracking: 0.06)
-    public static let micro = RDLTextStyle(size: 11, lineHeight: 14, weight: .medium, tracking: 0.44)
+    public static let hero = RDLTextStyle(size: 96, lineHeight: 92, weight: .light, tracking: -3.84, relativeTo: .largeTitle)
+    public static let displayXl = RDLTextStyle(size: 72, lineHeight: 72, weight: .light, tracking: -2.52, relativeTo: .largeTitle)
+    public static let display = RDLTextStyle(size: 56, lineHeight: 58, weight: .light, tracking: -1.68, relativeTo: .largeTitle)
+    public static let numeral = RDLTextStyle(size: 40, lineHeight: 44, weight: .light, tracking: -0.8, relativeTo: .largeTitle)
+    public static let h1 = RDLTextStyle(size: 34, lineHeight: 38, weight: .regular, tracking: -0.68, relativeTo: .largeTitle)
+    public static let h2 = RDLTextStyle(size: 26, lineHeight: 30, weight: .regular, tracking: -0.39, relativeTo: .title)
+    public static let h3 = RDLTextStyle(size: 20, lineHeight: 24, weight: .medium, tracking: -0.2, relativeTo: .title3)
+    public static let title = RDLTextStyle(size: 17, lineHeight: 22, weight: .medium, tracking: -0.09, relativeTo: .headline)
+    public static let body = RDLTextStyle(size: 15, lineHeight: 22, weight: .regular, tracking: 0, relativeTo: .subheadline)
+    public static let bodyStrong = RDLTextStyle(size: 15, lineHeight: 22, weight: .semibold, tracking: 0, relativeTo: .subheadline)
+    public static let label = RDLTextStyle(size: 14, lineHeight: 18, weight: .medium, tracking: 0, relativeTo: .subheadline)
+    public static let meta = RDLTextStyle(size: 13, lineHeight: 18, weight: .medium, tracking: 0, relativeTo: .footnote)
+    public static let caption = RDLTextStyle(size: 12, lineHeight: 16, weight: .regular, tracking: 0.06, relativeTo: .caption)
+    public static let micro = RDLTextStyle(size: 11, lineHeight: 14, weight: .medium, tracking: 0.44, relativeTo: .caption2)
     /// Units next to numbers render at this fraction of the number size.
     public static let unitScale: CGFloat = 0.38
 }
@@ -283,7 +528,7 @@ public extension View {
     }
 }
 
-// MARK: - Space, radius, size, glass, motion
+// MARK: - Space, radius, size, state, glass, motion
 
 public enum RDLSpace {
     public static let s0: CGFloat = 0
@@ -361,15 +606,26 @@ public enum RDLSize {
     public static let iconMd: CGFloat = 20
     public static let iconLg: CGFloat = 24
 }
+/// Material 3 state layers (opacity of the on-colour over the container).
+public enum RDLState {
+    public static let hover: Double = 0.08
+    public static let focus: Double = 0.12
+    public static let pressed: Double = 0.12
+    public static let dragged: Double = 0.16
+    public static let disabledContent: Double = 0.38
+    public static let disabledContainer: Double = 0.12
+}
 public enum RDLGlass {
     public static let blur: CGFloat = 24
 }
 public enum RDLMotion {
+    public static let instant: Double = 0.05
     public static let fast: Double = 0.12
     public static let base: Double = 0.2
     public static let slow: Double = 0.32
     public static let chart: Double = 0.6
     public static let spring = Animation.spring(response: 0.35, dampingFraction: 0.82)
     public static let standard = Animation.timingCurve(0.2, 0, 0, 1, duration: 0.2)
+    public static let emphasizedDecelerate = Animation.timingCurve(0.05, 0.7, 0.1, 1, duration: 0.32)
     public static let stagger: Double = 0.04
 }

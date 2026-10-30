@@ -11,15 +11,15 @@
 <style>
   :root {
     --canvas: #EFEFF1; --surface: #FFFFFF; --ink: #0A0B0C; --text-2: #5C5C64; --text-3: #9B9BA3;
-    --hair: #DCDCE0; --accent: #ECBC44; --accent-soft: #FDF8EA; --ok: #22C552; --crit: #F0453E;
+    --hair: #DCDCE0; --accent: #ECBC44; --accent-soft: #FDF8EA; --ok: #22C552; --crit: #F0453E; --crit-text: #C2241E;
     --l1: #0A0B0C; --l2: #3A3B40; --l3: #9B9BA3; --l4: #ECBC44;
     --fs-h1: 56px; --gap: 12px;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --canvas: #0A0B0C; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
+    :root:not([data-theme="light"]) { --canvas: #0A0B0C; --crit-text: #FF9A9A; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
       --l1: #F4F4F5; --l2: #A1A1AA; --l3: #4E4E56; color-scheme: dark; }
   }
-  :root[data-theme="dark"] { --canvas: #0A0B0C; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
+  :root[data-theme="dark"] { --canvas: #0A0B0C; --crit-text: #FF9A9A; --surface: #131416; --ink: #F4F4F5; --text-2: #A1A1AA; --text-3: #6B6B74; --hair: #26272B; --accent-soft: #2A2410;
       --l1: #F4F4F5; --l2: #A1A1AA; --l3: #4E4E56; color-scheme: dark; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--canvas); color: var(--ink); font-family: Urbanist, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
@@ -117,7 +117,7 @@
     <article class="card">
       <div class="card-h"><p class="title">Fixed gap</p><span class="badge bad">Runs out</span></div>
       <div class="stage"><svg id="fixed" viewBox="0 0 400 300" width="400"></svg></div>
-      <p class="chain">24 <span class="muted">−8 →</span> 16 <span class="muted">−8 →</span> 8 <span class="muted">−8 →</span> <b style="color:var(--crit)">0</b></p>
+      <p class="chain">24 <span class="muted">−8 →</span> 16 <span class="muted">−8 →</span> 8 <span class="muted">−8 →</span> <b style="color:var(--crit-text)">0</b></p>
       <p class="meta">Subtracting the full padding every level gives a sharp innermost corner.</p>
     </article>
     <article class="card">

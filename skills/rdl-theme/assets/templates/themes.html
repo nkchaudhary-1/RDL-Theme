@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDL Themes</title>
+<!-- v4 reference: the same screens in the three RDL themes.
+     Shot 1: Home in Light, Dark and Brand (cobalt + yellow).
+     Shot 2: Buy in four brand presets (gold, forest, lavender, mustard): the user's primary fills the
+             canvas, the secondary is the highlight. No screen code changes between themes: only data-theme / data-brand.
+     Audit: node ../../scripts/audit_ui.mjs themes.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&family=Doto:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/tokens.css">
+<link rel="stylesheet" href="rdl-components.css">
+<style>
+  h1, h2, h3, p { margin: 0; }
+  /* ---------- Shot presentation only (references/presentation.md) — not product UI ---------- */
+  body { margin: 0; display: grid; justify-content: center; gap: 0; background: #D9D9DC; }
+  .shot { width: 1600px; height: 1200px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 56px;
+    background: radial-gradient(90% 70% at 50% 40%, #EDEDEF 0%, #D6D6D9 70%, #CBCBCF 100%); font-family: var(--rdl-font-sans); }
+  .shot__mark { position: absolute; left: 64px; top: 56px; color: #0A0B0C; }
+  .shot__tag { position: absolute; right: 64px; top: 64px; font-size: 15px; color: #55555C; }
+  .col { display: grid; justify-items: center; gap: 28px; }
+  .col__label { display: grid; justify-items: center; gap: 4px; color: #0A0B0C; }
+  .col__label b { font-size: 17px; font-weight: 500; }
+  .col__label span { font-size: 13px; color: #55555C; display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); display: inline-block; }
+  .phone { width: 393px; height: 852px; border-radius: 56px; position: relative; overflow: hidden; flex: none; background: var(--rdl-bg-canvas); color: var(--rdl-text-primary);
+    box-shadow: 0 0 0 11px #0E0F10, 0 0 0 12.5px #3A3B3F, 0 60px 120px rgba(0,0,0,0.24); }
+  .shot--presets .phone { zoom: 0.84; }
+  .shot--presets { gap: 40px; }
+  .island { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 124px; height: 36px; border-radius: 20px; background: #000; z-index: 5; }
+  .statusbar { height: 54px; display: flex; align-items: center; justify-content: space-between; padding: 6px 36px 0 40px; font-size: 16px; font-weight: 600; position: relative; z-index: 2; }
+  .statusbar svg { width: 64px; height: 14px; }
+  .phone .rdl-screen { min-height: 0; }
+  .wave { width: 100%; height: 72px; display: block; overflow: visible; }
+  .ico { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .ico--sm { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-bars" viewBox="0 0 64 14"><rect x="0" y="8" width="3" height="5" rx="1" fill="currentColor"/><rect x="5" y="5" width="3" height="8" rx="1" fill="currentColor"/><rect x="10" y="2" width="3" height="11" rx="1" fill="currentColor"/><rect x="15" y="0" width="3" height="13" rx="1" fill="currentColor"/><rect x="38" y="1" width="22" height="12" rx="4" fill="none" stroke="currentColor"/><rect x="40" y="3" width="15" height="8" rx="2" fill="currentColor"/></symbol>
+</svg>
+
+<!-- ============ Screen: Home (one markup, every theme) ============ -->
+<template id="home">
+  <div class="island" data-audit-ignore></div>
+  <div class="statusbar" data-audit-ignore><span>9:41</span><svg><use href="#i-bars"/></svg></div>
+  <div class="rdl-screen rdl-stack--title">
+    <header class="rdl-header">
+      <button class="rdl-orb" aria-label="Profile"><svg class="ico"><use href="#i-user"/></svg></button>
+      <span class="rdl-chip">24K · 99.9% pure</span>
+      <span><button class="rdl-orb" aria-label="Alerts"><svg class="ico"><use href="#i-bell"/></svg></button></span>
+    </header>
+    <div class="rdl-stack rdl-stack--section">
+      <div class="rdl-stack rdl-stack--loose">
+        <h1 class="rdl-h2 rdl-mix">Good morning, <b>Aarav</b></h1>
+        <div class="rdl-stack rdl-stack--tight">
+          <p class="rdl-caption rdl-muted">Portfolio value</p>
+          <p class="rdl-figure rdl-display"><span class="rdl-cur">₹</span>4,82,190<span class="rdl-unit">.36</span></p>
+        </div>
+        <div class="rdl-inline"><span class="rdl-status">Live</span><span class="rdl-meta rdl-muted">+₹12,408 · 30 days</span></div>
+      </div>
+      <div class="rdl-stack rdl-stack--card">
+        <article class="rdl-card rdl-metric">
+          <p class="rdl-metric__label">Gold · per gram</p>
+          <span class="rdl-delta rdl-metric__action">+1.8%</span>
+          <div class="rdl-metric__viz">
+            <svg class="wave" viewBox="0 0 313 72" aria-label="Price, last 7 days">
+              <path d="M0 56 C24 52 36 40 60 44 S96 60 120 46 S160 14 188 24 S224 44 248 30 S286 12 313 14" fill="none" stroke="var(--rdl-tick)" stroke-width="1.4" stroke-dasharray="1.5 5" stroke-linecap="round"/>
+              <path d="M96 52 C104 50 112 48 120 46 S160 14 188 24 S220 40 236 34" fill="none" stroke="var(--rdl-fg-primary)" stroke-width="2"/>
+              <line x1="188" x2="188" y1="24" y2="72" stroke="var(--rdl-fg-primary)" stroke-dasharray="2 4"/>
+              <circle cx="188" cy="24" r="5" fill="var(--rdl-fg-primary)" stroke="var(--rdl-accent-graphic)" stroke-width="3"/>
+            </svg>
+          </div>
+          <p class="rdl-figure rdl-numeral rdl-metric__figure"><span class="rdl-cur">₹</span>7,284<span class="rdl-unit">.20</span></p>
+          <span class="rdl-meta rdl-muted rdl-metric__context">7 days</span>
+        </article>
+        <div class="rdl-grid-2">
+          <article class="rdl-widget rdl-widget--ink rdl-metric">
+            <p class="rdl-metric__label">Holdings</p>
+            <span class="rdl-tag rdl-tag--accent rdl-metric__action">+0.4 g</span>
+            <p class="rdl-figure rdl-figure--dot rdl-numeral rdl-metric__figure">66.2<span class="rdl-unit">g</span></p>
+          </article>
+          <article class="rdl-widget rdl-glass rdl-metric">
+            <p class="rdl-metric__label">Next SIP</p>
+            <button class="rdl-orb rdl-metric__action" aria-label="Open SIP"><svg class="ico"><use href="#i-arrow"/></svg></button>
+            <div class="rdl-stack rdl-stack--tight rdl-metric__figure">
+              <p class="rdl-figure rdl-h2">Oct 05</p>
+              <p class="rdl-meta rdl-muted">₹5,000/mo</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rdl-actionrow rdl-pin">
+    <button class="rdl-orb" aria-label="Exchange"><svg class="ico"><use href="#i-swap"/></svg></button>
+    <button class="rdl-btn">Buy gold</button>
+    <button class="rdl-orb" aria-label="Sell"><svg class="ico"><use href="#i-down"/></svg></button>
+  </div>
+</template>
+
+<!-- ============ Screen: Buy (single task → centred) ============ -->
+<template id="buy">
+  <div class="island" data-audit-ignore></div>
+  <div class="statusbar" data-audit-ignore><span>9:41</span><svg><use href="#i-bars"/></svg></div>
+  <div class="rdl-screen rdl-stack--title">
+    <header class="rdl-header">
+      <button class="rdl-orb" aria-label="Back"><svg class="ico"><use href="#i-back"/></svg></button>
+      <p class="rdl-header__title">Buy gold</p>
+      <span><button class="rdl-orb" aria-label="More"><svg class="ico"><use href="#i-more"/></svg></button></span>
+    </header>
+    <div class="rdl-stack rdl-stack--section">
+      <div class="rdl-seg" role="tablist" aria-label="Unit">
+        <button role="tab" aria-selected="true">Rupees</button><button role="tab">Grams</button>
+      </div>
+      <div class="rdl-stack rdl-stack--loose rdl-center">
+        <div class="rdl-stack rdl-stack--tight rdl-center">
+          <p class="rdl-caption rdl-muted">You pay</p>
+          <p class="rdl-figure rdl-display-xl"><span class="rdl-cur">₹</span>10,000</p>
+        </div>
+        <p class="rdl-label rdl-muted">≈ <span style="color:var(--rdl-accent-text)">1.372 g</span> at ₹7,284.20/g</p>
+        <span class="rdl-chip rdl-chip--xs"><svg class="ico ico--sm"><use href="#i-lock"/></svg>Price locked · 04:59</span>
+      </div>
+      <div>
+        <div class="rdl-ticks" style="--at:40%"><span class="rdl-ticks__needle"></span></div>
+        <div class="rdl-ticks__labels"><span>₹500</span><span>₹5k</span><span>₹10k</span><span>₹25k</span></div>
+      </div>
+      <article class="rdl-glass rdl-stack rdl-stack--card">
+        <div class="rdl-kv rdl-kv--leader"><span class="k">Gold value</span><span class="dots"></span><span class="v">₹9,708.74</span></div>
+        <div class="rdl-kv rdl-kv--leader"><span class="k">GST 3%</span><span class="dots"></span><span class="v">₹291.26</span></div>
+        <div class="rdl-kv rdl-kv--leader"><span class="k">Vault</span><span class="dots"></span><span class="v">Free · insured</span></div>
+      </article>
+    </div>
+  </div>
+  <div class="rdl-slide rdl-pin">
+    <span class="rdl-slide__knob"><svg class="ico"><use href="#i-right"/></svg></span>
+    <span class="rdl-slide__label">Slide to buy</span>
+    <span class="rdl-slide__chev" aria-hidden="true">›››</span>
+  </div>
+</template>
+
+<main class="shot" id="shot-themes">
+  <div class="shot__mark rdl-logo" data-audit-ignore><i></i>Aurum</div>
+  <div class="shot__tag" data-audit-ignore>RDL v4 · one screen, three themes</div>
+  <div class="col">
+    <section class="phone" data-screen="home" data-theme="light" data-accent="volt" aria-label="Home, light theme" data-audit-scope></section>
+    <div class="col__label" data-audit-ignore><b>Light</b><span>Ink actions · secondary <i class="sw" style="background:#DFFA32"></i> volt</span></div>
+  </div>
+  <div class="col">
+    <section class="phone" data-screen="home" data-theme="dark" data-accent="volt" aria-label="Home, dark theme" data-audit-scope></section>
+    <div class="col__label" data-audit-ignore><b>Dark</b><span>White actions · secondary <i class="sw" style="background:#DFFA32"></i> volt</span></div>
+  </div>
+  <div class="col">
+    <section class="phone" data-screen="home" data-theme="brand" data-brand="cobalt" aria-label="Home, brand theme" data-audit-scope></section>
+    <div class="col__label" data-audit-ignore><b>Brand</b><span>Primary <i class="sw" style="background:#0732D8"></i> #0732D8 · secondary <i class="sw" style="background:#F2D33C"></i> #F2D33C</span></div>
+  </div>
+</main>
+
+<main class="shot shot--presets" id="shot-presets">
+  <div class="shot__mark rdl-logo" data-audit-ignore><i></i>Aurum</div>
+  <div class="shot__tag" data-audit-ignore>Brand theme · any primary + secondary</div>
+  <div class="col" data-brand-col="gold"><section class="phone" data-screen="buy" data-theme="brand" data-brand="gold" aria-label="Buy, gold brand" data-audit-scope></section></div>
+  <div class="col" data-brand-col="forest"><section class="phone" data-screen="buy" data-theme="brand" data-brand="forest" aria-label="Buy, forest brand" data-audit-scope></section></div>
+  <div class="col" data-brand-col="lavender"><section class="phone" data-screen="buy" data-theme="brand" data-brand="lavender" aria-label="Buy, lavender brand" data-audit-scope></section></div>
+  <div class="col" data-brand-col="mustard"><section class="phone" data-screen="buy" data-theme="brand" data-brand="mustard" aria-label="Buy, mustard brand" data-audit-scope></section></div>
+</main>
+
+<script>
+  // Stamp each screen template into its phone; label the preset columns from the live tokens.
+  document.querySelectorAll(".phone[data-screen]").forEach((p) => p.append(document.getElementById(p.dataset.screen).content.cloneNode(true)));
+  document.querySelectorAll("[data-brand-col]").forEach((col) => {
+    const cs = getComputedStyle(col.querySelector(".phone"));
+    const p = cs.getPropertyValue("--rdl-brand-primary").trim(), s = cs.getPropertyValue("--rdl-brand-secondary").trim();
+    const name = col.dataset.brandCol;
+    col.insertAdjacentHTML("beforeend", `<div class="col__label" data-audit-ignore><b>${name[0].toUpperCase() + name.slice(1)}</b><span><i class="sw" style="background:${p}"></i> ${p} · <i class="sw" style="background:${s}"></i> ${s}</span></div>`);
+  });
+</script>
+</body>
+</html>
