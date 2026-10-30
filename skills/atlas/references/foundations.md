@@ -103,6 +103,8 @@ writes each to `assets/tokens/atlas-brand-<name>.css`, scoped to `:root[data-bra
 Wise-inspired skin: bright green pill actions with forest text, forest links and focus in light,
 bright green in dark, green-tinted neutrals.
 
+The same engine runs from the terminal: `node scripts/atlas.mjs theme --primary … --secondary …`
+writes the theme files and prints the proof; `--as-preset` installs it into `tokens.json`.
 `assets/templates/atlas-studio.html` (Atlas Studio) does the same job interactively: enter a
 primary and secondary colour, choose neutrals, corners and type, see every component re-skinned,
 read the contrast proof, and export the theme as CSS, DTCG JSON, a Tailwind preset or Tokens Studio

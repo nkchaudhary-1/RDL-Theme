@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.6.0 — Atlas CLI
+- **`scripts/atlas.mjs`:** `theme` builds a brand theme from a primary and secondary hex with the
+  Studio engine (pinned colours, roles that pass AA in light and dark, printed contrast proof) and
+  writes CSS, DTCG JSON, Tailwind preset, Tokens Studio JSON and a README; `--as-preset` installs it
+  into `tokens.json → presets` and rebuilds; `--json` dumps the theme. `check`, `build` and `audit`
+  wrap the existing scripts.
+- **`assets/js/atlas-theme.js`:** the theme engine extracted from Studio as one module shared by the
+  browser and Node, so the CLI and Studio cannot drift.
+- `palette.mjs` keeps presets that carry explicit primitives (CLI-installed) untouched.
+- SKILL.md documents the `/atlas theme …` invocation.
+
 ## 3.5.0 — Atlas Studio and brand presets
 - **Atlas Studio** (`skills/atlas/assets/templates/atlas-studio.html`): a theme builder. Primary and
   secondary hex in; scales solved on the contrast ladder with the exact colour pinned; roles picked

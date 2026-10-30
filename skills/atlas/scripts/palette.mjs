@@ -62,6 +62,7 @@ t.primitive = primitive;
 // Presets: re-solve only the hues they change, then pin any exact overrides.
 for (const [name, preset] of Object.entries(t.presets || {})) {
   if (name.startsWith("_")) continue;
+  if (!preset.hues && !preset.overrides) continue;   // installed by the CLI with explicit primitives; keep as is
   const prim = {};
   for (const [hueName, { h, c }] of Object.entries(preset.hues || {})) {
     prim[hueName] = {};

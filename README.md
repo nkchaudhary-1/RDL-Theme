@@ -56,7 +56,14 @@ system built to **WCAG 2.2 AA by construction**. Where RDL is about a look, Atla
 **Atlas Studio** turns it into a theme builder: enter your primary and secondary hex, pick neutrals,
 corners and type, watch every component re-skin live with the contrast proof beside it, then export
 the theme as CSS, DTCG tokens JSON, a Tailwind preset or Tokens Studio JSON for Figma variables.
-Brand presets (a Wise-inspired one ships) do the same from `tokens.json`.
+Brand presets (a Wise-inspired one ships) do the same from `tokens.json`, and the `atlas` CLI does it
+from the terminal or a build step:
+
+```bash
+node skills/atlas/scripts/atlas.mjs theme --primary "#FF5A1F" --secondary "#0B3D91" --name Northwind --corners round
+node skills/atlas/scripts/atlas.mjs theme … --as-preset      # installs it as data-brand="northwind"
+node skills/atlas/scripts/atlas.mjs check | build | audit page.html
+```
 
 ![Atlas Studio](docs/atlas-studio.png)
 

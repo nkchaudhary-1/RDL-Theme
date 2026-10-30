@@ -60,6 +60,27 @@ is free (7:1 primary text, 44px primary targets, persistent errors).
    `--w 390`. Ship at 0 errors, then walk `references/qa-checklist.md` by keyboard and screen
    reader. The audit cannot judge alt text, wording or reading order.
 
+## CLI (`scripts/atlas.mjs`)
+
+When the user asks for a theme in their colours, a preset, a contrast check or an audit, run the CLI
+rather than hand-editing tokens. Invoke the skill as `/atlas theme #FF5A1F #0B3D91 Northwind` or in
+plain words; map it to:
+
+```bash
+node skills/atlas/scripts/atlas.mjs theme --primary "#FF5A1F" --secondary "#0B3D91" --name Northwind \
+  [--neutral tinted|cool|warm|pure] [--corners sharp|soft|round|pill] [--type inter|jakarta|manrope|plex|dm|fraunces] \
+  [--out ./atlas-theme-northwind] [--format all|css,json,tailwind,figma] [--as-preset] [--json]
+node skills/atlas/scripts/atlas.mjs check            # prove every pairing (base + presets), write contrast-report.md
+node skills/atlas/scripts/atlas.mjs build            # re-solve palette, rebuild CSS / Tailwind / preset files, check
+node skills/atlas/scripts/atlas.mjs audit page.html "page.html?theme=dark" --w 1440 --h 1000 [--strict]
+```
+
+`theme` uses the same engine as Atlas Studio (`assets/js/atlas-theme.js`): it pins the exact colours,
+picks roles that pass AA in light and dark, prints the contrast proof and writes the CSS, DTCG JSON,
+Tailwind preset and Tokens Studio JSON plus a README. `--as-preset` installs it into
+`tokens.json → presets` and rebuilds, so `<html data-brand="northwind">` applies it. `--json` prints
+the whole theme for other tools. Paste the printed proof into your reply when you deliver a theme.
+
 ## Quick reference
 
 | Token | Light | Dark |
@@ -116,3 +137,5 @@ is free (7:1 primary text, 44px primary targets, persistent errors).
 | `scripts/build_tokens.mjs` | JSON → CSS + Tailwind |
 | `scripts/check_contrast.mjs` | Proves semantic pairings; `--md` writes the report |
 | `scripts/audit_a11y.mjs` | Playwright audit: structure, names, ARIA, contrast, focus, reflow, text spacing, reduced motion, targets |
+| `scripts/atlas.mjs` | **CLI**: `theme` (brand colours → proven theme files, `--as-preset`), `check`, `build`, `audit` |
+| `assets/js/atlas-theme.js` | Theme engine shared by Studio and the CLI (scales, role picker, contrast proof, exporters) |
